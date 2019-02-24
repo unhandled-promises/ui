@@ -11,6 +11,10 @@ app.prepare().then(() => {
   server.use(bodyParser.json());
   server.use(bodyParser.urlencoded({ extended:true }));
 
+  const apiRoutes = require("./routes/api-routes");
+
+  server.use("/api", apiRoutes);
+
   server.get("*",(req,res) => {
     return handle(req,res);
   })
