@@ -5,7 +5,19 @@ import Styled from 'styled-components';
 class App extends Component{
  state={
   codeInput:'',
-  secret:'123456'
+  secret:'123456',
+  verified:false,
+  employee:{
+    firstNameInput:'',
+    lastNameInput:'',
+    monthInput:'',
+    dayInput:'',
+    yearInput:'',
+    address1Input:'',
+    address2Input:'',
+    stateInput:'',
+    zipInput:''
+  }
  }
 
  handleInputChange = (event) => {
@@ -21,6 +33,7 @@ class App extends Component{
   const {codeInput,secret} = this.state;
   if(codeInput === secret){
     console.log(`verification successful`);
+    this.setState({verified:true})
   }
   else{
     console.log(`invalid code`);
@@ -31,17 +44,30 @@ class App extends Component{
    return(
      <WelcomeDiv>
        <CardBody>
-        <h3>Welcome! To continue, please enter the code that was emailed to you</h3>
-        <input 
-          placeholder="Enter Code" 
-          value={this.state.codeInput}
-          name="codeInput"
-          onChange={this.handleInputChange}/>
-        <VerifyBtn
-          onClick={this.handleClick}
-        >
-          Verify
-        </VerifyBtn>
+         <VerifyDiv verified={this.state.verified}>
+          <h3>Welcome! To continue, please enter the code that was emailed to you</h3>
+          <input 
+            placeholder="Enter Code" 
+            value={this.state.codeInput}
+            name="codeInput"
+            onChange={this.handleInputChange}/>
+          <VerifyBtn onClick={this.handleClick}>
+            Verify
+          </VerifyBtn>
+         </VerifyDiv>
+        <InfoForm verified={this.state.verified}>
+          <h3>Please Verify/Enter Your Information:</h3>
+          <input 
+            placeholder="First Name"
+            value={this.state.firstNameInput}
+            onChange={this.handleInputChange}
+            name="firstNameInput"/>
+          <input 
+            placeholder="Last Name"
+            value={this.state.lastNameInput}
+            onChange={this.handleInputChange}
+            name="lastNameInput"/>
+        </InfoForm>
        </CardBody>
      </WelcomeDiv>
    )
@@ -73,9 +99,17 @@ const CardBody = Styled.div`
   }
 `;
 
+const VerifyDiv = Styled.div`
+  display:${({verified})=>(verified)?"none":"block"}
+`
+
 const VerifyBtn = Styled.button`
   padding: 1.5rem;
   background-color: #9FBEBA;
   border: none;
   margin: 1rem;
+`
+
+const InfoForm = Styled.div`
+  display:${({verified})=>(verified)?"grid":"none"}
 `
