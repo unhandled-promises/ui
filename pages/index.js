@@ -4,7 +4,8 @@ import Styled from 'styled-components';
 
 class App extends Component{
  state={
-  codeInput:''
+  codeInput:'',
+  secret:'123456'
  }
 
  handleInputChange = (event) => {
@@ -13,12 +14,17 @@ class App extends Component{
 
   this.setState({
     [name]:value,
-    secret:123456
   })
  }
 
  handleClick = () => {
-   
+  const {codeInput,secret} = this.state;
+  if(codeInput === secret){
+    console.log(`verification successful`);
+  }
+  else{
+    console.log(`invalid code`);
+  }
  }
 
  render(){
@@ -31,7 +37,11 @@ class App extends Component{
           value={this.state.codeInput}
           name="codeInput"
           onChange={this.handleInputChange}/>
-        <VerifyBtn>Verify</VerifyBtn>
+        <VerifyBtn
+          onClick={this.handleClick}
+        >
+          Verify
+        </VerifyBtn>
        </CardBody>
      </WelcomeDiv>
    )
