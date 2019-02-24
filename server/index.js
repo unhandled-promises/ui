@@ -20,3 +20,7 @@ app.prepare().then(() => {
     console.log(`Serving fools on port ${PORT}`);
   })
 })
+.catch((exception) => {
+  console.error(exception);
+  process.kill(1);
+})
