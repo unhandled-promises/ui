@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Button from '../components/Button';
 import Styled from 'styled-components';
 
 class Login extends Component{
@@ -14,7 +15,7 @@ class Login extends Component{
         <form>
           <input placeholder="email"/>
           <input placeholder="password" />
-          <LoginBtn>Login</LoginBtn>
+          <Button type="green">Login</Button>
         </form>
       </LoginDiv>
     )
@@ -32,11 +33,4 @@ const LoginDiv = Styled.div`
   input{
     display: block;
   }
-`
-
-const LoginBtn = Styled.button`
-  padding: 1.5rem;
-  background-color: #9FBEBA;
-  border: none;
-  margin: 1rem;
 `
