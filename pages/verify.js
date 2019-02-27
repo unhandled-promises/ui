@@ -4,9 +4,10 @@ import Styled from 'styled-components';
 import Button from '../components/Button';
 import Nav from '../components/Nav';
 import Footer from '../components/Footer';
+import Input from '../components/Input';
 import Hero from '../components/Hero';
 
-class App extends Component{
+class Verify extends Component{
  state={
   codeInput:'',
   secret:'123456',
@@ -49,10 +50,9 @@ class App extends Component{
      <React.Fragment>
     <Nav/>
      <WelcomeDiv>
-       <Hero/>
          <VerifyDiv verified={this.state.verified}>
           <h3>Welcome! To continue, please enter the code that was emailed to you</h3>
-          <input 
+          <Input 
             placeholder="Enter Code" 
             value={this.state.codeInput}
             name="codeInput"
@@ -63,12 +63,12 @@ class App extends Component{
          </VerifyDiv>
         <InfoForm verified={this.state.verified}>
           <h3>Please Verify/Enter Your Information:</h3>
-          <input 
+          <Input 
             placeholder="First Name"
             value={this.state.firstNameInput}
             onChange={this.handleInputChange}
             name="firstNameInput"/>
-          <input 
+          <Input 
             placeholder="Last Name"
             value={this.state.lastNameInput}
             onChange={this.handleInputChange}
@@ -81,7 +81,7 @@ class App extends Component{
  }
 }
 
-export default App;
+export default Verify;
 
 const WelcomeDiv = Styled.div`
   background-color: #E5E5E5;
