@@ -18,7 +18,8 @@ class SignUp extends Component {
 		emailInput:'',
 		cardTypeInput:'',
 		cardNumberInput:'',
-		cardExpInput:''
+		cardExpInput:'',
+		plan: ''
 	}
 
 	handleInputChange = (event) => {
@@ -30,10 +31,20 @@ class SignUp extends Component {
 		})
 	   }
 
-	   handleClick = () => {
+	   handleClick = (event) => {
+		   const {value} = event.target.value;
+		   if(value === "Bronze") {
+			this.setState((prevState) => ({plan: "Bronze", verifyStep: prevState.verifyStep + 1}))
+		   } else if (value === "Silver") {
+			this.setState((prevState) => ({plan: "Silver", verifyStep: prevState.verifyStep + 1}))
+		   } else if (value === "Gold") {
+			this.setState((prevState) => ({plan: "Gold", verifyStep: prevState.verifyStep + 1}))
+		   } else {
 		  this.setState((prevState) => ({verifyStep: prevState.verifyStep + 1}))
 		  console.log("clicked");
 		  console.log(this.state.verifyStep);
+		   }
+		   console.log(this.state.plan);
 		}
 		
 
@@ -41,7 +52,6 @@ class SignUp extends Component {
 		return (
 			<React.Fragment>
 			<Nav/>
-			
 			<SignUpDiv verifyStep={this.state.verifyStep}>
 			<h3>Register Your Company</h3>
 					<Input 
@@ -97,9 +107,9 @@ class SignUp extends Component {
 			</SignUpDiv>
 			<BundleDiv verifyStep={this.state.verifyStep}>
 					<h3>Select Your Bundle</h3>
-					<Button type="green" onClick={this.handleClick}>Bronze - 1-200 Employees</Button>
-					<Button type="green" onClick={this.handleClick}>Silver - 201-500 Employees</Button>
-					<Button type="green" onClick={this.handleClick}>Gold - 501-1000 Employees</Button>				
+					<Button type="green" value="Bronze" onClick={this.handleClick}>Bronze - 1-200 Employees</Button>
+					<Button type="green" value="Silver" onClick={this.handleClick}>Silver - 201-500 Employees</Button>
+					<Button type="green" value="Gold" onClick={this.handleClick}>Gold - 501-1000 Employees</Button>				
 			</BundleDiv>
 			<PaymentDiv verifyStep={this.state.verifyStep}>
 				<h3>Enter Your Payment Information</h3>
@@ -125,6 +135,19 @@ class SignUp extends Component {
 			</PaymentDiv>
 			<ConfirmDiv verifyStep={this.state.verifyStep}>
 			<h3>Review and Confirm Purchase</h3>
+			<span>{this.state.companyNameInput}</span>
+			<span>{this.state.addressInput}</span>
+			<span>{this.state.address2Input}</span>
+			<span>{this.state.cityInput}</span>
+			<span>{this.state.stateInput}</span>
+			<span>{this.state.countryInput}</span>
+			<span>{this.state.zipInput}</span>
+			<span>{this.state.emailInput}</span>
+			<span>{this.state.plan}</span>
+			<span>{this.state.cardTypeInput}</span>
+			<span>{this.state.cardNumberInput}</span>
+			<span>{this.state.cardExpInput}</span>
+
 				<Button type="green">Submit</Button>
 				<Button type="blue">Edit</Button>
 				<Button type="red">Cancel</Button>
