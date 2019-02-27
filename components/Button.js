@@ -1,10 +1,11 @@
 import React from 'react';
 import Styled from 'styled-components';
 
-export default ({type,children,onClick}) => {
+export default ({type,children,onClick,name}) => {
 
   return (
     <Button
+      name={name}
       type={type}
       onClick={onClick}>
       {children}
@@ -28,4 +29,6 @@ const Button = Styled.button`
   }};
   border: none;
   margin: 1rem;
+  color: white;
+  font-size:1rem;
 `
