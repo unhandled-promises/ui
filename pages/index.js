@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import Link from 'next/link';
 import Styled from 'styled-components';
 import Button from '../components/Button';
+import Nav from '../components/Nav';
+import Footer from '../components/Footer';
+import Hero from '../components/Hero';
 
 class App extends Component{
  state={
@@ -43,7 +46,10 @@ class App extends Component{
 
  render(){
    return(
+     <React.Fragment>
+    <Nav/>
      <WelcomeDiv>
+       <Hero/>
          <VerifyDiv verified={this.state.verified}>
           <h3>Welcome! To continue, please enter the code that was emailed to you</h3>
           <input 
@@ -69,6 +75,8 @@ class App extends Component{
             name="lastNameInput"/>
         </InfoForm>
      </WelcomeDiv>
+     <Footer/>
+     </React.Fragment>
    )
  }
 }
