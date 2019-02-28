@@ -1,9 +1,9 @@
 import React from 'react';
 import Styled from 'styled-components';
 
-export default () => {
+export default ({sticky}) => {
 	return (
-		<Nav>
+		<Nav sticky={sticky}>
 			<h1>App Name</h1>
 		</Nav>
 	)
@@ -11,7 +11,7 @@ export default () => {
 
 const Nav = Styled.div`
 	width: 100%;
-	position:sticky;
+	position:${({sticky})=>(sticky)?"sticky":"block"};
 	top:0;
 	text-align: center;
 	background-color: #9FBEBA;
