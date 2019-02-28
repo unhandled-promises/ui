@@ -32,12 +32,12 @@ class SignUp extends Component {
 	   }
 
 	   handleClick = (event) => {
-		   const {value} = event.target.value;
-		   if(value === "Bronze") {
+		   const {name} = event.target.name;
+		   if(name === "Bronze") {
 			this.setState((prevState) => ({plan: "Bronze", verifyStep: prevState.verifyStep + 1}))
-		   } else if (value === "Silver") {
+		   } else if (name === "Silver") {
 			this.setState((prevState) => ({plan: "Silver", verifyStep: prevState.verifyStep + 1}))
-		   } else if (value === "Gold") {
+		   } else if (name === "Gold") {
 			this.setState((prevState) => ({plan: "Gold", verifyStep: prevState.verifyStep + 1}))
 		   } else {
 		  this.setState((prevState) => ({verifyStep: prevState.verifyStep + 1}))
@@ -107,9 +107,9 @@ class SignUp extends Component {
 			</SignUpDiv>
 			<BundleDiv verifyStep={this.state.verifyStep}>
 					<h3>Select Your Bundle</h3>
-					<Button type="green" value="Bronze" onClick={this.handleClick}>Bronze - 1-200 Employees</Button>
-					<Button type="green" value="Silver" onClick={this.handleClick}>Silver - 201-500 Employees</Button>
-					<Button type="green" value="Gold" onClick={this.handleClick}>Gold - 501-1000 Employees</Button>				
+					<Button type="green" name="Bronze" onClick={this.handleClick}>Bronze - 1-200 Employees</Button>
+					<Button type="green" name="Silver" onClick={this.handleClick}>Silver - 201-500 Employees</Button>
+					<Button type="green" name="Gold" onClick={this.handleClick}>Gold - 501-1000 Employees</Button>				
 			</BundleDiv>
 			<PaymentDiv verifyStep={this.state.verifyStep}>
 				<h3>Enter Your Payment Information</h3>
