@@ -32,13 +32,15 @@ class SignUp extends Component {
 	   }
 
 	   handleClick = (event) => {
-		   const {name} = event.target.name;
+		   const {name} = event.target;
+		   console.log(event.target);
+		   console.log(name);
 		   if(name === "Bronze") {
-			this.setState((prevState) => ({plan: "Bronze", verifyStep: prevState.verifyStep + 1}))
+			this.setState((prevState) => ({plan: name, verifyStep: prevState.verifyStep + 1}))
 		   } else if (name === "Silver") {
-			this.setState((prevState) => ({plan: "Silver", verifyStep: prevState.verifyStep + 1}))
+			this.setState((prevState) => ({plan: name, verifyStep: prevState.verifyStep + 1}))
 		   } else if (name === "Gold") {
-			this.setState((prevState) => ({plan: "Gold", verifyStep: prevState.verifyStep + 1}))
+			this.setState((prevState) => ({plan: name, verifyStep: prevState.verifyStep + 1}))
 		   } else {
 		  this.setState((prevState) => ({verifyStep: prevState.verifyStep + 1}))
 		  console.log("clicked");
@@ -135,18 +137,18 @@ class SignUp extends Component {
 			</PaymentDiv>
 			<ConfirmDiv verifyStep={this.state.verifyStep}>
 			<h3>Review and Confirm Purchase</h3>
-			<span>{this.state.companyNameInput}</span>
-			<span>{this.state.addressInput}</span>
-			<span>{this.state.address2Input}</span>
-			<span>{this.state.cityInput}</span>
-			<span>{this.state.stateInput}</span>
-			<span>{this.state.countryInput}</span>
-			<span>{this.state.zipInput}</span>
-			<span>{this.state.emailInput}</span>
-			<span>{this.state.plan}</span>
-			<span>{this.state.cardTypeInput}</span>
-			<span>{this.state.cardNumberInput}</span>
-			<span>{this.state.cardExpInput}</span>
+			<span><h4>Company Name: </h4>{this.state.companyNameInput}</span>
+			<span><h4>Address: </h4>{this.state.addressInput}</span>
+			<span><h4>Address 2: </h4>{this.state.address2Input}</span>
+			<span><h4>City: </h4>{this.state.cityInput}</span>
+			<span><h4>State: </h4>{this.state.stateInput}</span>
+			<span><h4>Country: </h4>{this.state.countryInput}</span>
+			<span><h4>Zip: </h4>{this.state.zipInput}</span>
+			<span><h4>Email: </h4>{this.state.emailInput}</span>
+			<span><h4>Plan Selected: </h4>{this.state.plan}</span>
+			<span><h4>Card Type: </h4>{this.state.cardTypeInput}</span>
+			<span><h4>Card Number: </h4>{this.state.cardNumberInput}</span>
+			<span><h4>Expiration Date: </h4>{this.state.cardExpInput}</span>
 
 				<Button type="green">Submit</Button>
 				<Button type="blue">Edit</Button>
