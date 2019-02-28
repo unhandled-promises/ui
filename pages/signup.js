@@ -4,6 +4,7 @@ import Styled from 'styled-components';
 import Nav from '../components/Nav';
 import Input from '../components/Input';
 import Footer from '../components/Footer';
+import Link from 'next/link';
 
 class SignUp extends Component {
 	state = {
@@ -41,7 +42,9 @@ class SignUp extends Component {
 			this.setState((prevState) => ({plan: name, verifyStep: prevState.verifyStep + 1}))
 		   } else if (name === "Gold") {
 			this.setState((prevState) => ({plan: name, verifyStep: prevState.verifyStep + 1}))
-		   } else {
+		   } else if (name === "edit") {
+			this.setState((prevState) => ({verifyStep: prevState.verifyStep -3}))
+		   }else {
 		  this.setState((prevState) => ({verifyStep: prevState.verifyStep + 1}))
 		  console.log("clicked");
 		  console.log(this.state.verifyStep);
@@ -149,10 +152,9 @@ class SignUp extends Component {
 			<span><h4>Card Type: </h4>{this.state.cardTypeInput}</span>
 			<span><h4>Card Number: </h4>{this.state.cardNumberInput}</span>
 			<span><h4>Expiration Date: </h4>{this.state.cardExpInput}</span>
-
 				<Button type="green">Submit</Button>
-				<Button type="blue">Edit</Button>
-				<Button type="red">Cancel</Button>
+				<Button type="blue" name="edit" onClick={this.handleClick}>Edit</Button>
+				<Link href="/"><Button type="red">Cancel</Button></Link>
 			</ConfirmDiv>
 			<Footer/>
 			</React.Fragment>
@@ -176,5 +178,6 @@ const PaymentDiv = Styled.div `
 `
 
 const ConfirmDiv = Styled.div `
-	display:${({verifyStep})=>(verifyStep === 3)?"grid":"none"}
+	grid-template-columns: repeat(3, 1fr);
+	display:${({verifyStep})=>(verifyStep === 3)?"grid":"none"};
 `
