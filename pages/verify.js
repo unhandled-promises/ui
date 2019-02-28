@@ -6,6 +6,7 @@ import Nav from '../components/Nav';
 import Footer from '../components/Footer';
 import Input from '../components/Input';
 import Selection from '../components/Selection';
+import Modal from '../components/Modal';
 
 class Verify extends Component{
  state={
@@ -19,7 +20,9 @@ class Verify extends Component{
   emailInput:'',
   company:'Los Pollos Hermanos',
   role:'Meth Lord',
-  deviceInput:''
+  deviceInput:'',
+  termsModal:false,
+  byeModal:false
  }
 
  handleInputChange = (event) => {
@@ -49,6 +52,18 @@ class Verify extends Component{
    else if(name === "verifyDevice"){
      this.setState((prevState)=>({
        verifyStep:prevState.verifyStep+1}))
+   }
+   else if(name === "consentBtn"){
+     this.setState({termsModal:true})
+   }
+   else if(name === "denyBtn"){
+     this.setState({byeModal:true})
+   }
+   else if(name === "termsModal"){
+     this.setState({termsModal:false})
+   }
+   else if(name === "byeModal"){
+     this.setState({byeModal:false})
    }
 
   }
@@ -143,6 +158,20 @@ class Verify extends Component{
           </FieldDiv>
         </ConsentForm>
      </WelcomeDiv>
+     <Modal
+      name="termsModal" 
+      show={this.state.termsModal}
+      handleClose={this.handleClick}>
+       <h3>Privacy & Terms</h3>
+       <p>Doggo ipsum doggorino doggo noodle horse fluffer porgo, lotsa pats heckin shibe. Boof floofs borking doggo very jealous pupper much ruin diet, smol borking doggo with a long snoot for pats mlem. Most angery pupper I have ever seen wow such tempt thicc mlem borkf the neighborhood pupper much ruin diet, extremely cuuuuuute length boy clouds adorable doggo. Doge doggo pupperino shoober, doing me a frighten super chub. Heckin angery woofer bork smol borking doggo with a long snoot for pats heckin angery woofer boof, what a nice floof doge what a nice floof. Tungg heck wow such tempt, doing me a frighten. Clouds super chub many pats shibe smol doing me a frighten big ol corgo, wow such tempt heckin angery woofer such treat woofer yapper. Blop the neighborhood pupper you are doing me a frighten pats smol borking doggo with a long snoot for pats, maximum borkdrive what a nice floof. Thicc maximum borkdrive what a nice floof you are doing me the shock, such treat waggy wags. Snoot long bois the neighborhood pupper he made many woofs, heckin angery woofer.  Heckin angery woofer big ol pupper snoot long woofer pupperino, noodle horse bork. Boofers pats maximum borkdrive, many pats.</p>
+     </Modal>
+     <Modal 
+      name="byeModal"
+      show={this.state.byeModal}
+      handleClose={this.handleClick}>
+       <h3>We're Sorry You Feel That Way!</h3>
+       <p>Come back soon now, ya hear?</p>
+     </Modal>
      <Footer/>
      </Body>
    )
