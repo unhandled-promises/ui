@@ -10,41 +10,98 @@ import Modal from '../components/Modal';
 
 class Verify extends Component{
  state={
-  codeInput:'',
+  codeInput:{
+    value:'',
+    regex:/[^[A-Z0-9]{0,8}$]/,
+    isValid:false
+  },
   secret:'123456',
   verifyStep:0,
-  firstNameInput:'',
-  lastNameInput:'',
-  dateInput:'',
+  firstNameInput:{
+    value:'',
+    regex:/[a-z]/i,
+    error:""
+  },
+  lastNameInput:{
+    value:'',
+    regex:/a-z/i,
+    error:""
+  },
+  dateInput:{
+    value:''
+  },
   phoneInput:'',
-  emailInput:'',
-  company:'Los Pollos Hermanos',
-  role:'Meth Lord',
+  emailInput:{
+    value:'',
+    regex:/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    error:''
+  },
+  company:'',
+  role:'',
   deviceInput:'',
   termsModal:false,
   byeModal:false
  }
 
+ checkForEmployee = (email) => {
+   console.log(`Checking database for ${email}`);
+ }
+
+ verifyCode = async (code) => {
+   console.log(`Verifying ${code}`);
+   const response = await fetch("https://employee-api-p3.herokuapp.com/api/employee/5c76b82eba01760021a0322a");
+   const data = await response.json();
+   console.log(data);
+ }
+
+ handleBlur = (event) => {
+  console.log(event.target);
+  const {name} = event.target;
+  const value = this.state[name].value;
+  if(name === "emailInput"){
+    console.log(`validating email input`);
+    console.log(this.state[name]);
+    console.log(this.state[name].regex.test(value));
+    const isValid = (this.state[name].regex.test(value)) ? true : false;
+    const updatedState = {...this.state[name]};
+    updatedState.isValid = isValid;
+    this.setState({
+      [name]:updatedState
+    })
+  }
+
+ }
+
  handleInputChange = (event) => {
   const {name,value} = event.target;
-  console.log(name,value);
-
+  const prevState = {...this.state[name]};
+  prevState.value = value;
     this.setState({
-      [name]:value,
+      [name]:prevState,
     })
  }
 
- handleClick = (event) => {
+ handleClick = async (event) => {
+   console.log(event.target);
   const {codeInput,secret} = this.state;
   const {name} = event.target;
   if(name === "verifyCode"){
     if(codeInput === secret){
       console.log(`verification successful`);
+      this.verifyCode();
       this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}))
     }
     else{
       console.log(`invalid code`);
     }
+   }
+   else if(name === "verifyEmail"){
+     if(this.state.emailInput.isValid){
+      this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}))
+     }
+     else{
+       console.log(`enter a valid email`);
+     }
    }
    else if(name === "verifyInfo"){
      this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}))
@@ -73,19 +130,32 @@ class Verify extends Component{
     <Body>
     <Nav/>
      <WelcomeDiv>
-         <VerifyDiv verifyStep={this.state.verifyStep}>
-          <h3>Welcome! To continue, please enter the code that was emailed to you</h3>
-          <Input
-            type="text" 
-            placeholder="Enter Code" 
-            value={this.state.codeInput}
-            name="codeInput"
-            onChange={this.handleInputChange}/>
-          <Button name="verifyCode" type="green" onClick={this.handleClick}>
-            Verify
-          </Button>
-         </VerifyDiv>
-        <InfoForm verifyStep={this.state.verifyStep}>
+        <EmailDiv verifyStep={this.state.verifyStep}>
+         <h3>Welcome! To continue, please enter your email</h3>
+         <Input
+           type="text" 
+           placeholder="Enter Email" 
+           value={this.state.emailInput.value}
+           name="emailInput"
+           onChange={this.handleInputChange}
+           onBlur={this.handleBlur}/>
+         <Button name="verifyEmail" type="green" onClick={this.handleClick}>
+           Continue
+         </Button>
+        </EmailDiv>
+        <VerifyDiv verifyStep={this.state.verifyStep}>
+         <h3>Enter your verification code</h3>
+         <Input
+           type="text" 
+           placeholder="Enter Code" 
+           value={this.state.codeInput.value}
+           name="codeInput"
+           onChange={this.handleInputChange}/>
+         <Button name="verifyCode" type="green" onClick={this.handleClick}>
+           Verify
+         </Button>
+        </VerifyDiv>
+        <InfoForm verifyStep={this.state.verifyStep.value}>
           <h3>Please Verify/Enter Your Information:</h3>
           <FieldDiv>
             <p>Company: {this.state.company}</p>
@@ -94,30 +164,24 @@ class Verify extends Component{
           <Input 
             type="text"
             placeholder="First Name"
-            value={this.state.firstNameInput}
+            value={this.state.firstNameInput.value}
             onChange={this.handleInputChange}
             name="firstNameInput"/>
           <Input 
             type="text"
             placeholder="Last Name"
-            value={this.state.lastNameInput}
+            value={this.state.lastNameInput.value}
             onChange={this.handleInputChange}
             name="lastNameInput"/>
           <Input
             type="text"
-            placeholder="Email"
-            value={this.state.emailInput}
-            onChange={this.handleInputChange}
-            name="emailInput"/>
-          <Input
-            type="text"
             placeholder="Phone (xxx-xxx-xxxx)"
-            value={this.state.phoneInput}
+            value={this.state.phoneInput.value}
             onChange={this.handleInputChange}
             name="phoneInput"/>
           <Input 
             type="date"
-            value={this.state.dateInput}
+            value={this.state.dateInput.value}
             onChange={this.handleInputChange}
             name="dateInput"/>
           <Button 
@@ -209,18 +273,22 @@ const FieldDiv = Styled.div`
   grid-template-columns: repeat(2,1fr);
 `
 
-const VerifyDiv = Styled.div`
+const EmailDiv = Styled.div`
   display:${({verifyStep})=>(verifyStep===0)?"grid":"none"};
 `
 
-const InfoForm = Styled.div`
-  display:${({verifyStep})=>(verifyStep===1)?"grid":"none"};
+const VerifyDiv = Styled.div`
+display:${({verifyStep})=>(verifyStep===1)?"grid":"none"};
 `
 
-const DeviceForm = Styled.div`
+const InfoForm = Styled.div`
   display:${({verifyStep})=>(verifyStep===2)?"grid":"none"};
 `
 
+const DeviceForm = Styled.div`
+  display:${({verifyStep})=>(verifyStep===3)?"grid":"none"};
+`
+
 const ConsentForm = Styled.div`
-display:${({verifyStep})=>(verifyStep===3)?"grid":"none"};
+display:${({verifyStep})=>(verifyStep===4)?"grid":"none"};
 `
