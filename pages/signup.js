@@ -27,7 +27,7 @@ class SignUp extends Component {
 	   },
 		cityInput: {
 			value: '',
-			regex: 0,
+			regex: /[a-zA-Z\s]+/g,
 			error: "Please enter a valid city name",
 			isValid: false
 	   },
@@ -36,27 +36,24 @@ class SignUp extends Component {
 	   },
 		countryInput: {
 			value: '',
-			regex: 0,
+			regex: /[a-zA-Z\s]+/g,
 			error: "Please enter a valid country name",
 			isValid: false
 	   },
 		zipInput: {
 			value: '',
-			regex: 0,
+			regex: /^([0-9]{5}|[a-zA-Z][a-zA-Z ]{0,49})$/,
 			error: "Please enter a valid zip code",
 			isValid: false
 	   },
 		emailInput: {
 			value: '',
-			regex: 0,
+			regex: /^[^@]+@[^@]+\.[^@]+$/,
 			error: "Please enter a valid email address",
 			isValid: false
 	   },
 		cardTypeInput: {
-			value: '',
-			regex: 0,
-			error: "Please enter a valid address",
-			isValid: false
+			value: ''
 	   },
 		cardNumberInput: {
 			value: '',
@@ -80,6 +77,10 @@ class SignUp extends Component {
 		console.log (prevState);
 		prevState.value = value;
 		this.setState({ [name]: prevState, })
+	}
+
+	handleBlur = (event) => {
+
 	}
 
 
@@ -115,6 +116,7 @@ class SignUp extends Component {
 						value={this.state.companyNameInput.value}
 						name="companyNameInput"
 						onChange={this.handleInputChange}
+						onBlur={this.handleBlur}
 					/>
 					<Input
 						placeholder="Address"
@@ -169,8 +171,8 @@ class SignUp extends Component {
 				</BundleDiv>
 				<PaymentDiv verifyStep={this.state.verifyStep}>
 					<h3>Enter Your Payment Information</h3>
-					<Input
-						placeholder="Card Type"
+					<Selection
+						options={["Select Card", "Visa", "Mastercard", "American Express"]}
 						value={this.state.cardTypeInput.value}
 						name="cardTypeInput"
 						onChange={this.handleInputChange}
