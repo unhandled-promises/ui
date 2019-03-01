@@ -1,14 +1,15 @@
 import React from 'react';
 import Styled from 'styled-components';
 
-export default  ({placeholder,value,name,onChange,type}) => {
+export default  ({placeholder,value,name,onChange,onBlur,type}) => {
   return (
     <Input
       type={type}
       placeholder={placeholder}
       value={value}
       name={name}
-      onChange={onChange} />
+      onChange={onChange}
+      onBlur={onBlur} />
   )
 }
 
