@@ -80,7 +80,20 @@ class SignUp extends Component {
 	}
 
 	handleBlur = (event) => {
-
+		console.log(event.target);
+		const {name} = event.target;
+		const value = this.state[name].value;
+		if(name === "companyNameInput"){
+			console.log(`validating company name input`);
+			console.log(this.state[name]);
+			console.log(this.state[name].regex.test(value));
+			const isValid = (this.state[name].regex.test(value)) ? true : false;
+			const updatedState = {...this.state[name]};
+			updatedState.isValid = isValid;
+			this.setState({
+			  [name]:updatedState
+			})
+		  }
 	}
 
 
