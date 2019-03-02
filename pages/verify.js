@@ -23,7 +23,7 @@ class Verify extends Component{
     error:"Please enter a valid code",
     isValid:false
   },
-  secret:'1234QWER',
+  secret:'',
   firstNameInput:{
     value:'',
     regex:/^[a-z]+$/i,
@@ -44,6 +44,7 @@ class Verify extends Component{
     error:'Please enter a phone number in 555-555-5555 format',
     isValid:false
   },
+  id:'',
   company:'',
   role:'',
   deviceInput:'',
@@ -52,16 +53,32 @@ class Verify extends Component{
   finalConsent:false
  }
 
- checkForEmployee = (email) => {
-   console.log(`Checking database for ${email}`);
+ findCompanyNameById = async (id) => {
+  const companyResponse = await fetch(`https://customer-api-p3.herokuapp.com/api/customers/${id}`,{
+    headers:{
+      "Authorization":localStorage.getItem("jwt")
+    }
+  });
+  const companyData = await companyResponse.json();
+  console.log(companyData[0].name);
+  return companyData[0].name;
  }
 
- verifyCode = async (code) => {
-   console.log(`Verifying ${code}`);
-  //  const response = await fetch("https://employee-api-p3.herokuapp.com/api/employee/5c76b82eba01760021a0322a");
-  //  const data = await response.json();
-  //  console.log(data);
-  this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}))
+ verifyEmployee = async (email,code) => {
+   console.log(`Verifying ${email} ${code}`);
+   const response = await fetch("https://employee-api-p3.herokuapp.com/api/employee/verify",{
+     method:"POST",
+     body:JSON.stringify({
+       "token":code,
+       "email":email
+     }),
+     headers:{
+       "Content-Type":"application/json"
+     }
+   });
+   const data = await response.json();
+   console.log(data);
+   return data;
  }
 
  validateForm = (name,value) => {
@@ -106,31 +123,30 @@ class Verify extends Component{
  }
 
  handleClick = async (event) => {
-   console.log(event.target);
-  const {codeInput,secret} = this.state;
+  console.log(event.target);
+  const {codeInput,emailInput} = this.state;
   const {name} = event.target;
   switch(name){
-    case "verifyEmail":
-      if(this.state.emailInput.isValid){
-        this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}))
-      }
-      break;
-
-    case "verifyCode":
-      if(codeInput.isValid){
-        if(codeInput.value === secret){
-          console.log(`verification successful`);
-          this.verifyCode(codeInput.value);
+    case 'verifyEmployee':
+      if(this.state.emailInput.isValid && this.state.codeInput.isValid){
+        const verifyResponse = await this.verifyEmployee(emailInput.value,codeInput.value);
+        console.log(verifyResponse);
+        if(verifyResponse.success){
+          sessionStorage.setItem("jwt",verifyResponse.token)
+          const employeeData = jwt_decode(verifyResponse.token);
+          const companyName = await this.findCompanyNameById(employeeData.company);
+          this.setState({
+            company: companyName,
+            role: employeeData.role
+          })
+          this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}));
         }
         else{
-          console.log(`invalid code`);
+          console.log(`Verification Failed`);
         }
       }
-      else{
-        console.log(`Enter a valid alphanumeric code`);
-      }
       break;
-
+    
     case "verifyInfo":
       const validInfo = this.state.firstNameInput.isValid && this.state.lastNameInput.isValid && this.state.phoneInput.isValid;
       if(validInfo){
@@ -168,8 +184,8 @@ class Verify extends Component{
     <Body>
     <Nav/>
      <WelcomeDiv>
-        <EmailDiv verifyStep={this.state.verifyStep}>
-         <h3>Welcome! To continue, please enter your email</h3>
+        <VerifyDiv verifyStep={this.state.verifyStep}>
+         <h3>Welcome! To continue, please enter your email and verification code</h3>
          <Input
            type="text" 
            placeholder="Enter Email" 
@@ -177,20 +193,14 @@ class Verify extends Component{
            name="emailInput"
            onChange={this.handleInputChange}
            onBlur={this.handleBlur}/>
-         <Button name="verifyEmail" type="green" onClick={this.handleClick}>
-           Continue
-         </Button>
-        </EmailDiv>
-        <VerifyDiv verifyStep={this.state.verifyStep}>
-         <h3>Enter your verification code</h3>
-         <Input
+           <Input
            type="text" 
            placeholder="Enter Code" 
            value={this.state.codeInput.value}
            name="codeInput"
            onChange={this.handleInputChange}
            onBlur={this.handleBlur}/>
-         <Button name="verifyCode" type="green" onClick={this.handleClick}>
+         <Button name="verifyEmployee" type="green" onClick={this.handleClick}>
            Verify
          </Button>
         </VerifyDiv>
@@ -286,7 +296,7 @@ class Verify extends Component{
        <p>Come back soon now, ya hear?</p>
      </Modal>
      <Footer/>
-     </Body>
+    </Body>
    )
  }
 }
@@ -322,22 +332,18 @@ const FieldDiv = Styled.div`
   grid-template-columns: repeat(2,1fr);
 `
 
-const EmailDiv = Styled.div`
-  display:${({verifyStep})=>(verifyStep===0)?"grid":"none"};
-`
-
 const VerifyDiv = Styled.div`
-display:${({verifyStep})=>(verifyStep===1)?"grid":"none"};
+display:${({verifyStep})=>(verifyStep===0)?"grid":"none"};
 `
 
 const InfoForm = Styled.div`
-  display:${({verifyStep})=>(verifyStep===2)?"grid":"none"};
+  display:${({verifyStep})=>(verifyStep===1)?"grid":"none"};
 `
 
 const DeviceForm = Styled.div`
-  display:${({verifyStep})=>(verifyStep===3)?"grid":"none"};
+  display:${({verifyStep})=>(verifyStep===2)?"grid":"none"};
 `
 
 const ConsentForm = Styled.div`
-display:${({verifyStep})=>(verifyStep===4)?"grid":"none"};
+display:${({verifyStep})=>(verifyStep===3)?"grid":"none"};
 `
