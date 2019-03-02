@@ -2,13 +2,16 @@ import React from 'react'
 import Styled from 'styled-components'
 import Button from '../components/Button'
 
-export default ({name,handleClose,show,children}) => {
+export default ({name,handleClose,show,children,buttonNames=null}) => {
 
   return (
     <ModalDiv show={show}>
       <ModalBody>
         {children}
         <Button name={name} onClick={handleClose} type="blue">Close</Button>
+        {buttonNames.map(button => {
+          return <Button name={button} onClick={handleClose} type="blue">{button}</Button>
+        })}
       </ModalBody>
     </ModalDiv>
   )
