@@ -6,6 +6,7 @@ import Input from '../components/Input';
 import Footer from '../components/Footer';
 import Selection from '../components/Selection';
 import Link from 'next/link';
+import { STATUS_CODES } from 'http';
 
 class SignUp extends Component {
 	state = {
@@ -97,7 +98,29 @@ class SignUp extends Component {
 	}
 
 	submitCompany = async () => {
-		const response = await fetch ("https://customer-api-p3.herokuapp.com/");
+		const body = {
+			"name":this.state.companyNameInput.value,
+			"address": this.state.addressInput.value,
+			"address2": this.state.address2Input.value,
+			"city":this.state.cityInput.value,
+			"state":this.state.stateInput.value,
+			"country":this.state.countryInput.value,
+			"postal":this.state.zipInput.value,
+			"email":this.state.emailInput.value,
+			"package": this.state.plan,
+			"card_type":this.state.cardTypeInput.value,
+			"card_number": this.state.cardNumberInput.value,
+			"card_exp": this.state.cardExpInput.value,
+			"active":true
+		}
+		const response = await fetch ("https://customer-api-p3.herokuapp.com/api/customers", {
+			method:"POST",
+			body:JSON.stringify(body),
+			headers: { 'Content-Type': 'application/json' }
+		});
+		const data = await response.json();
+		console.log(data);
+
 	}
 
 	handleClick = (event) => {
@@ -112,6 +135,8 @@ class SignUp extends Component {
 			this.setState((prevState) => ({ plan: name, verifyStep: prevState.verifyStep + 1 }))
 		} else if (name === "edit") {
 			this.setState((prevState) => ({ verifyStep: prevState.verifyStep - 3 }))
+		} else if (name === "submit") {
+			this.submitCompany();
 		} else {
 			this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }))
 			console.log("clicked");
@@ -227,7 +252,7 @@ class SignUp extends Component {
 					<span><h4>Card Type: </h4>{this.state.cardTypeInput.value}</span>
 					<span><h4>Card Number: </h4>{this.state.cardNumberInput.value}</span>
 					<span><h4>Expiration Date: </h4>{this.state.cardExpInput.value}</span>
-					<Button type="green" onClick={this.handleClick}>Submit</Button>
+					<Button type="green" name="submit" onClick={this.handleClick}>Submit</Button>
 					<Button type="blue" name="edit" onClick={this.handleClick}>Edit</Button>
 					<Link href="/"><Button type="red">Cancel</Button></Link>
 				</ConfirmDiv>
