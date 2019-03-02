@@ -30,6 +30,7 @@ export default class MyDocument extends Document {
         <style>{`body{ margin:0 }`}
         </style>
         <body>
+          <script src="../static/jwt-decode.min.js"></script>
           <Main />
           <NextScript />
         </body>
