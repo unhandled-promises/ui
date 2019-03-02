@@ -108,7 +108,9 @@ class SignUp extends Component {
 			"postal":this.state.zipInput.value,
 			"email":this.state.emailInput.value,
 			"package": this.state.plan,
-			//need CC data here
+			"card_type":this.state.cardTypeInput.value,
+			"card_number": this.state.cardNumberInput.value,
+			"card_exp": this.state.cardExpInput.value,
 			"active":true
 		}
 		const response = await fetch ("https://customer-api-p3.herokuapp.com/api/customers", {
