@@ -13,13 +13,13 @@ class SignUp extends Component {
 		companyNameInput:{
 			value: '',
 			regex: /^.{1,50}$/,
-			error: "Please enter a valid name",
+			error: "Please enter a valid name.",
 			isValid: false
 		} ,
 		addressInput:{
 			 value: '',
 			 regex: /^\d+\s[A-z]+\s[A-z]+/g,
-			 error: "Please enter a valid address",
+			 error: "Please enter a valid address.",
 			 isValid: false
 		},
 		address2Input:{
@@ -28,7 +28,7 @@ class SignUp extends Component {
 		cityInput: {
 			value: '',
 			regex: /[a-zA-Z\s]+/g,
-			error: "Please enter a valid city name",
+			error: "Please enter a valid city name.",
 			isValid: false
 	   },
 		stateInput: {
@@ -37,19 +37,19 @@ class SignUp extends Component {
 		countryInput: {
 			value: '',
 			regex: /[a-zA-Z\s]+/g,
-			error: "Please enter a valid country name",
+			error: "Please enter a valid country name.",
 			isValid: false
 	   },
 		zipInput: {
 			value: '',
-			regex: /^([0-9]{5}|[a-zA-Z][a-zA-Z ]{0,49})$/,
-			error: "Please enter a valid zip code",
+			regex: /(^\d{5}$)|(^\d{5}-\d{4}$)/,
+			error: "Please enter a valid zip code.",
 			isValid: false
 	   },
 		emailInput: {
 			value: '',
 			regex: /^[^@]+@[^@]+\.[^@]+$/,
-			error: "Please enter a valid email address",
+			error: "Please enter a valid email address.",
 			isValid: false
 	   },
 		cardTypeInput: {
@@ -57,14 +57,14 @@ class SignUp extends Component {
 	   },
 		cardNumberInput: {
 			value: '',
-			regex: 0,
-			error: "Please enter a valid credit card number",
+			regex: /^4[0-9]{12}(?:[0-9]{3})?$/,
+			error: "Please enter a valid credit card number.",
 			isValid: false
 	   },
 		cardExpInput: {
 			value: '',
 			regex: /^(0[1-9]|1[0-2])\/?([0-9]{4}|[0-9]{2})$/,
-			error: "Please enter a valid expiration date",
+			error: "Please enter a valid expiration date.",
 			isValid: false
 	   },
 		plan: ''
@@ -83,8 +83,8 @@ class SignUp extends Component {
 		console.log(event.target);
 		const {name} = event.target;
 		const value = this.state[name].value;
-		if(name === "companyNameInput"){
-			console.log(`validating company name input`);
+		if(name === event.target.name){
+			console.log(`validating ${event.target.name}`);
 			console.log(this.state[name]);
 			console.log(this.state[name].regex.test(value));
 			const isValid = (this.state[name].regex.test(value)) ? true : false;
@@ -136,6 +136,7 @@ class SignUp extends Component {
 						value={this.state.addressInput.value}
 						name="addressInput"
 						onChange={this.handleInputChange}
+						onBlur={this.handleBlur}
 					/>
 					<Input
 						placeholder="Address 2"
@@ -148,6 +149,7 @@ class SignUp extends Component {
 						value={this.state.cityInput.value}
 						name="cityInput"
 						onChange={this.handleInputChange}
+						onBlur={this.handleBlur}
 					/>
 					<Selection
 						options={["Select State","AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY"]}
@@ -160,18 +162,21 @@ class SignUp extends Component {
 						value={this.state.countryInput.value}
 						name="countryInput"
 						onChange={this.handleInputChange}
+						onBlur={this.handleBlur}
 					/>
 					<Input
 						placeholder="Zip Code"
 						value={this.state.zipInput.value}
 						name="zipInput"
 						onChange={this.handleInputChange}
+						onBlur={this.handleBlur}
 					/>
 					<Input
 						placeholder="Email"
 						value={this.state.emailInput.value}
 						name="emailInput"
 						onChange={this.handleInputChange}
+						onBlur={this.handleBlur}
 					/>
 					<Button type="green" onClick={this.handleClick}>Next</Button>
 
@@ -195,12 +200,14 @@ class SignUp extends Component {
 						value={this.state.cardNumberInput.value}
 						name="cardNumberInput"
 						onChange={this.handleInputChange}
+						onBlur={this.handleBlur}
 					/>
 					<Input
 						placeholder="Expiration Date"
 						value={this.state.cardExpInput.value}
 						name="cardExpInput"
 						onChange={this.handleInputChange}
+						onBlur={this.handleBlur}
 					/>
 					<Button type="green" onClick={this.handleClick}>Next</Button>
 				</PaymentDiv>
