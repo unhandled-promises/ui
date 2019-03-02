@@ -117,6 +117,10 @@ class SignUp extends Component {
 		console.log(this.state.plan);
 	}
 
+	handleSubmit = (event) => {
+
+	}
+
 
 	render() {
 		return (
@@ -225,7 +229,7 @@ class SignUp extends Component {
 					<span><h4>Card Type: </h4>{this.state.cardTypeInput.value}</span>
 					<span><h4>Card Number: </h4>{this.state.cardNumberInput.value}</span>
 					<span><h4>Expiration Date: </h4>{this.state.cardExpInput.value}</span>
-					<Button type="green">Submit</Button>
+					<Button type="green" onSubmit={this.handleSubmit}>Submit</Button>
 					<Button type="blue" name="edit" onClick={this.handleClick}>Edit</Button>
 					<Link href="/"><Button type="red">Cancel</Button></Link>
 				</ConfirmDiv>
