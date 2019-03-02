@@ -10,37 +10,46 @@ import Modal from '../components/Modal';
 
 class Verify extends Component{
  state={
-  codeInput:{
+  verifyStep:0,
+  emailInput:{
     value:'',
-    regex:/[^[A-Z0-9]{0,8}$]/,
+    regex:/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    error:'Please enter a valid email',
     isValid:false
   },
-  secret:'123456',
-  verifyStep:0,
+  codeInput:{
+    value:'',
+    regex:/[A-Z0-9{0,8}]/,
+    error:"Please enter a valid code",
+    isValid:false
+  },
+  secret:'1234QWER',
   firstNameInput:{
     value:'',
-    regex:/[a-z]/i,
-    error:""
+    regex:/^[a-z]+$/i,
+    error:"Please enter a valid first name",
+    isValid:false
   },
   lastNameInput:{
     value:'',
-    regex:/a-z/i,
-    error:""
+    regex:/^[a-z]+$/i,
+    error:"Please enter a valid last name",
   },
   dateInput:{
     value:''
   },
-  phoneInput:'',
-  emailInput:{
+  phoneInput:{
     value:'',
-    regex:/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-    error:''
+    regex:/(^([\d]{3}\-){2})[\d]{4}$/,
+    error:'Please enter a phone number in 555-555-5555 format',
+    isValid:false
   },
   company:'',
   role:'',
   deviceInput:'',
   termsModal:false,
-  byeModal:false
+  byeModal:false,
+  finalConsent:false
  }
 
  checkForEmployee = (email) => {
@@ -49,27 +58,42 @@ class Verify extends Component{
 
  verifyCode = async (code) => {
    console.log(`Verifying ${code}`);
-   const response = await fetch("https://employee-api-p3.herokuapp.com/api/employee/5c76b82eba01760021a0322a");
-   const data = await response.json();
-   console.log(data);
+  //  const response = await fetch("https://employee-api-p3.herokuapp.com/api/employee/5c76b82eba01760021a0322a");
+  //  const data = await response.json();
+  //  console.log(data);
+  this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}))
+ }
+
+ validateForm = (name,value) => {
+  const isValid = (this.state[name].regex.test(value)) ? true : false;
+  const updatedState = {...this.state[name]};
+  updatedState.isValid = isValid;
+  this.setState({
+    [name]:updatedState
+  })
  }
 
  handleBlur = (event) => {
   console.log(event.target);
   const {name} = event.target;
   const value = this.state[name].value;
-  if(name === "emailInput"){
-    console.log(`validating email input`);
-    console.log(this.state[name]);
-    console.log(this.state[name].regex.test(value));
-    const isValid = (this.state[name].regex.test(value)) ? true : false;
-    const updatedState = {...this.state[name]};
-    updatedState.isValid = isValid;
-    this.setState({
-      [name]:updatedState
-    })
+  switch(name){
+    case "emailInput":
+      this.validateForm(name,value);
+      break;
+    case "codeInput":
+      this.validateForm(name,value);
+      break;
+    case "firstNameInput":
+      this.validateForm(name,value);
+      break;
+    case "lastNameInput":
+      this.validateForm(name,value);
+      break;
+    case "phoneInput":
+      this.validateForm(name,value);
+      break;
   }
-
  }
 
  handleInputChange = (event) => {
@@ -85,45 +109,59 @@ class Verify extends Component{
    console.log(event.target);
   const {codeInput,secret} = this.state;
   const {name} = event.target;
-  if(name === "verifyCode"){
-    if(codeInput === secret){
-      console.log(`verification successful`);
-      this.verifyCode();
-      this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}))
-    }
-    else{
-      console.log(`invalid code`);
-    }
-   }
-   else if(name === "verifyEmail"){
-     if(this.state.emailInput.isValid){
-      this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}))
-     }
-     else{
-       console.log(`enter a valid email`);
-     }
-   }
-   else if(name === "verifyInfo"){
-     this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}))
-   }
-   else if(name === "verifyDevice"){
-     this.setState((prevState)=>({
-       verifyStep:prevState.verifyStep+1}))
-   }
-   else if(name === "consentBtn"){
-     this.setState({termsModal:true})
-   }
-   else if(name === "denyBtn"){
-     this.setState({byeModal:true})
-   }
-   else if(name === "termsModal"){
-     this.setState({termsModal:false})
-   }
-   else if(name === "byeModal"){
-     this.setState({byeModal:false})
-   }
+  switch(name){
+    case "verifyEmail":
+      if(this.state.emailInput.isValid){
+        this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}))
+      }
+      break;
+
+    case "verifyCode":
+      if(codeInput.isValid){
+        if(codeInput.value === secret){
+          console.log(`verification successful`);
+          this.verifyCode(codeInput.value);
+        }
+        else{
+          console.log(`invalid code`);
+        }
+      }
+      else{
+        console.log(`Enter a valid alphanumeric code`);
+      }
+      break;
+
+    case "verifyInfo":
+      const validInfo = this.state.firstNameInput.isValid && this.state.lastNameInput.isValid && this.state.phoneInput.isValid;
+      if(validInfo){
+        this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}));
+      }
+      break;
+
+    case "verifyDevice":
+      this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}));
+      break;
+
+    case "consentBtn":
+      this.setState({termsModal:true});
+      break;
+
+    case "denyBtn":
+      this.setState({byeModal:true});
+      break;
+
+    case "termsModal":
+      this.setState({termsModal:false});
+      break;
+
+    case "byeModal":
+      this.setState({byeModal:false});
+      break;
+    case "finalConsent":
+      this.setState({finalConsent:true});
 
   }
+ }
   
  render(){
    return(
@@ -150,12 +188,13 @@ class Verify extends Component{
            placeholder="Enter Code" 
            value={this.state.codeInput.value}
            name="codeInput"
-           onChange={this.handleInputChange}/>
+           onChange={this.handleInputChange}
+           onBlur={this.handleBlur}/>
          <Button name="verifyCode" type="green" onClick={this.handleClick}>
            Verify
          </Button>
         </VerifyDiv>
-        <InfoForm verifyStep={this.state.verifyStep.value}>
+        <InfoForm verifyStep={this.state.verifyStep}>
           <h3>Please Verify/Enter Your Information:</h3>
           <FieldDiv>
             <p>Company: {this.state.company}</p>
@@ -166,18 +205,21 @@ class Verify extends Component{
             placeholder="First Name"
             value={this.state.firstNameInput.value}
             onChange={this.handleInputChange}
+            onBlur={this.handleBlur}
             name="firstNameInput"/>
           <Input 
             type="text"
             placeholder="Last Name"
             value={this.state.lastNameInput.value}
             onChange={this.handleInputChange}
+            onBlur={this.handleBlur}
             name="lastNameInput"/>
           <Input
             type="text"
             placeholder="Phone (xxx-xxx-xxxx)"
             value={this.state.phoneInput.value}
             onChange={this.handleInputChange}
+            onBlur={this.handleBlur}
             name="phoneInput"/>
           <Input 
             type="date"
@@ -220,10 +262,16 @@ class Verify extends Component{
             Deny
           </Button>
           </FieldDiv>
+          {(this.state.finalConsent)?
+          <Link href="/dashboard/employee">
+            <Button type="green">Go To Dashboard</Button>
+          </Link>:
+          null}
         </ConsentForm>
      </WelcomeDiv>
      <Modal
-      name="termsModal" 
+      name="termsModal"
+      buttonNames={["finalConsent"]}
       show={this.state.termsModal}
       handleClose={this.handleClick}>
        <h3>Privacy & Terms</h3>
@@ -232,6 +280,7 @@ class Verify extends Component{
      <Modal 
       name="byeModal"
       show={this.state.byeModal}
+      buttonNames={["finalConsent"]}
       handleClose={this.handleClick}>
        <h3>We're Sorry You Feel That Way!</h3>
        <p>Come back soon now, ya hear?</p>
