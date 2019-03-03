@@ -7,6 +7,7 @@ import Footer from '../components/Footer';
 import Input from '../components/Input';
 import Selection from '../components/Selection';
 import Modal from '../components/Modal';
+import { CUSTOMERS_API, EMPLOYEES_API } from "../static/api-config";
 
 class Verify extends Component{
  state={
@@ -54,7 +55,7 @@ class Verify extends Component{
  }
 
  findCompanyNameById = async (id) => {
-  const companyResponse = await fetch(`https://customer-api-p3.herokuapp.com/api/customers/${id}`,{
+  const companyResponse = await fetch(`${CUSTOMERS_API}api/customers/${id}`,{
     headers:{
       "Authorization":localStorage.getItem("jwt")
     }
@@ -66,7 +67,7 @@ class Verify extends Component{
 
  verifyEmployee = async (email,code) => {
    console.log(`Verifying ${email} ${code}`);
-   const response = await fetch("https://employee-api-p3.herokuapp.com/api/employee/verify",{
+   const response = await fetch(`${EMPLOYEES_API}api/employee/verify`,{
      method:"POST",
      body:JSON.stringify({
        "token":code,
