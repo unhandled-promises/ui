@@ -45,6 +45,12 @@ class Verify extends Component{
     error:'Please enter a phone number in 555-555-5555 format',
     isValid:false
   },
+  passwordInput:{
+    value:'',
+    regex:/[]/,
+    error:"Please enter a valid password at least 8 characters in length",
+    isValid:false
+  },
   id:'',
   company:'',
   role:'',
@@ -52,17 +58,6 @@ class Verify extends Component{
   termsModal:false,
   byeModal:false,
   finalConsent:false
- }
-
- findCompanyNameById = async (id) => {
-  const companyResponse = await fetch(`${CUSTOMERS_API}api/customers/${id}`,{
-    headers:{
-      "Authorization":localStorage.getItem("jwt")
-    }
-  });
-  const companyData = await companyResponse.json();
-  console.log(companyData[0].name);
-  return companyData[0].name;
  }
 
  verifyEmployee = async (email,code) => {
@@ -80,6 +75,44 @@ class Verify extends Component{
    const data = await response.json();
    console.log(data);
    return data;
+ }
+
+ findCompanyNameById = async (id) => {
+  const companyResponse = await fetch(`${CUSTOMERS_API}api/customers/${id}`,{
+    headers:{
+      "Authorization":sessionStorage.getItem("jwt")[0]
+    }
+  });
+  const companyData = await companyResponse.json();
+  console.log(companyData[0].name);
+  return companyData[0].name;
+ }
+
+ updateEmployeeInformation = async (employee) => {
+   console.log(employee);
+   console.log(sessionStorage.getItem("jwt"));
+   const first = employee.firstName;
+   const last = employee.lastName;
+   const dob = employee.dob;
+   const phone = employee.phone;
+   const password = employee.password;
+   const employeeResponse = await fetch(`${EMPLOYEES_API}api/employee/${employee.id}`,{
+   method:"PUT",  
+   body:JSON.stringify({
+    "first_name": first,
+    "last_name": last,
+    "dob": dob,
+    "phone": phone,
+    "password": password
+   }),
+   headers:{
+     "Authorization":sessionStorage.getItem("jwt"),
+     "Content-Type":"application/json"
+    },
+  })
+
+   const employeeData = employeeResponse.json();
+   return employeeData;
  }
 
  validateForm = (name,value) => {
@@ -106,6 +139,9 @@ class Verify extends Component{
       this.validateForm(name,value);
       break;
     case "lastNameInput":
+      this.validateForm(name,value);
+      break;
+    case "passwordInput":
       this.validateForm(name,value);
       break;
     case "phoneInput":
@@ -138,7 +174,8 @@ class Verify extends Component{
           const companyName = await this.findCompanyNameById(employeeData.company);
           this.setState({
             company: companyName,
-            role: employeeData.role
+            role: employeeData.role,
+            id:employeeData.id
           })
           this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}));
         }
@@ -151,6 +188,15 @@ class Verify extends Component{
     case "verifyInfo":
       const validInfo = this.state.firstNameInput.isValid && this.state.lastNameInput.isValid && this.state.phoneInput.isValid;
       if(validInfo){
+        const employee = {
+          firstName: this.state.firstNameInput.value,
+          lastName: this.state.lastNameInput.value,
+          dob: this.state.dateInput.value,
+          phone: this.state.phoneInput.value,
+          id: this.state.id,
+          password: this.state.passwordInput.value
+        }
+        await this.updateEmployeeInformation(employee)
         this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}));
       }
       break;
@@ -232,6 +278,13 @@ class Verify extends Component{
             onChange={this.handleInputChange}
             onBlur={this.handleBlur}
             name="phoneInput"/>
+            <Input
+            type="text"
+            placeholder="Enter password (at least 8 characters)"
+            value={this.state.passwordInput.value}
+            onChange={this.handleInputChange}
+            onBlur={this.handleBlur}
+            name="passwordInput"/>
           <Input 
             type="date"
             value={this.state.dateInput.value}
