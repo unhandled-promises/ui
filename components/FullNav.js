@@ -1,13 +1,11 @@
 import React from 'react';
 import Styled from 'styled-components';
 
-export default ({sticky,items}) => {
+export default ({sticky,children}) => {
 	return (
-		<Nav sticky={sticky} items={items}>
+		<Nav sticky={sticky} items={children}>
 			<h1>App Name</h1>
-      {items.map(item => {
-          return <NavLink>{item}</NavLink>
-        })}
+      {children}
 		</Nav>
 	)
 };
@@ -23,8 +21,8 @@ const Nav = Styled.div`
   display: grid;
   grid-template-columns: ${({items})=>`1fr repeat(${items.length},auto)`};
   align-items:center;
-`
 
-const NavLink = Styled.a`
-  margin:.5rem;
+  >a:hover{
+    color:red;
+  }
 `
