@@ -7,6 +7,7 @@ import Footer from '../components/Footer';
 import Selection from '../components/Selection';
 import Link from 'next/link';
 import { STATUS_CODES } from 'http';
+import { CUSTOMERS_API } from "../static/api-config";
 
 class SignUp extends Component {
 	state = {
@@ -113,14 +114,13 @@ class SignUp extends Component {
 			"card_exp": this.state.cardExpInput.value,
 			"active":true
 		}
-		const response = await fetch ("https://customer-api-p3.herokuapp.com/api/customers", {
+		const response = await fetch (`${CUSTOMERS_API}api/customers`, {
 			method:"POST",
 			body:JSON.stringify(body),
 			headers: { 'Content-Type': 'application/json' }
 		});
 		const data = await response.json();
 		console.log(data);
-
 	}
 
 	handleClick = (event) => {
