@@ -68,6 +68,11 @@ class Customer extends Component{
         this.setState({
           addModal:true
         })
+        break;
+      case "addModal":
+        this.setState({
+          addModal:false
+        })
     }
   }
 
