@@ -1,11 +1,81 @@
 import React, { Component } from 'react';
 import Button from '../components/Button';
+import Input from '../components/Input';
 import Styled from 'styled-components';
+import { CUSTOMERS_API, EMPLOYEES_API } from "../static/api-config";
 
 class Login extends Component{
   state = {
-    emailInput:'',
-    passwordInput:''
+    emailInput:{
+      value:'',
+      regex:/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      error:'Please enter a valid email',
+    },
+    passwordInput:{
+      value:'',
+      regex:/[]/,
+      error:"Please enter a valid password at least 8 characters in length",
+    }
+  }
+
+  handleBlur = (event) => {
+    const { name } = event.target;
+    const value = this.state[name].value;
+  };
+
+  handleInputChange = (event) => {
+    const {name,value} = event.target;
+    const prevState = {...this.state[name]};
+    prevState.value = value;
+    this.setState({
+      [name]:prevState,
+    })
+  }
+
+  handleClick = (event) => {
+    event.preventDefault();
+    const { name } = event.target;
+    switch (name){
+      case 'loginBtn':
+        const { value:email } = this.state.emailInput;
+        const { value:password } = this.state.passwordInput;
+        this.verifyCredentials(email,password);
+    }
+  }
+
+  verifyCredentials = async (email,password) => {
+    console.log(`attempting login with ${email,password}`);
+    try{
+      const loginResponse = await fetch(`${EMPLOYEES_API}api/employee/login`,{
+        method:"POST",
+        headers:{
+          "Content-Type": "application/json"
+        },
+        body:{
+          "email": email,
+          "password": password
+        }
+      });
+  
+      const loginData = await loginResponse.json();
+      console.log(loginData);
+      if(loginData.success){
+        const { token } = loginData;
+        sessionStorage.setItem("jwt",token);
+        if(token.role === "Owner" || "Manager"){
+          window.location = "/dashboard/customer"
+        }
+        else{
+          window.location = "/dashboard/employee"
+        }
+      }
+      else{
+        console.log(`Login failed`);
+      }
+    }
+    catch(err){
+      console.log(err);
+    }
   }
 
   render(){
@@ -13,9 +83,26 @@ class Login extends Component{
       <LoginDiv>
         <h3>Please Log-in</h3>
         <form>
-          <input placeholder="email"/>
-          <input placeholder="password" />
-          <Button type="green">Login</Button>
+          <Input 
+            type="text"
+            placeholder="Email"
+            value={this.state.emailInput.value}
+            onChange={this.handleInputChange}
+            onBlur={this.handleBlur}
+            name="emailInput"/>
+          <Input 
+            type="text"
+            placeholder="Password"
+            value={this.state.passwordInput.value}
+            onChange={this.handleInputChange}
+            onBlur={this.handleBlur}
+            name="passwordInput"/>
+          <Button 
+            type="blue"
+            name="loginBtn"
+            onClick={this.handleClick}>
+              Login
+          </Button>
         </form>
       </LoginDiv>
     )

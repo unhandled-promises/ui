@@ -21,8 +21,9 @@ const Nav = Styled.div`
   display: grid;
   grid-template-columns: ${({items})=>`1fr repeat(${items.length},auto)`};
   align-items:center;
+  font-size: 1.2rem;
 
   >a:hover{
-    color:red;
+    color:#eee;
   }
 `
