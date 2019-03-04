@@ -51,10 +51,10 @@ class Login extends Component{
         headers:{
           "Content-Type": "application/json"
         },
-        body:{
+        body:JSON.stringify({
           "email": email,
           "password": password
-        }
+        })
       });
   
       const loginData = await loginResponse.json();
