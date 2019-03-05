@@ -4,6 +4,7 @@ import Button from '../../components/Button';
 import Footer from '../../components/Footer';
 import Card from '../../components/Card';
 import FullNav from '../../components/FullNav';
+import Toggle from '../../components/Toggle';
 import Input from '../../components/Input';
 import Modal from '../../components/Modal';
 import Selection from '../../components/Selection';
@@ -12,9 +13,17 @@ import Link from 'next/link';
 
 class Employee extends Component {
 	state={
-		userName: "Louis Tully"
+		userName: "Louis Tully",
+		stopTransmission: false,
 	}
 
+toggleTransmission = () => {
+	if (this.state.stopTransmission === false) {
+	this.setState({stopTransmission: true})
+	} else {
+		this.setState({stopTransmission: false})
+	}
+}
 
 render() {
 	return(
@@ -31,8 +40,8 @@ render() {
 				</CardWrapper>
 				<ButtonDiv>
 				<Button type="green">Trends</Button>
-				<Button type="red">Stop Transmission</Button>
-				</ButtonDiv>
+				<Button type="red" onClick={this.toggleTransmission}>{this.state.stopTransmission ? "Start Transmission" : "Stop Transmission"}</Button>
+				</ButtonDiv>								
 			<Footer />
 		</React.Fragment>
 	)
