@@ -7,10 +7,11 @@ import Input from '../Input';
  const Manage = ({employees}) => {
 
   const renderEmployees = (employeesArray) => {
-    return employeesArray.map(employee=>{
+    return employeesArray.map((employee,index)=>{
       return (
         <EmployeeCard>
           <Card 
+            key={index}
             title={`${employee.first_name} ${employee.last_name}`}
             body={
             <div>

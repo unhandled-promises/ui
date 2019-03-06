@@ -34,10 +34,28 @@ class Customer extends Component{
         "Authorization":this.state.jwt
       }
     });
-
     const employeesData = await employeesResponse.json();
     console.log(employeesData);
     return employeesData;
+  }
+
+  createEmployee = async (email,companyId) => {
+    console.log(`Creating employee ${email} ${companyId}`);
+    const { jwt } = this.state;
+    const createResponse = await fetch(`${EMPLOYEES_API}api/employee/`,{
+      method:"POST",
+      body:JSON.stringify({
+        company:companyId,
+        email:email
+      }),
+      headers:{
+        "Authorization": jwt,
+        "Content-Type": "application/json"
+      }
+    })
+
+    const createData = await createResponse.json();
+    console.log(createData);
   }
 
   validateForm = (name,value) => {
@@ -49,6 +67,7 @@ class Customer extends Component{
     })
    }
 
+  // Click events for the side control panel
   handleNavClick = (event) => {
     const { name } = event.target;
     switch(name){
@@ -76,12 +95,39 @@ class Customer extends Component{
     }
   }
 
-  handleInputChange = (event) => {
+  handleClick = async (event) => {
+    const { name } = event.target;
+    const { emailInput, customerData } = this.state;
+    switch (name) {
+      case "Add Employee":
+        if(emailInput.isValid){
+          await this.createEmployee(emailInput.value,customerData.company);
+        }
+        else{
+          console.log(emailInput.error)
+        }
+        break;
+    }
+  }
 
+  handleInputChange = (event) => {
+    const {name,value} = event.target;
+    const prevState = {...this.state[name]};
+    prevState.value = value;
+    this.setState({
+      [name]:prevState,
+    })
   }
 
   handleBlur = (event) => {
-
+    console.log(event.target);
+    const {name} = event.target;
+    const value = this.state[name].value;
+    switch(name){
+      case "emailInput":
+        this.validateForm(name,value);
+        break;
+    }
   }
 
   async componentDidMount(){
@@ -102,6 +148,7 @@ class Customer extends Component{
             <Nav />
           </NavDiv>
           <ControlPanel>
+            <h2>Hello, {this.state.customerData.email}</h2>
             <Button type="green" onClick={this.handleNavClick} name="Home">Home</Button>
             <Button type="green" onClick={this.handleNavClick} name="Manage">Manage</Button>
             {(this.state.showManage)?<Button type="blue" onClick={this.handleNavClick} name="Add">Add Employees</Button>:null}
@@ -113,6 +160,7 @@ class Customer extends Component{
           name="addModal"
           buttonNames={["Add Employee"]}
           show={this.state.addModal}
+          handleClick={this.handleClick}
           handleClose={this.handleNavClick}>
           <h3>Add an Employee</h3>
           <Input
@@ -152,4 +200,9 @@ const DashBody = Styled.div`
 const ControlPanel = Styled.div`
   display: grid;
   background-color: #333;
+  
+  >h2{
+    text-align:center;
+    
+  }
 `
