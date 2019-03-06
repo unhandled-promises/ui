@@ -6,7 +6,6 @@ import Input from '../../components/Input';
 import Modal from '../../components/Modal';
 import FullNav from '../../components/FullNav';
 import Selection from '../../components/Selection';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { CUSTOMERS_API, EMPLOYEES_API } from "../../static/api-config";
 import Link from 'next/link'
 
