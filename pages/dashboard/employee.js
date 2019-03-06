@@ -15,7 +15,17 @@ class Employee extends Component {
 	state={
 		userName: "Louis Tully",
 		stopTransmission: false,
+		jwt: '',
+		employeeData: {}
 	}
+
+async componentDidMount() {
+	const jwt = await sessionStorage.getItem("jwt");
+	this.setState({jwt:jwt});
+	const employeeData = await jwt_decode(jwt);
+	console.log(employeeData);
+	this.setState({employeeData: employeeData});
+}
 
 toggleTransmission = () => {
 	if (this.state.stopTransmission === false) {
@@ -32,7 +42,7 @@ render() {
 				<Link href="/dashboard/employee"><NavLink>Home</NavLink></Link>
 				<Link href="/dashboard/employee/settings"><NavLink>Settings</NavLink></Link>
 			</FullNav>
-				<WelcomeDiv><h1>Welcome {this.state.userName}!</h1></WelcomeDiv>
+				<WelcomeDiv><h1>Welcome {this.state.employeeData.email}!</h1></WelcomeDiv>
 				<CardWrapper>
 				<Card title="Heart Rate"/>
 				<Card title="Coordinates"/>
