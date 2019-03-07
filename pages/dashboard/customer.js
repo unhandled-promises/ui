@@ -7,7 +7,6 @@ import Manage from '../../components/customer_dash/Manage';
 import Modal from '../../components/Modal';
 import Nav from '../../components/Nav';
 import FullNav from '../../components/FullNav';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { CUSTOMERS_API, EMPLOYEES_API } from "../../static/api-config";
 
 class Customer extends Component{
