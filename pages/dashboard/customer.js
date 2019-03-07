@@ -16,6 +16,7 @@ class Customer extends Component{
     addModal:false,
     jwt:'',
     employees:[],
+    activeEmployee:{},
     customerData:{},
     emailInput:{
       value:'',
@@ -91,6 +92,7 @@ class Customer extends Component{
         this.setState({
           addModal:false
         })
+        break;
     }
   }
 
@@ -105,6 +107,10 @@ class Customer extends Component{
         else{
           console.log(emailInput.error)
         }
+        break;
+      case "Edit":
+        const { id: employeeIndex } = event.target;
+        this.setState({activeEmployee:this.state.employees[employeeIndex]});
         break;
     }
   }
@@ -153,7 +159,7 @@ class Customer extends Component{
             {(this.state.showManage)?<Button type="blue" onClick={this.handleNavClick} name="Add">Add Employees</Button>:null}
           </ControlPanel>
           {(this.state.showHome)?<Home employees={this.state.employees}/>: null}
-          {(this.state.showManage)?<Manage employees={this.state.employees} />: null}
+          {(this.state.showManage)?<Manage employees={this.state.employees} onClick={this.handleClick} />: null}
         </DashBody>
         <Modal
           name="addModal"
@@ -169,6 +175,11 @@ class Customer extends Component{
            name="emailInput"
            onChange={this.handleInputChange}
            onBlur={this.handleBlur}/>
+        </Modal>
+        <Modal
+          name="detailModal"
+          buttonNames={["Remove","Update"]}>
+
         </Modal>
       </React.Fragment>
     )
