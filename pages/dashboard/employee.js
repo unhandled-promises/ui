@@ -13,7 +13,6 @@ import Link from 'next/link';
 
 class Employee extends Component {
 	state={
-		userName: "Louis Tully",
 		stopTransmission: false,
 		jwt: '',
 		employeeData: {}
