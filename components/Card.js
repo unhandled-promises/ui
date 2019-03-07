@@ -8,7 +8,7 @@ export default ({title,body}) => {
         <h3>{title}</h3>
       </CardHeading>
       <CardBody>
-        <p>{body}</p>
+        {body}
       </CardBody>
 		</Card>
 	)

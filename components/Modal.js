@@ -2,7 +2,7 @@ import React from 'react'
 import Styled from 'styled-components'
 import Button from '../components/Button'
 
-export default ({name,handleClose,show,children,buttonNames=null}) => {
+export default ({name,handleClose,handleClick,show,children,buttonNames=null}) => {
 
   return (
     <ModalDiv show={show}>
@@ -10,7 +10,7 @@ export default ({name,handleClose,show,children,buttonNames=null}) => {
         {children}
         <Button name={name} onClick={handleClose} type="blue">Close</Button>
         {buttonNames.map(button => {
-          return <Button name={button} onClick={handleClose} type="blue">{button}</Button>
+          return <Button name={button} onClick={handleClick} type="blue">{button}</Button>
         })}
       </ModalBody>
     </ModalDiv>
