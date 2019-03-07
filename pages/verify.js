@@ -337,6 +337,7 @@ class Verify extends Component{
       name="termsModal"
       buttonNames={["finalConsent"]}
       show={this.state.termsModal}
+      handleClick={this.handleClick}
       handleClose={this.handleClick}>
        <h3>Privacy & Terms</h3>
        <p>Doggo ipsum doggorino doggo noodle horse fluffer porgo, lotsa pats heckin shibe. Boof floofs borking doggo very jealous pupper much ruin diet, smol borking doggo with a long snoot for pats mlem. Most angery pupper I have ever seen wow such tempt thicc mlem borkf the neighborhood pupper much ruin diet, extremely cuuuuuute length boy clouds adorable doggo. Doge doggo pupperino shoober, doing me a frighten super chub. Heckin angery woofer bork smol borking doggo with a long snoot for pats heckin angery woofer boof, what a nice floof doge what a nice floof. Tungg heck wow such tempt, doing me a frighten. Clouds super chub many pats shibe smol doing me a frighten big ol corgo, wow such tempt heckin angery woofer such treat woofer yapper. Blop the neighborhood pupper you are doing me a frighten pats smol borking doggo with a long snoot for pats, maximum borkdrive what a nice floof. Thicc maximum borkdrive what a nice floof you are doing me the shock, such treat waggy wags. Snoot long bois the neighborhood pupper he made many woofs, heckin angery woofer.  Heckin angery woofer big ol pupper snoot long woofer pupperino, noodle horse bork. Boofers pats maximum borkdrive, many pats.</p>
