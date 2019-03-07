@@ -170,9 +170,6 @@ class Customer extends Component{
            onChange={this.handleInputChange}
            onBlur={this.handleBlur}/>
         </Modal>
-        <Modal>
-
-        </Modal>
       </React.Fragment>
     )
   }
