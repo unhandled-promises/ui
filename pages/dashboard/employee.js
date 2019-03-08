@@ -70,6 +70,44 @@ handleInputChange = (event) => {
 	  })
    }
 
+handleBlur = event => {
+	console.log(event.target);
+		const {name} = event.target;
+		const value = this.state[name].value;
+		if(name === event.target.name){
+			console.log(`validating ${event.target.name}`);
+			console.log(this.state[name]);
+			console.log(this.state[name].regex.test(value));
+			const isValid = (this.state[name].regex.test(value)) ? true : false;
+			const updatedState = {...this.state[name]};
+			updatedState.isValid = isValid;
+			this.setState({
+			  [name]:updatedState
+			})
+		  }
+}
+
+updateAccountInfo = async employeeInfo => {
+	const {id, firstName, lastName, password, phone, dob} = employeeInfo;
+	const jwt = this.state;
+	const updateResponse = await fetch(`${EMPLOYEES_API}api/employee/${id}`, {
+		method:"PUT",
+		body: JSON.stringify({
+			"first_name": this.state.firstNameInput,
+			"last_name": this.state.lastNameInput,
+			"password": this.state.passwordInput,
+			"phone":this.state.phoneInput,
+			"dob":this.state.dateInput
+		}),
+		headers: {
+			"Authorization": jwt,
+			"Content-type": "application.json"
+		}
+	})
+	const updateData = await updateResponse.json();
+    console.log(updateData);
+}
+
 handleClick = (event) => {
 	const { name } = event.target;
 	switch (name) {
@@ -84,7 +122,10 @@ handleClick = (event) => {
 		})
 		break;
 		case "Update Information":
-		
+		updateAccountInfo();
+		this.setState({
+			editModal: false
+		})
 	}
 }
 
@@ -112,11 +153,11 @@ render() {
 				onSubmit={this.handleClick}
 				handleClose={this.handleClick}>
 					<h3>Edit Your Information</h3>
-					<input type="text" name="firstNameInput" placeholder="First Name" value={this.state.employeeData.firstName} onChange={this.handleChange} onBlur={this.handleBlur}/>
-					<input type="text" name="lastNameInput" placeholder="Last Name" value={this.state.employeeData.lastName} onChange={this.handleChange} onBlur={this.handleBlur}/>
+					<input type="text" name="firstNameInput" placeholder="First Name" value={this.state.employeeData.first_name} onChange={this.handleChange} onBlur={this.handleBlur}/>
+					<input type="text" name="lastNameInput" placeholder="Last Name" value={this.state.employeeData.last_name} onChange={this.handleChange} onBlur={this.handleBlur}/>
 					<input type="text" name="passwordInput" placeholder="Password" value={this.state.employeeData.password} onChange={this.handleChange} onBlur={this.handleBlur}/>
 					<input type="text" name="phoneInput" placeholder="Phone Number" value={this.state.employeeData.phone} onChange={this.handleChange} onBlur={this.handleBlur}/>
-					<input type="date" name="dateInput" placeholder="Date of Birth" value={this.state.employeeData.dob} onChange={this.handleChange} onBlur={this.handleBlur}/>
+					<input type="date" name="dateInput" placeholder="Date of Birth" value={this.state.employeeData.dob} onChange={this.handleChange}/>
 				</Modal>								
 			<Footer />
 		</React.Fragment>
