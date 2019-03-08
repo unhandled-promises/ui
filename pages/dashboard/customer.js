@@ -16,12 +16,35 @@ class Customer extends Component{
     addModal:false,
     jwt:'',
     employees:[],
+    activeEmployee:{},
     customerData:{},
     emailInput:{
       value:'',
       regex:/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       error:'Please enter a valid email',
-      isValid:false
+      isValid:true
+    },
+    detailsModal:false,
+    firstNameInput:{
+      value:'',
+      regex:/^[a-z]+$/i,
+      error:"Please enter a valid first name",
+      isValid:true
+    },
+    lastNameInput:{
+      value:'',
+      regex:/^[a-z]+$/i,
+      error:"Please enter a valid last name",
+      isValid: true
+    },
+    dateInput:{
+      value:''
+    },
+    phoneInput:{
+      value:'',
+      regex:/(^([\d]{3}\-){2})[\d]{4}$/,
+      error:'Please enter a phone number in 555-555-5555 format',
+      isValid:true
     }
   }
 
@@ -55,6 +78,42 @@ class Customer extends Component{
 
     const createData = await createResponse.json();
     console.log(createData);
+  }
+
+  updateEmployeeInformation = async (employeeInfo) => {
+    const { id, firstName, lastName, phone, email, dob } = employeeInfo;
+    const { jwt } = this.state;
+    const updateResponse = await fetch(`${EMPLOYEES_API}api/employee/${id}`,{
+      method:"PUT",
+      body:JSON.stringify({
+        "first_name": firstName,
+        "last_name": lastName,
+        "dob": dob,
+        "phone": phone,
+        "email": email
+      }),
+      headers:{
+        "Authorization": jwt,
+        "Content-Type": "application/json"
+      }
+    })
+
+    const updateData = await updateResponse.json();
+    console.log(updateData);
+  }
+
+  deleteEmployee = async (id) => {
+    console.log(`Deleting employee for id ${id}`);
+    const { jwt } = this.state;
+    const deleteResponse = await fetch (`${EMPLOYEES_API}api/employee/${id}`,{
+      method:"DELETE",
+      headers:{
+        "Authorization": jwt
+      }
+    })
+
+    const deleteData = await deleteResponse.json();
+    console.log(deleteData);
   }
 
   validateForm = (name,value) => {
@@ -91,6 +150,10 @@ class Customer extends Component{
         this.setState({
           addModal:false
         })
+        break;
+      case "detailsModal":
+        this.setState({detailsModal:true});
+        break;
     }
   }
 
@@ -104,6 +167,65 @@ class Customer extends Component{
         }
         else{
           console.log(emailInput.error)
+        }
+        break;
+
+      case "Edit":
+      // When opening the details modal, activeEmployee state must be transfered to firstNameInput state so handInputChange can work properly
+      // with the prepopulated information
+        const { id: employeeIndex } = event.target;
+        await this.setState({activeEmployee:this.state.employees[employeeIndex]});
+        const { first_name:first, last_name:last, email, phone, dob } = this.state.activeEmployee;
+        const prevFirstNameState = {...this.state.firstNameInput};
+        const prevLastNameState = {...this.state.lastNameInput};
+        const prevPhoneState = {...this.state.phoneInput};
+        const prevDobState = {...this.state.dateInput};
+        const prevEmailState = {...this.state.emailInput};
+        
+        prevFirstNameState.value = first;
+        prevLastNameState.value = last;
+        prevEmailState.value = email;
+        prevDobState.value = dob;
+        prevPhoneState.value = phone;
+
+        this.setState({
+          firstNameInput:prevFirstNameState,
+          lastNameInput:prevLastNameState,
+          emailInput:prevEmailState,
+          dateInput:prevDobState,
+          phoneInput:prevPhoneState
+        });
+        this.setState({detailsModal:true});
+        break;
+
+      case "detailsModal":
+        this.setState({detailsModal:false});
+        break;
+
+      case "Remove":
+        const { _id } = this.state.activeEmployee;
+        await this.deleteEmployee(_id);
+        break;
+
+      case "Update":
+      const { firstNameInput, lastNameInput, phoneInput, emailInput, dateInput} = this.state;
+      const { _id: id } = this.state.activeEmployee;
+      console.log(`id: ${id}`);
+        const validInfo = firstNameInput.isValid && lastNameInput.isValid && phoneInput.isValid && emailInput.isValid;
+        if(validInfo){
+          const updatedInfo = {
+            firstName: firstNameInput.value,
+            lastName: lastNameInput.value,
+            email: emailInput.value,
+            phone: phoneInput.value,
+            dob: dateInput.value,
+            id: id
+          }
+          console.log(updatedInfo);
+          await this.updateEmployeeInformation(updatedInfo);
+        }
+        else{
+          console.log(`Please enter valid information`);
         }
         break;
     }
@@ -124,6 +246,15 @@ class Customer extends Component{
     const value = this.state[name].value;
     switch(name){
       case "emailInput":
+        this.validateForm(name,value);
+        break;
+      case "firstNameInput":
+        this.validateForm(name,value);
+        break;
+      case "lastNameInput":
+        this.validateForm(name,value);
+        break;
+      case "phoneInput":
         this.validateForm(name,value);
         break;
     }
@@ -153,7 +284,7 @@ class Customer extends Component{
             {(this.state.showManage)?<Button type="blue" onClick={this.handleNavClick} name="Add">Add Employees</Button>:null}
           </ControlPanel>
           {(this.state.showHome)?<Home employees={this.state.employees}/>: null}
-          {(this.state.showManage)?<Manage employees={this.state.employees} />: null}
+          {(this.state.showManage)?<Manage employees={this.state.employees} onClick={this.handleClick} />: null}
         </DashBody>
         <Modal
           name="addModal"
@@ -167,6 +298,48 @@ class Customer extends Component{
            placeholder="Enter Email" 
            value={this.state.emailInput.value}
            name="emailInput"
+           onChange={this.handleInputChange}
+           onBlur={this.handleBlur}/>
+        </Modal>
+        {/* Detils modal to update and remove the selected employee */}
+        <Modal
+          name="detailsModal"
+          buttonNames={["Remove","Update"]}
+          show={this.state.detailsModal}
+          handleClose={this.handleClick}
+          handleClick={this.handleClick}>
+          <Input
+           type="text" 
+           placeholder="Enter First Name" 
+           value={this.state.firstNameInput.value}
+           name="firstNameInput"
+           onChange={this.handleInputChange}
+           onBlur={this.handleBlur}/>
+          <Input
+           type="text" 
+           placeholder="Enter Lirst Name" 
+           value={this.state.lastNameInput.value}
+           name="lastNameInput"
+           onChange={this.handleInputChange}
+           onBlur={this.handleBlur}/>
+          <Input
+           type="text" 
+           placeholder="Enter Email" 
+           value={this.state.emailInput.value}
+           name="emailInput"
+           onChange={this.handleInputChange}
+           onBlur={this.handleBlur}/>
+          <Input
+           type="text" 
+           placeholder="Enter Phone Number" 
+           value={this.state.phoneInput.value}
+           name="phoneInput"
+           onChange={this.handleInputChange}
+           onBlur={this.handleBlur}/>
+          <Input
+           type="date" 
+           value={this.state.dateInput.value}
+           name="dateInput"
            onChange={this.handleInputChange}
            onBlur={this.handleBlur}/>
         </Modal>

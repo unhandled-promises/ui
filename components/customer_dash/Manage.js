@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import Styled from 'styled-components';
 import Button from '../Button';
 import Card from '../Card';
-import Input from '../Input';
 
- const Manage = ({employees}) => {
+ const Manage = ({employees,onClick}) => {
 
   const renderEmployees = (employeesArray) => {
     return employeesArray.map((employee,index)=>{
       return (
-        <EmployeeCard>
+        <EmployeeCard key={index}>
           <Card 
             key={index}
             title={`${employee.first_name} ${employee.last_name}`}
@@ -18,6 +17,13 @@ import Input from '../Input';
               <p>{`Role: ${employee.role}`}</p>
               <p>{`Email: ${employee.email}`}</p>
               <p>{`Phone: ${employee.phone}`}</p>
+              <Button
+                id={index}
+                type="blue"
+                onClick={onClick}
+                name="Edit">
+                Edit
+              </Button>
             </div>
             }  />
         </EmployeeCard>
@@ -36,14 +42,6 @@ import Input from '../Input';
 }
 
 export default Manage;
-
-const NavLink = Styled.a`
-  margin:.5rem;
-`
-
-const AddForm = Styled.div`
-
-`;
 
 const ManageDiv= Styled.div`
   display: grid;
