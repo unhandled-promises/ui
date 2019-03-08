@@ -102,6 +102,20 @@ class Customer extends Component{
     console.log(updateData);
   }
 
+  deleteEmployee = async (id) => {
+    console.log(`Deleting employee for id ${id}`);
+    const { jwt } = this.state;
+    const deleteResponse = await fetch (`${EMPLOYEES_API}api/employee/${id}`,{
+      method:"DELETE",
+      headers:{
+        "Authorization": jwt
+      }
+    })
+
+    const deleteData = await deleteResponse.json();
+    console.log(deleteData);
+  }
+
   validateForm = (name,value) => {
     const isValid = (this.state[name].regex.test(value)) ? true : false;
     const updatedState = {...this.state[name]};
@@ -189,6 +203,8 @@ class Customer extends Component{
         break;
 
       case "Remove":
+        const { _id } = this.state.activeEmployee;
+        await this.deleteEmployee(_id);
         break;
 
       case "Update":
