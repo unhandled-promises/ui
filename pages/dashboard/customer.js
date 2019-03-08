@@ -22,19 +22,20 @@ class Customer extends Component{
       value:'',
       regex:/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       error:'Please enter a valid email',
-      isValid:false
+      isValid:true
     },
-    detailModal:false,
+    detailsModal:false,
     firstNameInput:{
       value:'',
       regex:/^[a-z]+$/i,
       error:"Please enter a valid first name",
-      isValid:false
+      isValid:true
     },
     lastNameInput:{
       value:'',
       regex:/^[a-z]+$/i,
       error:"Please enter a valid last name",
+      isValid: true
     },
     dateInput:{
       value:''
@@ -43,7 +44,7 @@ class Customer extends Component{
       value:'',
       regex:/(^([\d]{3}\-){2})[\d]{4}$/,
       error:'Please enter a phone number in 555-555-5555 format',
-      isValid:false
+      isValid:true
     }
   }
 
@@ -77,6 +78,28 @@ class Customer extends Component{
 
     const createData = await createResponse.json();
     console.log(createData);
+  }
+
+  updateEmployeeInformation = async (employeeInfo) => {
+    const { id, firstName, lastName, phone, email, dob } = employeeInfo;
+    const { jwt } = this.state;
+    const updateResponse = await fetch(`${EMPLOYEES_API}api/employee/${id}`,{
+      method:"PUT",
+      body:JSON.stringify({
+        "first_name": firstName,
+        "last_name": lastName,
+        "dob": dob,
+        "phone": phone,
+        "email": email
+      }),
+      headers:{
+        "Authorization": jwt,
+        "Content-Type": "application/json"
+      }
+    })
+
+    const updateData = await updateResponse.json();
+    console.log(updateData);
   }
 
   validateForm = (name,value) => {
@@ -114,8 +137,8 @@ class Customer extends Component{
           addModal:false
         })
         break;
-      case "detailModal":
-        this.setState({detailModal:true});
+      case "detailsModal":
+        this.setState({detailsModal:true});
         break;
     }
   }
@@ -132,6 +155,7 @@ class Customer extends Component{
           console.log(emailInput.error)
         }
         break;
+
       case "Edit":
       // When opening the details modal, activeEmployee state must be transfered to firstNameInput state so handInputChange can work properly
       // with the prepopulated information
@@ -156,9 +180,37 @@ class Customer extends Component{
           emailInput:prevEmailState,
           dateInput:prevDobState,
           phoneInput:prevPhoneState
-
         });
-        this.setState({detailModal:true});
+        this.setState({detailsModal:true});
+        break;
+
+      case "detailsModal":
+        this.setState({detailsModal:false});
+        break;
+
+      case "Remove":
+        break;
+
+      case "Update":
+      const { firstNameInput, lastNameInput, phoneInput, emailInput, dateInput} = this.state;
+      const { _id: id } = this.state.activeEmployee;
+      console.log(`id: ${id}`);
+        const validInfo = firstNameInput.isValid && lastNameInput.isValid && phoneInput.isValid && emailInput.isValid;
+        if(validInfo){
+          const updatedInfo = {
+            firstName: firstNameInput.value,
+            lastName: lastNameInput.value,
+            email: emailInput.value,
+            phone: phoneInput.value,
+            dob: dateInput.value,
+            id: id
+          }
+          console.log(updatedInfo);
+          await this.updateEmployeeInformation(updatedInfo);
+        }
+        else{
+          console.log(`Please enter valid information`);
+        }
         break;
     }
   }
@@ -178,6 +230,15 @@ class Customer extends Component{
     const value = this.state[name].value;
     switch(name){
       case "emailInput":
+        this.validateForm(name,value);
+        break;
+      case "firstNameInput":
+        this.validateForm(name,value);
+        break;
+      case "lastNameInput":
+        this.validateForm(name,value);
+        break;
+      case "phoneInput":
         this.validateForm(name,value);
         break;
     }
@@ -224,10 +285,11 @@ class Customer extends Component{
            onChange={this.handleInputChange}
            onBlur={this.handleBlur}/>
         </Modal>
+        {/* Detils modal to update and remove the selected employee */}
         <Modal
-          name="detailModal"
+          name="detailsModal"
           buttonNames={["Remove","Update"]}
-          show={this.state.detailModal}
+          show={this.state.detailsModal}
           handleClose={this.handleClick}
           handleClick={this.handleClick}>
           <Input
