@@ -1,19 +1,18 @@
 import React from 'react';
 import Styled from 'styled-components';
 
-export default ({type,children,onClick,name}) => {
+export default ({type,children,onClick,name,id}) => {
 
   return (
     <Button
       name={name}
+      id={id}
       type={type}
       onClick={onClick}>
       {children}
     </Button>
   )
 }
-
-// export default Button;
 
 const Button = Styled.button`
   padding: 1.5rem;
