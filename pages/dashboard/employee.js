@@ -14,8 +14,35 @@ import Link from 'next/link';
 class Employee extends Component {
 	state={
 		stopTransmission: false,
+		editModal: false,
 		jwt: '',
-		employeeData: {}
+		employeeData: {},
+		firstNameInput:{
+			value:'',
+			regex:/^[a-z]+$/i,
+			error:"Please enter a valid first name",
+			isValid:false
+		  },
+		  lastNameInput:{
+			value:'',
+			regex:/^[a-z]+$/i,
+			error:"Please enter a valid last name",
+		  },
+		  passwordInput:{
+			value:'',
+			regex:/[]/,
+			error:"Please enter a valid password at least 8 characters in length",
+			isValid:false
+		  },
+		  phoneInput:{
+			value:'',
+			regex:/(^([\d]{3}\-){2})[\d]{4}$/,
+			error:'Please enter a phone number in 555-555-5555 format',
+			isValid:false
+		  },
+		  dateInput: {
+			  value:''
+		  }
 	}
 
 async componentDidMount() {
@@ -34,12 +61,39 @@ toggleTransmission = () => {
 	}
 }
 
+handleInputChange = (event) => {
+	const {name,value} = event.target;
+	const prevState = {...this.state[name]};
+	prevState.value = value;
+	  this.setState({
+		[name]:prevState,
+	  })
+   }
+
+handleClick = (event) => {
+	const { name } = event.target;
+	switch (name) {
+		case "edit":
+		this.setState({
+			editModal: true
+		})
+		break;
+		case "editModal":
+		this.setState({
+			editModal:false
+		})
+		break;
+		case "Update Information":
+		
+	}
+}
+
 render() {
 	return(
 		<React.Fragment>
 			<FullNav>
 				<Link href="/dashboard/employee"><NavLink>Home</NavLink></Link>
-				<Link href="/dashboard/employee/settings"><NavLink>Settings</NavLink></Link>
+				<NavLink >Edit Account</NavLink>
 			</FullNav>
 				<WelcomeDiv><h1>Welcome {this.state.employeeData.email}!</h1></WelcomeDiv>
 				<CardWrapper>
@@ -50,7 +104,20 @@ render() {
 				<ButtonDiv>
 				<Button type="green">Trends</Button>
 				<Button type="red" onClick={this.toggleTransmission}>{this.state.stopTransmission ? "Start Transmission" : "Stop Transmission"}</Button>
-				</ButtonDiv>								
+				<Button type="blue" name="edit" onClick={this.handleClick}>Edit Account</Button>
+				</ButtonDiv>
+				<Modal name="editModal" 
+				buttonNames={["Update Information"]} 
+				show={this.state.editModal}
+				onSubmit={this.handleClick}
+				handleClose={this.handleClick}>
+					<h3>Edit Your Information</h3>
+					<input type="text" name="firstNameInput" placeholder="First Name" value={this.state.employeeData.firstName} onChange={this.handleChange} onBlur={this.handleBlur}/>
+					<input type="text" name="lastNameInput" placeholder="Last Name" value={this.state.employeeData.lastName} onChange={this.handleChange} onBlur={this.handleBlur}/>
+					<input type="text" name="passwordInput" placeholder="Password" value={this.state.employeeData.password} onChange={this.handleChange} onBlur={this.handleBlur}/>
+					<input type="text" name="phoneInput" placeholder="Phone Number" value={this.state.employeeData.phone} onChange={this.handleChange} onBlur={this.handleBlur}/>
+					<input type="date" name="dateInput" placeholder="Date of Birth" value={this.state.employeeData.dob} onChange={this.handleChange} onBlur={this.handleBlur}/>
+				</Modal>								
 			<Footer />
 		</React.Fragment>
 	)
