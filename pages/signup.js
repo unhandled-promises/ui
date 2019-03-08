@@ -6,8 +6,9 @@ import Input from '../components/Input';
 import Footer from '../components/Footer';
 import Selection from '../components/Selection';
 import Link from 'next/link';
+import Router from 'next/router'
 import { STATUS_CODES } from 'http';
-import { CUSTOMERS_API } from "../static/api-config";
+import { CUSTOMERS_API, EMPLOYEES_API } from "../static/api-config";
 
 class SignUp extends Component {
 	state = {
@@ -113,14 +114,30 @@ class SignUp extends Component {
 			"card_number": this.state.cardNumberInput.value,
 			"card_exp": this.state.cardExpInput.value,
 			"active":true
-		}
+        }
+
 		const response = await fetch (`${CUSTOMERS_API}api/customers`, {
 			method:"POST",
 			body:JSON.stringify(body),
 			headers: { 'Content-Type': 'application/json' }
 		});
-		const data = await response.json();
-		console.log(data);
+        const data = await response.json();
+
+        const empBody = {
+            "email": this.state.emailInput.value,
+            "company": data._id
+        }
+
+        if (response.status === 201) {
+            const resEmployee = await fetch (`${EMPLOYEES_API}api/employee/init`, {
+                method:"POST",
+                body:JSON.stringify(empBody),
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            const empData = await resEmployee.json();
+            Router.push(empData);
+        }
 	}
 
 	handleClick = (event) => {
