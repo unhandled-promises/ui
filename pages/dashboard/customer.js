@@ -50,80 +50,97 @@ class Customer extends Component{
 
   findEmployeesByCompany = async (id) => {
     console.log(this.state.jwt);
-    const employeesResponse = await fetch(`${EMPLOYEES_API}api/employee/bycustomer/${id}`,{
-      method:"GET",
-      headers:{
-        "Authorization":this.state.jwt
-      }
-    });
-    const employeesData = await employeesResponse.json();
-    console.log(employeesData);
-    return employeesData;
+    try{
+      const employeesResponse = await fetch(`${EMPLOYEES_API}api/employee/bycustomer/${id}`,{
+        method:"GET",
+        headers:{
+          "Authorization":this.state.jwt
+        }
+      });
+      const employeesData = await employeesResponse.json();
+      console.log(employeesData);
+      return employeesData;
+    }
+    catch(error){
+      console.log(error);
+    }
   }
 
   createEmployee = async (email,companyId) => {
     console.log(`Creating employee ${email} ${companyId}`);
     const { jwt } = this.state;
-    const createResponse = await fetch(`${EMPLOYEES_API}api/employee/`,{
-      method:"POST",
-      body:JSON.stringify({
-        company:companyId,
-        email:email
-      }),
-      headers:{
-        "Authorization": jwt,
-        "Content-Type": "application/json"
-      }
-    })
-
-    const createData = await createResponse.json();
-    console.log(createData);
+    try{
+      const createResponse = await fetch(`${EMPLOYEES_API}api/employee/`,{
+        method:"POST",
+        body:JSON.stringify({
+          company:companyId,
+          email:email
+        }),
+        headers:{
+          "Authorization": jwt,
+          "Content-Type": "application/json"
+        }
+      })
+  
+      const createData = await createResponse.json();
+      console.log(createData);
+    }
+    catch(error){
+      console.log(error);
+    }
   }
 
   updateEmployeeInformation = async (employeeInfo) => {
     const { id, firstName, lastName, phone, email, dob } = employeeInfo;
     const { jwt } = this.state;
-    const updateResponse = await fetch(`${EMPLOYEES_API}api/employee/${id}`,{
-      method:"PUT",
-      body:JSON.stringify({
-        "first_name": firstName,
-        "last_name": lastName,
-        "dob": dob,
-        "phone": phone,
-        "email": email
-      }),
-      headers:{
-        "Authorization": jwt,
-        "Content-Type": "application/json"
-      }
-    })
-
-    const updateData = await updateResponse.json();
-    console.log(updateData);
+    try{
+      const updateResponse = await fetch(`${EMPLOYEES_API}api/employee/${id}`,{
+        method:"PUT",
+        body:JSON.stringify({
+          "first_name": firstName,
+          "last_name": lastName,
+          "dob": dob,
+          "phone": phone,
+          "email": email
+        }),
+        headers:{
+          "Authorization": jwt,
+          "Content-Type": "application/json"
+        }
+      })
+  
+      const updateData = await updateResponse.json();
+      console.log(updateData);
+    }
+    catch(error){
+      console.log(error);
+    }
   }
 
   deleteEmployee = async (id) => {
     console.log(`Deleting employee for id ${id}`);
     const { jwt } = this.state;
-    const deleteResponse = await fetch (`${EMPLOYEES_API}api/employee/${id}`,{
-      method:"DELETE",
-      headers:{
-        "Authorization": jwt
-      }
-    })
-
-    const deleteData = await deleteResponse.json();
-    console.log(deleteData);
+    try{
+      const deleteResponse = await fetch (`${EMPLOYEES_API}api/employee/${id}`,{
+        method:"DELETE",
+        headers:{
+          "Authorization": jwt
+        }
+      })
+  
+      const deleteData = await deleteResponse.json();
+      console.log(deleteData);
+    }
+    catch(error){
+      console.log(error);
+    }
   }
 
-  validateForm = (name,value) => {
-    const isValid = (this.state[name].regex.test(value)) ? true : false;
-    const updatedState = {...this.state[name]};
-    updatedState.isValid = isValid;
-    this.setState({
-      [name]:updatedState
-    })
-   }
+  logUserOut = async () => {
+    console.log(`Logging user out and removing jwt from session storage`);
+    await sessionStorage.removeItem("jwt");
+    window.location = "/login";
+  }
 
   // Click events for the side control panel
   handleNavClick = (event) => {
@@ -145,6 +162,9 @@ class Customer extends Component{
         this.setState({
           addModal:true
         })
+        break;
+      case "Logout":
+        this.logUserOut();
         break;
       case "addModal":
         this.setState({
@@ -260,6 +280,15 @@ class Customer extends Component{
     }
   }
 
+  validateForm = (name,value) => {
+    const isValid = (this.state[name].regex.test(value)) ? true : false;
+    const updatedState = {...this.state[name]};
+    updatedState.isValid = isValid;
+    this.setState({
+      [name]:updatedState
+    })
+   }
+
   async componentDidMount(){
     const jwt = await sessionStorage.getItem("jwt");
     this.setState({jwt:jwt});
@@ -282,6 +311,7 @@ class Customer extends Component{
             <Button type="green" onClick={this.handleNavClick} name="Home">Home</Button>
             <Button type="green" onClick={this.handleNavClick} name="Manage">Manage</Button>
             {(this.state.showManage)?<Button type="blue" onClick={this.handleNavClick} name="Add">Add Employees</Button>:null}
+            <Button type="green" onClick={this.handleNavClick} name="Logout">Logout</Button>
           </ControlPanel>
           {(this.state.showHome)?<Home employees={this.state.employees}/>: null}
           {(this.state.showManage)?<Manage employees={this.state.employees} onClick={this.handleClick} />: null}
