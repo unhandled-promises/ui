@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Link from 'next/link';
+import Router from 'next/router'
 import Styled from 'styled-components';
 import Button from '../components/Button';
 import Nav from '../components/Nav';
@@ -58,6 +59,25 @@ class Verify extends Component{
   termsModal:false,
   byeModal:false,
   finalConsent:false
+ }
+
+ componentDidMount = async () => {
+    const values = Router.query;
+
+    if (Object.entries(values).length !== 0 && values.constructor === Object) {
+        const verifyResponse = await this.verifyEmployee(values.e, values.t);
+        if(verifyResponse.success){
+          sessionStorage.setItem("jwt",verifyResponse.token)
+          const employeeData = jwt_decode(verifyResponse.token);
+          const companyName = await this.findCompanyNameById(employeeData.company);
+          this.setState({
+            company: companyName,
+            role: employeeData.role,
+            id:employeeData.id
+          })
+          this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}));
+        }
+    }
  }
 
  verifyEmployee = async (email,code) => {
