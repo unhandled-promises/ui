@@ -23,6 +23,27 @@ class Customer extends Component{
       regex:/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       error:'Please enter a valid email',
       isValid:false
+    },
+    detailModal:false,
+    firstNameInput:{
+      value:'',
+      regex:/^[a-z]+$/i,
+      error:"Please enter a valid first name",
+      isValid:false
+    },
+    lastNameInput:{
+      value:'',
+      regex:/^[a-z]+$/i,
+      error:"Please enter a valid last name",
+    },
+    dateInput:{
+      value:''
+    },
+    phoneInput:{
+      value:'',
+      regex:/(^([\d]{3}\-){2})[\d]{4}$/,
+      error:'Please enter a phone number in 555-555-5555 format',
+      isValid:false
     }
   }
 
@@ -93,6 +114,9 @@ class Customer extends Component{
           addModal:false
         })
         break;
+      case "detailModal":
+        this.setState({detailModal:true});
+        break;
     }
   }
 
@@ -109,8 +133,32 @@ class Customer extends Component{
         }
         break;
       case "Edit":
+      // When opening the details modal, activeEmployee state must be transfered to firstNameInput state so handInputChange can work properly
+      // with the prepopulated information
         const { id: employeeIndex } = event.target;
-        this.setState({activeEmployee:this.state.employees[employeeIndex]});
+        await this.setState({activeEmployee:this.state.employees[employeeIndex]});
+        const { first_name:first, last_name:last, email, phone, dob } = this.state.activeEmployee;
+        const prevFirstNameState = {...this.state.firstNameInput};
+        const prevLastNameState = {...this.state.lastNameInput};
+        const prevPhoneState = {...this.state.phoneInput};
+        const prevDobState = {...this.state.dateInput};
+        const prevEmailState = {...this.state.emailInput};
+        
+        prevFirstNameState.value = first;
+        prevLastNameState.value = last;
+        prevEmailState.value = email;
+        prevDobState.value = dob;
+        prevPhoneState.value = phone;
+
+        this.setState({
+          firstNameInput:prevFirstNameState,
+          lastNameInput:prevLastNameState,
+          emailInput:prevEmailState,
+          dateInput:prevDobState,
+          phoneInput:prevPhoneState
+
+        });
+        this.setState({detailModal:true});
         break;
     }
   }
@@ -178,8 +226,44 @@ class Customer extends Component{
         </Modal>
         <Modal
           name="detailModal"
-          buttonNames={["Remove","Update"]}>
-
+          buttonNames={["Remove","Update"]}
+          show={this.state.detailModal}
+          handleClose={this.handleClick}
+          handleClick={this.handleClick}>
+          <Input
+           type="text" 
+           placeholder="Enter First Name" 
+           value={this.state.firstNameInput.value}
+           name="firstNameInput"
+           onChange={this.handleInputChange}
+           onBlur={this.handleBlur}/>
+          <Input
+           type="text" 
+           placeholder="Enter Lirst Name" 
+           value={this.state.lastNameInput.value}
+           name="lastNameInput"
+           onChange={this.handleInputChange}
+           onBlur={this.handleBlur}/>
+          <Input
+           type="text" 
+           placeholder="Enter Email" 
+           value={this.state.emailInput.value}
+           name="emailInput"
+           onChange={this.handleInputChange}
+           onBlur={this.handleBlur}/>
+          <Input
+           type="text" 
+           placeholder="Enter Phone Number" 
+           value={this.state.phoneInput.value}
+           name="phoneInput"
+           onChange={this.handleInputChange}
+           onBlur={this.handleBlur}/>
+          <Input
+           type="date" 
+           value={this.state.dateInput.value}
+           name="dateInput"
+           onChange={this.handleInputChange}
+           onBlur={this.handleBlur}/>
         </Modal>
       </React.Fragment>
     )
