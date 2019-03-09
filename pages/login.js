@@ -66,9 +66,9 @@ class Login extends Component{
         const decodeToken = jwt_decode(token)
         console.log(decodeToken.role);
         if(decodeToken.role === "manager" || decode.role === "owner"){
-          window.location = "/dashboard/customer"
+          Router.push("/dashboard/customer")
         }else if(decodeToken.role === "employee"){
-          window.location = "/dashboard/employee"
+          Router.push("/dashboard/employee")
         }
       }
       else{
