@@ -9,8 +9,8 @@ export default ({name,handleClose,handleClick,show,children,buttonNames=null}) =
       <ModalBody>
         {children}
         <Button name={name} onClick={handleClose} type="blue">Close</Button>
-        {buttonNames.map(button => {
-          return <Button name={button} onClick={handleClick} type="blue">{button}</Button>
+        {buttonNames.map((button,index) => {
+          return <Button key={index} name={button} onClick={handleClick} type="blue">{button}</Button>
         })}
       </ModalBody>
     </ModalDiv>

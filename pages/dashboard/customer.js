@@ -291,20 +291,25 @@ class Customer extends Component{
    }
 
   async componentWillMount(){
+    console.log(`will mount`);
     const jwt = await sessionStorage.getItem("jwt");
     if(jwt){
-      this.setState({jwt:jwt});
+      await this.setState({jwt:jwt});
     }else{
       Router.push("/login");
     }
   }
 
   async componentDidMount(){
+    console.log(`did mount`);
+    const jwt = await sessionStorage.getItem("jwt");
+    console.log(jwt);
     const customerData = await jwt_decode(jwt);
     console.log(customerData);
     this.setState({customerData:customerData})
     const employees = await this.findEmployeesByCompany(this.state.customerData.company);
     this.setState({employees:employees});
+    console.log(this.state.jwt);
   }
 
   render(){
