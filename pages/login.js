@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Styled from 'styled-components';
-import Router from 'next/router';
 import { CUSTOMERS_API, EMPLOYEES_API } from "../static/api-config";
 import { decode } from 'punycode';
 import Router from 'next/router';
