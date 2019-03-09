@@ -100,7 +100,7 @@ class Verify extends Component{
  findCompanyNameById = async (id) => {
   const companyResponse = await fetch(`${CUSTOMERS_API}api/customers/${id}`,{
     headers:{
-      "Authorization":sessionStorage.getItem("jwt")[0]
+      "Authorization":sessionStorage.getItem("jwt")
     }
   });
   const companyData = await companyResponse.json();
