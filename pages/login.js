@@ -3,6 +3,7 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import Styled from 'styled-components';
 import { CUSTOMERS_API, EMPLOYEES_API } from "../static/api-config";
+import { decode } from 'punycode';
 
 class Login extends Component{
   state = {
@@ -62,10 +63,11 @@ class Login extends Component{
       if(loginData.success){
         const { token } = loginData;
         sessionStorage.setItem("jwt",token);
-        if(token.role === "Owner" || "Manager"){
+        const decodeToken = jwt_decode(token)
+        console.log(decodeToken.role);
+        if(decodeToken.role === "manager" || decode.role === "owner"){
           window.location = "/dashboard/customer"
-        }
-        else{
+        }else if(decodeToken.role === "employee"){
           window.location = "/dashboard/employee"
         }
       }
