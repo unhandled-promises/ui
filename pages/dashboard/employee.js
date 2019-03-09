@@ -10,6 +10,7 @@ import Modal from '../../components/Modal';
 import Selection from '../../components/Selection';
 import { CUSTOMERS_API, EMPLOYEES_API } from "../../static/api-config";
 import Link from 'next/link';
+import Router from 'next/router';
 
 class Employee extends Component {
 	state = {
@@ -49,10 +50,13 @@ class Employee extends Component {
 
 	async componentDidMount() {
 		const jwt = await sessionStorage.getItem("jwt");
-		this.setState({ jwt: jwt });
+		if (jwt) {this.setState({ jwt: jwt });
 		const employeeData = await jwt_decode(jwt);
 		console.log(employeeData);
 		this.setState({ employeeData: employeeData });
+	} else {
+		Router.push("/login");
+	}
 	}
 
 	toggleTransmission = () => {
@@ -134,7 +138,11 @@ class Employee extends Component {
 		switch (name) {
 			case "edit":
 				const { id: employeeIndex } = event.target;
-				await this.setState({ activeEmployee: this.state.employees[employeeIndex] });
+				await this.setState({ 
+					activeEmployee: 
+					this.state.employees
+					[employeeIndex] 
+				});
 				const { first_name: first, last_name: last, password, phone, dob } = this.state.activeEmployee;
 				const prevFirstNameState = { ...this.state.firstNameInput };
 				const prevLastNameState = { ...this.state.lastNameInput };
