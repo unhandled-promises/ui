@@ -105,9 +105,9 @@ class Employee extends Component {
 		})
 	}
 
-	updateAccountInfo = async (employeeInfo) => {
+	updateAccountInfo = async (updatedInfo) => {
 		console.log("Updating User")
-		const { id, firstName, lastName, password, phone, dob } = employeeInfo;
+		const { id, firstName, lastName, password, phone, dob } = updatedInfo;
 		const jwt = this.state;
 		const updateResponse = await fetch(`${EMPLOYEES_API}api/employee/${id}`, {
 			method: "PUT",
@@ -138,11 +138,11 @@ class Employee extends Component {
 		switch (name) {
 			case "edit":
 				const { id: employeeIndex } = event.target;
-				await this.setState({ 
-					activeEmployee: 
-					this.state.employees
-					[employeeIndex] 
-				});
+				// await this.setState({ 
+				// 	activeEmployee: 
+				// 	this.state.employees
+				// 	[employeeIndex] 
+				// });
 				const { first_name: first, last_name: last, password, phone, dob } = this.state.activeEmployee;
 				const prevFirstNameState = { ...this.state.firstNameInput };
 				const prevLastNameState = { ...this.state.lastNameInput };
@@ -172,9 +172,9 @@ class Employee extends Component {
 					editModal: false
 				})
 				break;
-			case "Update Information":
+			case "Update":
 				const { firstNameInput, lastNameInput, phoneInput, passwordInput, dateInput } = this.state;
-				const { _id: id } = this.state.activeEmployee;
+				const { _id: id } = this.state.employeeData.id;
 				console.log(`id: ${id}`);
 				const validInfo = firstNameInput.isValid && lastNameInput.isValid && phoneInput.isValid && passwordInput.isValid;
 				if (validInfo) {
@@ -222,9 +222,9 @@ class Employee extends Component {
 					<Button type="blue" name="edit" onClick={this.handleClick}>Edit Account</Button>
 				</ButtonDiv>
 				<Modal name="editModal"
-					buttonNames={["Update Information"]}
+					buttonNames={["Update"]}
 					show={this.state.editModal}
-					onSubmit={this.handleClick}
+					handleClick={this.handleClick}
 					handleClose={this.handleClick}>
 					<h3>Edit Your Information</h3>
 					<Input type="text" name="firstNameInput" placeholder="First Name" value={this.state.employeeData.first_name} onChange={this.handleChange} onBlur={this.handleBlur} />
