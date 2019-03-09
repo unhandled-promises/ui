@@ -4,6 +4,7 @@ import Input from '../components/Input';
 import Styled from 'styled-components';
 import { CUSTOMERS_API, EMPLOYEES_API } from "../static/api-config";
 import { decode } from 'punycode';
+import Router from 'next/router';
 
 class Login extends Component{
   state = {

@@ -17,30 +17,36 @@ class Employee extends Component {
 		stopTransmission: false,
 		editModal: false,
 		jwt: '',
-		employeeData: {},
-		activeEmployee: {},
+		employeeData: {
+			firstName: '',
+			lastName: '',
+			password: '',
+			phone: '',
+			dob:''
+		},
 		firstNameInput: {
 			value: '',
 			regex: /^[a-z]+$/i,
 			error: "Please enter a valid first name",
-			isValid: false
+			isValid: true
 		},
 		lastNameInput: {
 			value: '',
 			regex: /^[a-z]+$/i,
 			error: "Please enter a valid last name",
+			isValid:true
 		},
 		passwordInput: {
 			value: '',
-			regex: /[]/,
+			regex: /[\w]+/,
 			error: "Please enter a valid password at least 8 characters in length",
-			isValid: false
+			isValid: true
 		},
 		phoneInput: {
 			value: '',
 			regex: /(^([\d]{3}\-){2})[\d]{4}$/,
 			error: 'Please enter a phone number in 555-555-5555 format',
-			isValid: false
+			isValid: true
 		},
 		dateInput: {
 			value: ''
@@ -52,8 +58,16 @@ class Employee extends Component {
 		const jwt = await sessionStorage.getItem("jwt");
 		if (jwt) {this.setState({ jwt: jwt });
 		const employeeData = await jwt_decode(jwt);
-		console.log(employeeData);
-		this.setState({ employeeData: employeeData });
+		const prevEmployeeData = {...employeeData};
+		prevEmployeeData.firstName = employeeData.firstName;
+		prevEmployeeData.lastName = employeeData.lastName;
+		prevEmployeeData.password = employeeData.password;
+		prevEmployeeData.phone = employeeData.phone;
+		prevEmployeeData.dob = employeeData.dob;
+		
+		console.log(prevEmployeeData);
+		await this.setState({ employeeData: prevEmployeeData });
+		console.log(this.state.employeeData);
 	} else {
 		Router.push("/login");
 	}
@@ -76,22 +90,26 @@ class Employee extends Component {
 		})
 	}
 
-	handleBlur = (event) => {
+	handleBlur = async (event) => {
 		console.log(event.target);
 		const { name } = event.target;
 		const value = this.state[name].value;
 		switch (name) {
 			case "firstNameInput":
-				this.validateForm(name, value);
+				await this.validateForm(name, value);
+				console.log(this.state.firstNameInput.isValid);
 				break;
 			case "lastNameInput":
-				this.validateForm(name, value);
+				await this.validateForm(name, value);
+				console.log(this.state.lastNameInput.isValid);
 				break;
 			case "passwordInput":
-				this.validateForm(name, value);
+				await this.validateForm(name, value);
+				console.log(this.state.passwordInput.isValid);
 				break;
 			case "phoneInput":
-				this.validateForm(name, value);
+				await this.validateForm(name, value);
+				console.log(this.state.phoneInput.isValid);
 				break;
 		}
 	}
@@ -108,7 +126,7 @@ class Employee extends Component {
 	updateAccountInfo = async (updatedInfo) => {
 		console.log("Updating User")
 		const { id, firstName, lastName, password, phone, dob } = updatedInfo;
-		const jwt = this.state;
+		const {jwt} = this.state;
 		const updateResponse = await fetch(`${EMPLOYEES_API}api/employee/${id}`, {
 			method: "PUT",
 			body: JSON.stringify({
@@ -137,13 +155,8 @@ class Employee extends Component {
 		const { name } = event.target;
 		switch (name) {
 			case "edit":
-				const { id: employeeIndex } = event.target;
-				// await this.setState({ 
-				// 	activeEmployee: 
-				// 	this.state.employees
-				// 	[employeeIndex] 
-				// });
-				const { first_name: first, last_name: last, password, phone, dob } = this.state.activeEmployee;
+				const { id: employeeData } = this.state.employeeData.id;
+				const { first_name: first, last_name: last, password, phone, dob } = this.state.employeeData;
 				const prevFirstNameState = { ...this.state.firstNameInput };
 				const prevLastNameState = { ...this.state.lastNameInput };
 				const prevPhoneState = { ...this.state.phoneInput };
@@ -174,9 +187,9 @@ class Employee extends Component {
 				break;
 			case "Update":
 				const { firstNameInput, lastNameInput, phoneInput, passwordInput, dateInput } = this.state;
-				const { _id: id } = this.state.employeeData.id;
+				const { id } = this.state.employeeData;
 				console.log(`id: ${id}`);
-				const validInfo = firstNameInput.isValid && lastNameInput.isValid && phoneInput.isValid && passwordInput.isValid;
+				const validInfo = firstNameInput.isValid && lastNameInput.isValid  && passwordInput.isValid;
 				if (validInfo) {
 					const updatedInfo = {
 						firstName: firstNameInput.value,
