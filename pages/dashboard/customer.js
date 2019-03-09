@@ -180,11 +180,22 @@ class Customer extends Component{
 
   handleClick = async (event) => {
     const { name } = event.target;
-    const { emailInput, customerData } = this.state;
+    let employees;
     switch (name) {
       case "Add Employee":
+      const { emailInput, customerData } = this.state;
         if(emailInput.isValid){
+          console.log(emailInput.value);
           await this.createEmployee(emailInput.value,customerData.company);
+          const prevEmailState = this.state.emailInput;
+          prevEmailState.value = "";
+          employees = await this.findEmployeesByCompany(this.state.customerData.company);
+          await this.setState({ 
+            addModal: false,
+            emailInput: prevEmailState,
+            employees: employees
+          });
+
         }
         else{
           console.log(emailInput.error)
@@ -226,10 +237,15 @@ class Customer extends Component{
       case "Remove":
         const { _id } = this.state.activeEmployee;
         await this.deleteEmployee(_id);
+        employees = await this.findEmployeesByCompany(this.state.customerData.company);
+        this.setState({
+          detailsModal:false,
+          employees: employees
+        });
         break;
 
       case "Update":
-      const { firstNameInput, lastNameInput, phoneInput, emailInput, dateInput} = this.state;
+      const { firstNameInput, lastNameInput, phoneInput, dateInput} = this.state;
       const { _id: id } = this.state.activeEmployee;
       console.log(`id: ${id}`);
         const validInfo = firstNameInput.isValid && lastNameInput.isValid && phoneInput.isValid && emailInput.isValid;
@@ -244,10 +260,15 @@ class Customer extends Component{
           }
           console.log(updatedInfo);
           await this.updateEmployeeInformation(updatedInfo);
+          employees = await this.findEmployeesByCompany(this.state.customerData.company);
         }
         else{
           console.log(`Please enter valid information`);
         }
+        this.setState({
+          detailsModal:false,
+          employees: employees
+        });
         break;
     }
   }
