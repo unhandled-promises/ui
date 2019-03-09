@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Router from 'next/router';
 import Styled from 'styled-components';
 import Button from '../../components/Button';
 import Home from '../../components/customer_dash/Home';
@@ -289,9 +290,16 @@ class Customer extends Component{
     })
    }
 
-  async componentDidMount(){
+  async componentWillMount(){
     const jwt = await sessionStorage.getItem("jwt");
-    this.setState({jwt:jwt});
+    if(jwt){
+      this.setState({jwt:jwt});
+    }else{
+      Router.push("/login");
+    }
+  }
+
+  async componentDidMount(){
     const customerData = await jwt_decode(jwt);
     console.log(customerData);
     this.setState({customerData:customerData})
