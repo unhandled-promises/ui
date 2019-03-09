@@ -56,21 +56,25 @@ class Employee extends Component {
 
 	async componentDidMount() {
 		const jwt = await sessionStorage.getItem("jwt");
-		if (jwt) {this.setState({ jwt: jwt });
-		const employeeData = await jwt_decode(jwt);
-		const prevEmployeeData = {...employeeData};
-		prevEmployeeData.firstName = employeeData.firstName;
-		prevEmployeeData.lastName = employeeData.lastName;
-		prevEmployeeData.password = employeeData.password;
-		prevEmployeeData.phone = employeeData.phone;
-		prevEmployeeData.dob = employeeData.dob;
-		
-		console.log(prevEmployeeData);
-		await this.setState({ employeeData: prevEmployeeData });
-		console.log(this.state.employeeData);
+		if (jwt) {await this.setState({ jwt: jwt });
+		const tokenData = await jwt_decode(jwt);
+		const employeeData = await this.fetchEmployeeInfo(tokenData.id);
+		await this.setState({ employeeData: employeeData });
 	} else {
 		Router.push("/login");
 	}
+	}
+
+	fetchEmployeeInfo = async (id) => {
+		const { jwt } = this.state;
+		const getInfoResponse = await fetch(`${EMPLOYEES_API}api/employee/${id}`,{
+			method:"GET",
+			headers:{
+				"Authorization": jwt
+			}
+		});
+		const getInfoData = await getInfoResponse.json();
+		return getInfoData;
 	}
 
 	toggleTransmission = () => {
@@ -83,6 +87,7 @@ class Employee extends Component {
 
 	handleInputChange = (event) => {
 		const { name, value } = event.target;
+		console.log(value);
 		const prevState = { ...this.state[name] };
 		prevState.value = value;
 		this.setState({
@@ -138,7 +143,7 @@ class Employee extends Component {
 			}),
 			headers: {
 				"Authorization": jwt,
-				"Content-type": "application.json"
+				"Content-type": "application/json"
 			}
 		})
 		const updateData = await updateResponse.json();
@@ -148,23 +153,23 @@ class Employee extends Component {
 	logUserOut = async () => {
 		console.log(`Logging user out and removing jwt from session storage`);
 		await sessionStorage.removeItem("jwt");
-		window.location = "/login";
+		Router.push("/login");
 	  }
 
 	handleClick = async (event) => {
 		const { name } = event.target;
 		switch (name) {
 			case "edit":
-				const { id: employeeData } = this.state.employeeData.id;
-				const { first_name: first, last_name: last, password, phone, dob } = this.state.employeeData;
+				const { id } = this.state.employeeData;
+				const { first_name:firstName, last_name:lastName, password, phone, dob } = this.state.employeeData;
 				const prevFirstNameState = { ...this.state.firstNameInput };
 				const prevLastNameState = { ...this.state.lastNameInput };
 				const prevPhoneState = { ...this.state.phoneInput };
 				const prevDobState = { ...this.state.dateInput };
 				const prevPasswordState = { ...this.state.passwordInput };
 
-				prevFirstNameState.value = first;
-				prevLastNameState.value = last;
+				prevFirstNameState.value = firstName;
+				prevLastNameState.value = lastName;
 				prevPasswordState.value = password;
 				prevDobState.value = dob;
 				prevPhoneState.value = phone;
@@ -187,8 +192,8 @@ class Employee extends Component {
 				break;
 			case "Update":
 				const { firstNameInput, lastNameInput, phoneInput, passwordInput, dateInput } = this.state;
-				const { id } = this.state.employeeData;
-				console.log(`id: ${id}`);
+				const { _id:employeeId } = this.state.employeeData;	
+				console.log(`id: ${employeeId}`);
 				const validInfo = firstNameInput.isValid && lastNameInput.isValid  && passwordInput.isValid;
 				if (validInfo) {
 					const updatedInfo = {
@@ -197,7 +202,7 @@ class Employee extends Component {
 						password: passwordInput.value,
 						phone: phoneInput.value,
 						dob: dateInput.value,
-						id: id
+						id: employeeId
 					}
 					console.log(updatedInfo);
 					await this.updateAccountInfo(updatedInfo);
@@ -240,11 +245,11 @@ class Employee extends Component {
 					handleClick={this.handleClick}
 					handleClose={this.handleClick}>
 					<h3>Edit Your Information</h3>
-					<Input type="text" name="firstNameInput" placeholder="First Name" value={this.state.employeeData.first_name} onChange={this.handleChange} onBlur={this.handleBlur} />
-					<Input type="text" name="lastNameInput" placeholder="Last Name" value={this.state.employeeData.last_name} onChange={this.handleChange} onBlur={this.handleBlur} />
-					<Input type="password" name="passwordInput" placeholder="Password" value={this.state.employeeData.password} onChange={this.handleChange} onBlur={this.handleBlur} />
-					<Input type="text" name="phoneInput" placeholder="Phone Number" value={this.state.employeeData.phone} onChange={this.handleChange} onBlur={this.handleBlur} />
-					<Input type="date" name="dateInput" placeholder="Date of Birth" value={this.state.employeeData.dob} onChange={this.handleChange} />
+					<Input type="text" name="firstNameInput" placeholder="First Name" value={this.state.firstNameInput.value } onChange={this.handleInputChange} onBlur={this.handleBlur} />
+					<Input type="text" name="lastNameInput" placeholder="Last Name" value={this.state.lastNameInput.value} onChange={this.handleInputChange} onBlur={this.handleBlur} />
+					<Input type="password" name="passwordInput" placeholder="Password" value={this.state.passwordInput.value} onChange={this.handleInputChange} onBlur={this.handleBlur} />
+					<Input type="text" name="phoneInput" placeholder="Phone Number" value={this.state.phoneInput.value} onChange={this.handleInputChange} onBlur={this.handleBlur} />
+					<Input type="date" name="dateInput" placeholder="Date of Birth" value={this.state.dateInput.value} onChange={this.handleInputChange} />
 				</Modal>
 				<Footer />
 			</React.Fragment>
