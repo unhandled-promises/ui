@@ -1,15 +1,22 @@
 import React from 'react';
 import Styled from 'styled-components';
 
-export default  ({placeholder,value,name,onChange,onBlur,type}) => {
+export default  ({placeholder,value,name,onChange,onBlur,type,isValid,error}) => {
   return (
-    <Input
-      type={type}
-      placeholder={placeholder}
-      value={value}
-      name={name}
-      onChange={onChange}
-      onBlur={onBlur} />
+    <React.Fragment>
+      <Input
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        name={name}
+        onChange={onChange}
+        onBlur={onBlur} />
+      {(isValid)?
+        null:
+      <MessageDiv>
+        <p>{error}</p>
+      </MessageDiv>}
+    </React.Fragment>
   )
 }
 
@@ -21,3 +28,10 @@ const Input = Styled.input`
   font-size:18px;
   color: #333;
 `;
+
+const MessageDiv = Styled.div`
+  p{
+    font-size: 9px;
+    color: red;
+  }
+`

@@ -56,6 +56,7 @@ class Verify extends Component{
   company:'',
   role:'',
   deviceInput:'',
+  modelInput:'',
   termsModal:false,
   byeModal:false,
   finalConsent:false
@@ -98,14 +99,16 @@ class Verify extends Component{
  }
 
  findCompanyNameById = async (id) => {
-  const companyResponse = await fetch(`${CUSTOMERS_API}api/customers/${id}`,{
+   console.log(`Looking up company for id ${id}`);
+   const jwt = await sessionStorage.getItem("jwt");
+   const companyResponse = await fetch(`${CUSTOMERS_API}api/customers/${id}`,{
     headers:{
-      "Authorization":sessionStorage.getItem("jwt")
+      "Authorization": jwt
     }
-  });
-  const companyData = await companyResponse.json();
-  console.log(companyData[0].name);
-  return companyData[0].name;
+   });
+   const companyData = await companyResponse.json();
+   console.log(companyData[0]);
+   return companyData[0].name;
  }
 
  updateEmployeeInformation = async (employee) => {
@@ -190,7 +193,7 @@ class Verify extends Component{
         console.log(verifyResponse);
         if(verifyResponse.success){
           sessionStorage.setItem("jwt",verifyResponse.token)
-          const employeeData = jwt_decode(verifyResponse.token);
+          const employeeData = await jwt_decode(verifyResponse.token);
           const companyName = await this.findCompanyNameById(employeeData.company);
           this.setState({
             company: companyName,
@@ -214,7 +217,9 @@ class Verify extends Component{
           dob: this.state.dateInput.value,
           phone: this.state.phoneInput.value,
           id: this.state.id,
-          password: this.state.passwordInput.value
+          password: this.state.passwordInput.value,
+          device: this.state.deviceInput,
+          model: this.state.modelInput
         }
         await this.updateEmployeeInformation(employee)
         this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}));
@@ -247,6 +252,7 @@ class Verify extends Component{
  }
   
  render(){
+   const fitBitModels = ["Select Model","Versa","Versa Lite","Ionic","Charge 3","Inspire HR","Inspire","Ace 2"];
    return(
     <Body>
     <Nav/>
@@ -259,14 +265,18 @@ class Verify extends Component{
            value={this.state.emailInput.value}
            name="emailInput"
            onChange={this.handleInputChange}
-           onBlur={this.handleBlur}/>
+           onBlur={this.handleBlur}
+           isValid={this.state.emailInput.isValid}
+           error={this.state.emailInput.error}/>
            <Input
            type="text" 
            placeholder="Enter Code" 
            value={this.state.codeInput.value}
            name="codeInput"
            onChange={this.handleInputChange}
-           onBlur={this.handleBlur}/>
+           onBlur={this.handleBlur}
+           isValid={this.state.codeInput.isValid}
+          error={this.state.codeInput.error}/>
          <Button name="verifyEmployee" type="green" onClick={this.handleClick}>
            Verify
          </Button>
@@ -283,28 +293,36 @@ class Verify extends Component{
             value={this.state.firstNameInput.value}
             onChange={this.handleInputChange}
             onBlur={this.handleBlur}
-            name="firstNameInput"/>
+            name="firstNameInput"
+            isValid={this.state.firstNameInput.isValid}
+            error={this.state.firstNameInput.error}/>
           <Input 
             type="text"
             placeholder="Last Name"
             value={this.state.lastNameInput.value}
             onChange={this.handleInputChange}
             onBlur={this.handleBlur}
-            name="lastNameInput"/>
+            name="lastNameInput"
+            isValid={this.state.firstNameInput.isValid}
+            error={this.state.firstNameInput.error}/>
           <Input
             type="text"
             placeholder="Phone (xxx-xxx-xxxx)"
             value={this.state.phoneInput.value}
             onChange={this.handleInputChange}
             onBlur={this.handleBlur}
-            name="phoneInput"/>
+            name="phoneInput"
+            isValid={this.state.phoneInput.isValid}
+            error={this.state.phoneInput.error}/>
             <Input
             type="text"
             placeholder="Enter password (at least 8 characters)"
             value={this.state.passwordInput.value}
             onChange={this.handleInputChange}
             onBlur={this.handleBlur}
-            name="passwordInput"/>
+            name="passwordInput"
+            isValid={this.state.passwordInput.isValid}
+            error={this.state.passwordInput.error}/>
           <Input 
             type="date"
             value={this.state.dateInput.value}
@@ -323,6 +341,12 @@ class Verify extends Component{
             options={["Select Device","Fitbit"]}
             onChange={this.handleInputChange}
             name="deviceInput"/>
+          {(this.state.deviceInput)?
+          <Selection 
+          options={fitBitModels}
+          onChange={this.handleInputChange}
+          name="modelInput"/>:
+          null}
           <Button
             name="verifyDevice"
             type="green"
