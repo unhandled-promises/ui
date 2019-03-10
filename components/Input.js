@@ -24,14 +24,21 @@ const Input = Styled.input`
   padding: .75rem;
   background:transparent;
   border: none;
-  border-bottom:1px solid black;
+  border-bottom:2px solid #666;
   font-size:18px;
   color: #333;
+
+  :focus{
+    border: 2px solid #666;
+  }
 `;
 
 const MessageDiv = Styled.div`
   p{
-    font-size: 9px;
+    font-size: 10px;
     color: red;
+    text-align: left;
+    margin: .5rem .5rem;
+    font-weight: bold;
   }
 `
