@@ -223,6 +223,7 @@ class Verify extends Component{
 
     case "verifyDevice":
       this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}));
+      window.location.href = `${EMPLOYEES_API}auth/fitbit?employeeId=${this.state.id}`
       break;
 
     case "consentBtn":
