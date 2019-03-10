@@ -17,25 +17,26 @@ class Verify extends Component{
     value:'',
     regex:/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
     error:'Please enter a valid email',
-    isValid:false
+    isValid:true
   },
   codeInput:{
     value:'',
     regex:/[A-Z0-9{0,8}]/,
     error:"Please enter a valid code",
-    isValid:false
+    isValid:true
   },
   secret:'',
   firstNameInput:{
     value:'',
     regex:/^[a-z]+$/i,
     error:"Please enter a valid first name",
-    isValid:false
+    isValid:true
   },
   lastNameInput:{
     value:'',
     regex:/^[a-z]+$/i,
     error:"Please enter a valid last name",
+    isValid:true
   },
   dateInput:{
     value:''
@@ -44,18 +45,19 @@ class Verify extends Component{
     value:'',
     regex:/(^([\d]{3}\-){2})[\d]{4}$/,
     error:'Please enter a phone number in 555-555-5555 format',
-    isValid:false
+    isValid:true
   },
   passwordInput:{
     value:'',
-    regex:/[]/,
-    error:"Please enter a valid password at least 8 characters in length",
-    isValid:false
+    regex:/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+    error:"Please enter a valid password at least 8 characters in length, one number and special character (@$!%*#?&)",
+    isValid:true
   },
   id:'',
   company:'',
   role:'',
   deviceInput:'',
+  modelInput:'',
   termsModal:false,
   byeModal:false,
   finalConsent:false
@@ -98,14 +100,16 @@ class Verify extends Component{
  }
 
  findCompanyNameById = async (id) => {
-  const companyResponse = await fetch(`${CUSTOMERS_API}api/customers/${id}`,{
+   console.log(`Looking up company for id ${id}`);
+   const jwt = await sessionStorage.getItem("jwt");
+   const companyResponse = await fetch(`${CUSTOMERS_API}api/customers/${id}`,{
     headers:{
-      "Authorization":sessionStorage.getItem("jwt")
+      "Authorization": jwt
     }
-  });
-  const companyData = await companyResponse.json();
-  console.log(companyData[0].name);
-  return companyData[0].name;
+   });
+   const companyData = await companyResponse.json();
+   console.log(companyData[0]);
+   return companyData[0].name;
  }
 
  updateEmployeeInformation = async (employee) => {
@@ -136,7 +140,7 @@ class Verify extends Component{
  }
 
  validateForm = (name,value) => {
-  const isValid = (this.state[name].regex.test(value)) ? true : false;
+  const isValid = (this.state[name].value === "" || this.state[name].regex.test(value)) ? true : false;
   const updatedState = {...this.state[name]};
   updatedState.isValid = isValid;
   this.setState({
@@ -190,7 +194,7 @@ class Verify extends Component{
         console.log(verifyResponse);
         if(verifyResponse.success){
           sessionStorage.setItem("jwt",verifyResponse.token)
-          const employeeData = jwt_decode(verifyResponse.token);
+          const employeeData = await jwt_decode(verifyResponse.token);
           const companyName = await this.findCompanyNameById(employeeData.company);
           this.setState({
             company: companyName,
@@ -214,7 +218,9 @@ class Verify extends Component{
           dob: this.state.dateInput.value,
           phone: this.state.phoneInput.value,
           id: this.state.id,
-          password: this.state.passwordInput.value
+          password: this.state.passwordInput.value,
+          device: this.state.deviceInput,
+          model: this.state.modelInput
         }
         await this.updateEmployeeInformation(employee)
         this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}));
@@ -248,6 +254,7 @@ class Verify extends Component{
  }
   
  render(){
+   const fitBitModels = ["Select Model","Versa","Versa Lite","Ionic","Charge 3","Inspire HR","Inspire","Ace 2"];
    return(
     <Body>
     <Nav/>
@@ -260,14 +267,18 @@ class Verify extends Component{
            value={this.state.emailInput.value}
            name="emailInput"
            onChange={this.handleInputChange}
-           onBlur={this.handleBlur}/>
+           onBlur={this.handleBlur}
+           isValid={this.state.emailInput.isValid}
+           error={this.state.emailInput.error}/>
            <Input
            type="text" 
            placeholder="Enter Code" 
            value={this.state.codeInput.value}
            name="codeInput"
            onChange={this.handleInputChange}
-           onBlur={this.handleBlur}/>
+           onBlur={this.handleBlur}
+           isValid={this.state.codeInput.isValid}
+          error={this.state.codeInput.error}/>
          <Button name="verifyEmployee" type="green" onClick={this.handleClick}>
            Verify
          </Button>
@@ -277,40 +288,48 @@ class Verify extends Component{
           <FieldDiv>
             <p>Company: {this.state.company}</p>
             <p>Role: {this.state.role}</p>
-          </FieldDiv>
-          <Input 
-            type="text"
-            placeholder="First Name"
-            value={this.state.firstNameInput.value}
-            onChange={this.handleInputChange}
-            onBlur={this.handleBlur}
-            name="firstNameInput"/>
-          <Input 
-            type="text"
-            placeholder="Last Name"
-            value={this.state.lastNameInput.value}
-            onChange={this.handleInputChange}
-            onBlur={this.handleBlur}
-            name="lastNameInput"/>
-          <Input
-            type="text"
-            placeholder="Phone (xxx-xxx-xxxx)"
-            value={this.state.phoneInput.value}
-            onChange={this.handleInputChange}
-            onBlur={this.handleBlur}
-            name="phoneInput"/>
+            <Input 
+              type="text"
+              placeholder="First Name"
+              value={this.state.firstNameInput.value}
+              onChange={this.handleInputChange}
+              onBlur={this.handleBlur}
+              name="firstNameInput"
+              isValid={this.state.firstNameInput.isValid}
+              error={this.state.firstNameInput.error}/>
+            <Input 
+              type="text"
+              placeholder="Last Name"
+              value={this.state.lastNameInput.value}
+              onChange={this.handleInputChange}
+              onBlur={this.handleBlur}
+              name="lastNameInput"
+              isValid={this.state.lastNameInput.isValid}
+              error={this.state.lastNameInput.error}/>
             <Input
-            type="text"
-            placeholder="Enter password (at least 8 characters)"
-            value={this.state.passwordInput.value}
-            onChange={this.handleInputChange}
-            onBlur={this.handleBlur}
-            name="passwordInput"/>
-          <Input 
-            type="date"
-            value={this.state.dateInput.value}
-            onChange={this.handleInputChange}
-            name="dateInput"/>
+              type="text"
+              placeholder="Phone (xxx-xxx-xxxx)"
+              value={this.state.phoneInput.value}
+              onChange={this.handleInputChange}
+              onBlur={this.handleBlur}
+              name="phoneInput"
+              isValid={this.state.phoneInput.isValid}
+              error={this.state.phoneInput.error}/>
+              <Input
+              type="text"
+              placeholder="Enter password (at least 8 characters)"
+              value={this.state.passwordInput.value}
+              onChange={this.handleInputChange}
+              onBlur={this.handleBlur}
+              name="passwordInput"
+              isValid={this.state.passwordInput.isValid}
+              error={this.state.passwordInput.error}/>
+            <Input 
+              type="date"
+              value={this.state.dateInput.value}
+              onChange={this.handleInputChange}
+              name="dateInput"/>
+          </FieldDiv>
           <Button 
             name="verifyInfo"
             type="green"
@@ -324,6 +343,12 @@ class Verify extends Component{
             options={["Select Device","Fitbit"]}
             onChange={this.handleInputChange}
             name="deviceInput"/>
+          {(this.state.deviceInput)?
+          <Selection 
+          options={fitBitModels}
+          onChange={this.handleInputChange}
+          name="modelInput"/>:
+          null}
           <Button
             name="verifyDevice"
             type="green"
@@ -398,9 +423,9 @@ const WelcomeDiv = Styled.div`
     display:block;
     justify-self: stretch;
     max-width: 100%;
-    margin: 0 .5rem;
+    margin: .5rem;
   }
-
+  
 `;
 
 const FieldDiv = Styled.div`
@@ -409,17 +434,37 @@ const FieldDiv = Styled.div`
 `
 
 const VerifyDiv = Styled.div`
-display:${({verifyStep})=>(verifyStep===0)?"grid":"none"};
+  display:${({verifyStep})=>(verifyStep===0)?"grid":"none"};
+
+  @media(min-width: 1024px){
+    max-width: 50%;
+    justify-self: center;
+}
 `
 
 const InfoForm = Styled.div`
   display:${({verifyStep})=>(verifyStep===1)?"grid":"none"};
+
+  @media(min-width: 1024px){
+    max-width: 50%;
+    justify-self: center;
+}
 `
 
 const DeviceForm = Styled.div`
   display:${({verifyStep})=>(verifyStep===2)?"grid":"none"};
+
+  @media(min-width: 1024px){
+    max-width: 50%;
+    justify-self: center;
+}
 `
 
 const ConsentForm = Styled.div`
 display:${({verifyStep})=>(verifyStep===3)?"grid":"none"};
+
+@media(min-width: 1024px){
+  max-width: 50%;
+  justify-self: center;
+}
 `
