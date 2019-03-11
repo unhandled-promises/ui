@@ -61,7 +61,7 @@ class Employee extends Component {
 			const tokenData = await jwt_decode(jwt);
 			const employeeData = await this.fetchEmployeeInfo(tokenData.id);
 			await this.setState({ employeeData: employeeData });
-			await this.fetchEmployeeHeartRate(tokenData.id)
+			setInterval(()=>{this.fetchEmployeeHeartRate(tokenData.id)},10000)
 		} else {
 			Router.push("/login");
 		}
