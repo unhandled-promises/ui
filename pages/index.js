@@ -83,8 +83,8 @@ const JoinDiv = Styled.div`
 `
 const Testimonials = Styled.div`
   display: grid;
-  grid-template-rows: 1fr 1fr 1fr;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   grid-template-areas: ". title ."
                         "message message message"
                          "card1 card2 card3";
