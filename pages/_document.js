@@ -23,9 +23,12 @@ export default class MyDocument extends Document {
     return (
       <html>
         <Head>
-          <title>Employee API</title>
+          <title>fit2work</title>
           {/* Step 5: Output the styles in the head  */}
           {this.props.styleTags}
+          
+            <link href="https://fonts.googleapis.com/css?family=Allan|Baloo+Chettan|Changa+One|Delius|Emblema+One|Vast+Shadow|Roboto|Montserrat" rel="stylesheet" />
+          
         </Head>
         <style>{`body{ margin:0 }`}
         </style>
