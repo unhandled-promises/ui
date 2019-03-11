@@ -35,6 +35,7 @@ const Input = Styled.input`
 
 const MessageDiv = Styled.div`
   p{
+    position: absolute
     font-size: 10px;
     color: red;
     text-align: left;

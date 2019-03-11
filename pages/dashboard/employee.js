@@ -56,13 +56,15 @@ class Employee extends Component {
 
 	async componentDidMount() {
 		const jwt = await sessionStorage.getItem("jwt");
-		if (jwt) {await this.setState({ jwt: jwt });
-		const tokenData = await jwt_decode(jwt);
-		const employeeData = await this.fetchEmployeeInfo(tokenData.id);
-		await this.setState({ employeeData: employeeData });
-	} else {
-		Router.push("/login");
-	}
+		if (jwt) {
+			await this.setState({ jwt: jwt });
+			const tokenData = await jwt_decode(jwt);
+			const employeeData = await this.fetchEmployeeInfo(tokenData.id);
+			await this.setState({ employeeData: employeeData });
+			setInterval(()=>{this.fetchEmployeeHeartRate(tokenData.id)},10000)
+		} else {
+			Router.push("/login");
+		}
 	}
 
 	fetchEmployeeInfo = async (id) => {
@@ -75,6 +77,18 @@ class Employee extends Component {
 		});
 		const getInfoData = await getInfoResponse.json();
 		return getInfoData;
+	}
+
+	fetchEmployeeHeartRate = async (id) => {
+		const { jwt } = this.state;
+		const heartRateResponse = await fetch(`${EMPLOYEES_API}api/employee/${id}/activities/heart`,{
+			headers:{
+				"Authorization": jwt
+			}
+		})
+
+		const heartRateData = await heartRateResponse.json();
+		console.log(heartRateData);
 	}
 
 	toggleTransmission = () => {

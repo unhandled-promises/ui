@@ -4,7 +4,11 @@ import Styled from 'styled-components';
 export default ({sticky}) => {
 	return (
 		<Nav sticky={sticky}>
+<<<<<<< HEAD
 			<h1>fit2work</h1>
+=======
+			<h1>Fit2Work</h1>
+>>>>>>> 5cd1b46e21ad50ff05de026ae3e57c77684ebd06
 		</Nav>
 	)
 };
