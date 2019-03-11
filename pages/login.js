@@ -94,7 +94,7 @@ class Login extends Component{
             onBlur={this.handleBlur}
             name="emailInput"/>
           <Input 
-            type="text"
+            type="password"
             placeholder="Password"
             value={this.state.passwordInput.value}
             onChange={this.handleInputChange}

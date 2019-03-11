@@ -57,10 +57,9 @@ class Verify extends Component{
   company:'',
   role:'',
   deviceInput:'',
-  modelInput:'',
-  termsModal:false,
-  byeModal:false,
-  finalConsent:false
+  // termsModal:false,
+  // byeModal:false,
+  // finalConsent:false
  }
 
  componentDidMount = async () => {
@@ -220,7 +219,6 @@ class Verify extends Component{
           id: this.state.id,
           password: this.state.passwordInput.value,
           device: this.state.deviceInput,
-          model: this.state.modelInput
         }
         await this.updateEmployeeInformation(employee)
         this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}));
@@ -232,29 +230,10 @@ class Verify extends Component{
       window.location.href = `${EMPLOYEES_API}auth/fitbit?employeeId=${this.state.id}`
       break;
 
-    case "consentBtn":
-      this.setState({termsModal:true});
-      break;
-
-    case "denyBtn":
-      this.setState({byeModal:true});
-      break;
-
-    case "termsModal":
-      this.setState({termsModal:false});
-      break;
-
-    case "byeModal":
-      this.setState({byeModal:false});
-      break;
-    case "finalConsent":
-      this.setState({finalConsent:true});
-
   }
  }
   
  render(){
-   const fitBitModels = ["Select Model","Versa","Versa Lite","Ionic","Charge 3","Inspire HR","Inspire","Ace 2"];
    return(
     <Body>
     <Nav/>
@@ -329,6 +308,10 @@ class Verify extends Component{
               value={this.state.dateInput.value}
               onChange={this.handleInputChange}
               name="dateInput"/>
+            <Selection 
+              options={["Select Device Type","Fitbit"]}
+              onChange={this.handleInputChange}
+              name="deviceInput"/>
           </FieldDiv>
           <Button 
             name="verifyInfo"
@@ -338,17 +321,7 @@ class Verify extends Component{
           </Button>
         </InfoForm>
         <DeviceForm verifyStep={this.state.verifyStep}>
-          <h3>Type of Device to Activate</h3>
-          <Selection 
-            options={["Select Device","Fitbit"]}
-            onChange={this.handleInputChange}
-            name="deviceInput"/>
-          {(this.state.deviceInput)?
-          <Selection 
-          options={fitBitModels}
-          onChange={this.handleInputChange}
-          name="modelInput"/>:
-          null}
+          <h3>Approve Access by Provider</h3>
           <Button
             name="verifyDevice"
             type="green"
@@ -356,46 +329,7 @@ class Verify extends Component{
             Authorize with Provider
           </Button>
         </DeviceForm>
-        <ConsentForm verifyStep={this.state.verifyStep}>
-          <h3>Authorized!</h3>
-          <FieldDiv>
-          <Button
-            name="consentBtn"
-            type="blue"
-            onClick={this.handleClick}>
-            Consent
-          </Button>
-          <Button
-            name="denyBtn"
-            type="red"
-            onClick={this.handleClick}>
-            Deny
-          </Button>
-          </FieldDiv>
-          {(this.state.finalConsent)?
-          <Link href="/dashboard/employee">
-            <Button type="green">Go To Dashboard</Button>
-          </Link>:
-          null}
-        </ConsentForm>
      </WelcomeDiv>
-     <Modal
-      name="termsModal"
-      buttonNames={["finalConsent"]}
-      show={this.state.termsModal}
-      handleClick={this.handleClick}
-      handleClose={this.handleClick}>
-       <h3>Privacy & Terms</h3>
-       <p>Doggo ipsum doggorino doggo noodle horse fluffer porgo, lotsa pats heckin shibe. Boof floofs borking doggo very jealous pupper much ruin diet, smol borking doggo with a long snoot for pats mlem. Most angery pupper I have ever seen wow such tempt thicc mlem borkf the neighborhood pupper much ruin diet, extremely cuuuuuute length boy clouds adorable doggo. Doge doggo pupperino shoober, doing me a frighten super chub. Heckin angery woofer bork smol borking doggo with a long snoot for pats heckin angery woofer boof, what a nice floof doge what a nice floof. Tungg heck wow such tempt, doing me a frighten. Clouds super chub many pats shibe smol doing me a frighten big ol corgo, wow such tempt heckin angery woofer such treat woofer yapper. Blop the neighborhood pupper you are doing me a frighten pats smol borking doggo with a long snoot for pats, maximum borkdrive what a nice floof. Thicc maximum borkdrive what a nice floof you are doing me the shock, such treat waggy wags. Snoot long bois the neighborhood pupper he made many woofs, heckin angery woofer.  Heckin angery woofer big ol pupper snoot long woofer pupperino, noodle horse bork. Boofers pats maximum borkdrive, many pats.</p>
-     </Modal>
-     <Modal 
-      name="byeModal"
-      show={this.state.byeModal}
-      buttonNames={["finalConsent"]}
-      handleClose={this.handleClick}>
-       <h3>We're Sorry You Feel That Way!</h3>
-       <p>Come back soon now, ya hear?</p>
-     </Modal>
      <Footer/>
     </Body>
    )
@@ -431,6 +365,9 @@ const WelcomeDiv = Styled.div`
 const FieldDiv = Styled.div`
   display: grid;
   grid-template-columns: repeat(2,1fr);
+  input{
+    grid-column: 1/-1;
+  }
 `
 
 const VerifyDiv = Styled.div`
@@ -460,11 +397,11 @@ const DeviceForm = Styled.div`
 }
 `
 
-const ConsentForm = Styled.div`
-display:${({verifyStep})=>(verifyStep===3)?"grid":"none"};
+// const ConsentForm = Styled.div`
+// display:${({verifyStep})=>(verifyStep===3)?"grid":"none"};
 
-@media(min-width: 1024px){
-  max-width: 50%;
-  justify-self: center;
-}
-`
+// @media(min-width: 1024px){
+//   max-width: 50%;
+//   justify-self: center;
+// }
+// `

@@ -4,7 +4,7 @@ import Styled from 'styled-components';
 export default ({sticky}) => {
 	return (
 		<Nav sticky={sticky}>
-			<h1>App Name</h1>
+			<h1>Fit2Work</h1>
 		</Nav>
 	)
 };
