@@ -66,7 +66,7 @@ class Login extends Component{
         sessionStorage.setItem("jwt",token);
         const decodeToken = jwt_decode(token)
         console.log(decodeToken.role);
-        if(decodeToken.role === "manager" || decode.role === "owner"){
+        if(decodeToken.role === "manager" || decodeToken.role === "owner"){
           Router.push("/dashboard/customer")
         }else if(decodeToken.role === "employee"){
           Router.push("/dashboard/employee")
