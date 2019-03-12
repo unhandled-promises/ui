@@ -24,6 +24,8 @@ const Button = Styled.button`
         return '#5B85AA'
       case 'red':
         return '#AA5B5B'
+      case 'dark':
+        return '#1F2D3F'
     }
   }};
   border: none;

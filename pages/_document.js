@@ -23,7 +23,7 @@ export default class MyDocument extends Document {
     return (
       <html>
         <Head>
-          <title>fit2work</title>
+          <title>Fit2Work</title>
           {/* Step 5: Output the styles in the head  */}
           {this.props.styleTags}
           

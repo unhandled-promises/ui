@@ -2,6 +2,7 @@ import React from 'react'
 import Styled from 'styled-components'
 import Nav from '../components/Nav'
 import Card from '../components/Card'
+import Button from '../components/Button'
 import Footer from '../components/Footer'
 import Link from 'next/link'
 
@@ -18,8 +19,8 @@ export default () => {
       <Main>
         <JoinDiv>
           <h1>Fit2Work is the next level of employee wellness.</h1>
-          <h2>Sign Up today! <Link href="/signup"><a>Click Here</a></Link></h2>
-          <h4>Already a Member? <Link href="/login"><a>Login</a></Link></h4>
+          <Link href="/signup"><a><Button type="dark">Create an Account</Button></a></Link>
+          <h4>Already a member? <Link href="/login"><a>Login</a></Link></h4>
         </JoinDiv>
         <Testimonials>
           <h2>Testimonials</h2>
@@ -30,6 +31,7 @@ export default () => {
         </Testimonials>
         <How>
           <h2>How it Works</h2>
+          <img src="/static/images/heart-health.jpeg" />
         </How>
         <Contact>
           <h2>Schedule a Demo</h2>
@@ -93,8 +95,7 @@ const Testimonials = Styled.div`
   border-radius: 25px;
   justify:center;
   text-align:center;
-  overflow:hidden;
-  height: 400px;
+  position-relative;
 
   h2 {
     grid-area: title;
@@ -118,6 +119,11 @@ const How = Styled.div `
   border-radius: 25px;
   text-align:center;
   display: grid;
+
+  img {
+    width:20%;
+    height: auto;
+  }
 `
 const Contact = Styled.div `
   background-image: linear-gradient(to bottom right, #fed75e, #FFA600);
