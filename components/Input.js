@@ -21,16 +21,18 @@ export default  ({placeholder,value,name,onChange,onBlur,type,isValid,error}) =>
 }
 
 const Input = Styled.input`
-  padding: .75rem;
-  background:transparent;
-  border: none;
-  border-bottom:2px solid #666;
-  font-size:18px;
-  color: #333;
-
-  :focus{
-    border: 2px solid #666;
-  }
+    display: block;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    padding: 8px;
+    border-radius: 6px;
+    -webkit-border-radius:6px;
+    -moz-border-radius:6px;
+    border: 2px solid #fff;
+    box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.33);
+    -moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.33);
+    -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.33);
 `;
 
 const MessageDiv = Styled.div`
