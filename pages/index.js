@@ -17,7 +17,7 @@ export default () => {
       <Nav sticky={false} />
       <Main>
         <JoinDiv>
-          <h1>fit2work is the next level of employee wellness.</h1>
+          <h1>Fit2Work is the next level of employee wellness.</h1>
           <h2>Sign Up today! <Link href="/signup"><a>Click Here</a></Link></h2>
           <h4>Already a Member? <Link href="/login"><a>Login</a></Link></h4>
         </JoinDiv>
@@ -62,15 +62,14 @@ const JoinDiv = Styled.div`
   background-image: linear-gradient(to bottom right, #fed75e, #FFA600);
   border-radius: 25px;
   opacity: .9;
-  height: 100%;
+  height: 200px;
+  width: 500px;
   justify-self: left;
   text-align: center;
   overflow:hidden;
 
   h1,h2, h3, h4 {
-    margin: auto;
-    margin-left:20px;
-    margin-right:20px;
+    margin: 20px;
   }
 
   a {
@@ -83,18 +82,19 @@ const JoinDiv = Styled.div`
 `
 const Testimonials = Styled.div`
   display: grid;
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-rows: 50px 50px 50px;
   grid-template-columns: repeat(3, 1fr);
   grid-template-areas: ". title ."
                         "message message message"
                          "card1 card2 card3";
   padding: 1rem;
+  grid-gap: .75rem;
   background-image: linear-gradient(to bottom right, #fed75e, #FFA600);
   border-radius: 25px;
   justify:center;
   text-align:center;
   overflow:hidden;
-  min-height: 100%;
+  height: 400px;
 
   h2 {
     grid-area: title;
@@ -117,6 +117,7 @@ const How = Styled.div `
   background-image: linear-gradient(to bottom right, #fed75e, #FFA600);
   border-radius: 25px;
   text-align:center;
+  display: grid;
 `
 const Contact = Styled.div `
   background-image: linear-gradient(to bottom right, #fed75e, #FFA600);
