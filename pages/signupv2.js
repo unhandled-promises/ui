@@ -5,6 +5,8 @@ import Button from '../components/Button';
 import Styled from 'styled-components';
 import Nav from '../components/Nav';
 import Input from '../components/Input';
+import BundleOption from "../components/BundleOption";
+import BundleSubInnerWrap from "../components/BundleSubInnerWrap";
 import Footer from '../components/Footer';
 import FormInfo from "../components/FormInfo";
 import FormStyle from "../components/FormStyle";
@@ -41,12 +43,6 @@ const CompanySchema = Yup.object().shape({
         .required("Required"),
     email: Yup.string()
         .email('Invalid email')
-        .required('Required'),
-});
-
-const BundleSchema = Yup.object().shape({
-    plan: Yup.string()
-        .min(2, "To Short")
         .required('Required'),
 });
 
@@ -224,24 +220,49 @@ class SignUp extends Component {
                         initialValues={{
                             plan: "",
                         }}
-                        validationSchema={BundleSchema}
-                        onSubmit={values => {
+                        onSubmit={(values) => {
                             this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }))
                             this.setState(values);
                         }}
-                        render={({ errors, touched, values, handleChange, handleBlur }) => (
+                        render={({ errors, touched, values, handleChange, handleBlur, setFieldValue }) => (
                             <React.Fragment>
                                 <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
                                 <Form>
                                     <FormSubHeader number="2" text="Available Bundles" />
-                                    <SubmitButton text="Bronze" />
-                                    <SubmitButton text="Silver" />
-                                    <SubmitButton text="Gold" />
+                                    <BundleSubInnerWrap>
+                                        <BundleOption colorChoice="#CD7F32" list={["Employees: 1-100", "Support: 8x5"]} price="$250" onClick={() => setFieldValue("plan", "bronze")} />
+                                        <BundleOption colorChoice="#C0C0C0" list={["Employees: 101-500", "Support: 24x5"]} price="$500" onClick={() => setFieldValue("plan", "silver")} />
+                                        <BundleOption colorChoice="#FFD700" list={["Employees: 501-1000", "Support: 24x7"]} price="$1,000" onClick={() => setFieldValue("plan", "gold")} />
+                                    </BundleSubInnerWrap>
                                 </Form>
                             </React.Fragment>
                         )}
                     />
                 </BundleDiv>
+                <PaymentDiv verifyStep={this.state.verifyStep}>
+                    <Formik
+                        initialValues={{
+                            plan: "",
+                        }}
+                        onSubmit={(values) => {
+                            this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }))
+                            this.setState(values);
+                        }}
+                        render={({ errors, touched, values, handleChange, handleBlur, setFieldValue }) => (
+                            <React.Fragment>
+                                <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
+                                <Form>
+                                    <FormSubHeader number="2" text="Available Bundles" />
+                                    <BundleSubInnerWrap>
+                                        <BundleOption colorChoice="#CD7F32" list={["Employees: 1-100", "Support: 8x5"]} price="$250" onClick={() => setFieldValue("plan", "bronze")} />
+                                        <BundleOption colorChoice="#C0C0C0" list={["Employees: 101-500", "Support: 24x5"]} price="$500" onClick={() => setFieldValue("plan", "silver")} />
+                                        <BundleOption colorChoice="#FFD700" list={["Employees: 501-1000", "Support: 24x7"]} price="$1,000" onClick={() => setFieldValue("plan", "gold")} />
+                                    </BundleSubInnerWrap>
+                                </Form>
+                            </React.Fragment>
+                        )}
+                    />
+                </PaymentDiv>
                 <Footer />
             </React.Fragment>
         )
