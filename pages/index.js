@@ -19,7 +19,7 @@ export default () => {
       <Main>
         <JoinDiv>
           <h1>Fit2Work is the next level of employee wellness.</h1>
-          <Link href="/signup"><a><Button type="dark">Create an Account</Button></a></Link>
+          <Link href="/signup"><Button type="dark">Create an Account</Button></Link>
           <h4>Already a member? <Link href="/login"><a>Login</a></Link></h4>
         </JoinDiv>
         <Testimonials>
@@ -45,13 +45,13 @@ export default () => {
 const Body = Styled.div`
   background: url("/static/images/endurance-exercise-female.jpg") no-repeat fixed center;
   display: grid;
-  grid-template-rows: 100px auto 1fr auto;
+  grid-template-rows: 100px auto 1fr;
 `
 
 const Main = Styled.main`
   display:grid;
-  grid-template-rows: repeat(3,100px);
-  grid-gap:200px;
+  grid-template-rows: repeat(4,1fr);
+  grid-gap:500px;
   padding: 1rem;
   font-family: 'Montserrat', sans-serif;
   
@@ -62,16 +62,15 @@ const Main = Styled.main`
 `
 const JoinDiv = Styled.div`
   background-image: linear-gradient(to bottom right, #fed75e, #FFA600);
+  display: grid;
+  grid-template-rows: repeat (3, 1fr);
   border-radius: 25px;
   opacity: .9;
-  height: 200px;
-  width: 500px;
   justify-self: left;
   text-align: center;
-  overflow:hidden;
 
-  h1,h2, h3, h4 {
-    margin: 20px;
+  h1 {
+    grid-row-start: 1 / span 1;
   }
 
   a {
@@ -95,7 +94,6 @@ const Testimonials = Styled.div`
   border-radius: 25px;
   justify:center;
   text-align:center;
-  position-relative;
 
   h2 {
     grid-area: title;
