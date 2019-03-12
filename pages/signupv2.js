@@ -217,8 +217,8 @@ class SignUp extends Component {
                                     <FormSubHeader number="2" text="Available Bundles" />
                                     <BundleSubInnerWrap>
                                         <BundleOption colorChoice="#CD7F32" list={["Employees: 1-100", "Support: 8x5"]} price="$250" onClick={() => setFieldValue("plan", "bronze")} />
-                                        <BundleOption colorChoice="#C0C0C0" list={["Employees: 101-500", "Support: 24x5"]} price="$500" onClick={() => setFieldValue("plan", "silver")} />
-                                        <BundleOption colorChoice="#FFD700" list={["Employees: 501-1000", "Support: 24x7"]} price="$1,000" onClick={() => setFieldValue("plan", "gold")} />
+                                        <BundleOption colorChoice="#C0C0C0" list={["Employees: 101-500", "Support: 24x5", "Personal Email Address"]} price="$500" onClick={() => setFieldValue("plan", "silver")} />
+                                        <BundleOption colorChoice="#FFD700" list={["Employees: 501-1000", "Support: 24x7", "Personal Email Address", "Personal Phone Number", "First Born"]} price="$1,000" onClick={() => setFieldValue("plan", "gold")} />
                                     </BundleSubInnerWrap>
                                 </Form>
                             </React.Fragment>
@@ -246,9 +246,7 @@ class SignUp extends Component {
                                     <FormSubHeader number="4" text="Enter Payment" />
                                     <StripeProvider apiKey="pk_test_kDKkByslO1VnLL3wTpOxMil9">
                                         <Elements>
-                                            <React.Fragment>
-                                                <CheckoutForm {... this.state} />
-                                            </React.Fragment>
+                                            <CheckoutForm {... this.state} />
                                         </Elements>
                                     </StripeProvider>
                                 </Form>

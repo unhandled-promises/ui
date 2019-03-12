@@ -16,7 +16,7 @@ export default ({ colorChoice, list, price, onClick }) => {
                     })}
                 </ul>
                 <BundlePrice>Price: {price}</BundlePrice>
-                <SubmitButton inverse="true" text="Select Package" onClick={onClick}/>
+                <SubmitButton inverse="true" text="Select Package" onClick={onClick} />
             </BundleOption>
         </React.Fragment>
     )

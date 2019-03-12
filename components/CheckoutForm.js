@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { CardElement, injectStripe } from 'react-stripe-elements-universal';
 import SubmitButton from "../components/SubmitButton";
-import { CUSTOMERS_API } from "../static/api-config";
+import { CUSTOMERS_API, EMPLOYEES_API } from "../static/api-config";
+import Router from 'next/router'
 
 const createOptions = () => {
     return {
@@ -26,59 +27,54 @@ class CheckoutForm extends Component {
     constructor(props) {
         super(props);
         this.submit = this.submit.bind(this);
-        console.log(props);
     }
 
     async submit(ev) {
-        console.log(ev);
-		// const body = {
-		// 	"name": this.state.props.company_name,
-		// 	"address": this.state.addressInput.value,
-		// 	"address2": this.state.address2Input.value,
-		// 	"city":this.state.cityInput.value,
-		// 	"state":this.state.stateInput.value,
-		// 	"country":this.state.countryInput.value,
-		// 	"postal":this.state.zipInput.value,
-		// 	"email":this.state.emailInput.value,
-		// 	"package": this.state.plan,
-		// 	"card_type":this.state.cardTypeInput.value,
-		// 	"card_number": this.state.cardNumberInput.value,
-		// 	"card_exp": this.state.cardExpInput.value,
-		// 	"active":true
-        // }
+		const body = {
+			"name": this.props.company_name,
+			"address": this.props.address,
+			"address2": this.props.address2,
+			"city":this.props.city,
+			"state":this.props.state,
+			"country": "USA",
+			"postal":this.props.zip,
+			"email":this.props.email,
+			"package": this.props.plan,
+			"active": true
+        }
 
-		// const response = await fetch (`${CUSTOMERS_API}api/customers`, {
-		// 	method:"POST",
-		// 	body:JSON.stringify(body),
-		// 	headers: { 'Content-Type': 'application/json' }
-		// });
-        // const data = await response.json();
-        
+		const cusResponse = await fetch (`${CUSTOMERS_API}api/customers`, {
+			method:"POST",
+			body:JSON.stringify(body),
+			headers: { 'Content-Type': 'application/json' }
+		});
+        const data = await cusResponse.json();
 
-        // const empBody = {
-        //     "email": this.state.emailInput.value,
-        //     "company": data._id
-        // }
+        let {token} = await this.props.stripe.createToken({name: this.props.company_name});
 
-        // if (response.status === 201) {
-        //     const resEmployee = await fetch (`${EMPLOYEES_API}api/employee/init`, {
-        //         method:"POST",
-        //         body:JSON.stringify(empBody),
-        //         headers: { 'Content-Type': 'application/json' }
-        //     });
-
-        //     const empData = await resEmployee.json();
-        //     Router.push(empData);
-        // }
-
-        // let {token} = await this.props.stripe.createToken({name: "Name"});
-        // let response = await fetch(`${CUSTOMERS_API}/api/customers/${customer_id}/charge`, {
-        //   method: "POST",
-        //   headers: {"Content-Type": "text/plain"},
-        //   body: token.id
-        // });
+        let payResponse = await fetch(`${CUSTOMERS_API}api/customers/${data._id}/charge`, {
+          method: "POST",
+          headers: {"Content-Type": "text/plain"},
+          body: token.id
+        });
       
-        // if (response.ok) console.log("Purchase Complete!")
+        if (payResponse.ok) console.log("Purchase Complete!")
+
+        const empBody = {
+            "email": this.props.email,
+            "company": data._id
+        }
+
+        if (payResponse.status === 200) {
+            const empResponse = await fetch (`${EMPLOYEES_API}api/employee/init`, {
+                method:"POST",
+                body:JSON.stringify(empBody),
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            const empData = await empResponse.json();
+            Router.push(empData);
+        }
       }
 
     render() {
