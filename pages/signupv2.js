@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Formik, Form, Field } from 'formik';
+import {Elements, StripeProvider} from 'react-stripe-elements-universal';
 import * as Yup from 'yup';
 import Button from '../components/Button';
 import Styled from 'styled-components';
@@ -7,6 +8,7 @@ import Nav from '../components/Nav';
 import Input from '../components/Input';
 import BundleOption from "../components/BundleOption";
 import BundleSubInnerWrap from "../components/BundleSubInnerWrap";
+import CheckoutForm from "../components/CheckoutForm";
 import Footer from '../components/Footer';
 import FormInfo from "../components/FormInfo";
 import FormStyle from "../components/FormStyle";
@@ -15,6 +17,7 @@ import FormSubInnerWrap from "../components/FormSubInnerWrap";
 import Selection from '../components/Selection';
 import Link from 'next/link';
 import Router from 'next/router'
+import ShowSelections from "../components/ShowSelections";
 import SubmitButton from "../components/SubmitButton";
 
 const CompanySchema = Yup.object().shape({
@@ -70,26 +73,9 @@ class SignUp extends Component {
         state: "",
         zip: "",
         email: "",
+        plan: "",
         verifyStep: 0,
     }
-
-    // handleSubmit = (event) => {
-    //     console.log(name);
-    //     const { name } = event.target;
-    //     if (name === "Bronze") {
-    //         this.setState((prevState) => ({ plan: name, verifyStep: prevState.verifyStep + 1 }))
-    //     } else if (name === "Silver") {
-    //         this.setState((prevState) => ({ plan: name, verifyStep: prevState.verifyStep + 1 }))
-    //     } else if (name === "Gold") {
-    //         this.setState((prevState) => ({ plan: name, verifyStep: prevState.verifyStep + 1 }))
-    //     } else if (name === "edit") {
-    //         this.setState((prevState) => ({ verifyStep: prevState.verifyStep - 3 }))
-    //     } else if (name === "submit") {
-    //         this.submitCompany();
-    //     } else {
-    //         this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }))
-    //     }
-    // }
 
     render() {
         return (
@@ -242,22 +228,29 @@ class SignUp extends Component {
                 <PaymentDiv verifyStep={this.state.verifyStep}>
                     <Formik
                         initialValues={{
-                            plan: "",
+                            editSubmit: "",
                         }}
-                        onSubmit={(values) => {
-                            this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }))
-                            this.setState(values);
+                        onSubmit={async (values) => {
+                            if (values.editSubmit === "edit") {
+                                this.setState((prevState) => ({ verifyStep: prevState.verifyStep - 2 }))
+                            }
                         }}
-                        render={({ errors, touched, values, handleChange, handleBlur, setFieldValue }) => (
+                        render={({ setFieldValue }) => (
                             <React.Fragment>
                                 <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
                                 <Form>
-                                    <FormSubHeader number="2" text="Available Bundles" />
-                                    <BundleSubInnerWrap>
-                                        <BundleOption colorChoice="#CD7F32" list={["Employees: 1-100", "Support: 8x5"]} price="$250" onClick={() => setFieldValue("plan", "bronze")} />
-                                        <BundleOption colorChoice="#C0C0C0" list={["Employees: 101-500", "Support: 24x5"]} price="$500" onClick={() => setFieldValue("plan", "silver")} />
-                                        <BundleOption colorChoice="#FFD700" list={["Employees: 501-1000", "Support: 24x7"]} price="$1,000" onClick={() => setFieldValue("plan", "gold")} />
-                                    </BundleSubInnerWrap>
+                                    <FormSubHeader number="3" text="Validate Info" />
+                                    <ShowSelections {... this.state} />
+                                    <SubmitButton text="Edit Details" onClick={() => setFieldValue("editSubmit", "edit")} />
+                                    <br /><br />
+                                    <FormSubHeader number="4" text="Enter Payment" />
+                                    <StripeProvider apiKey="pk_test_kDKkByslO1VnLL3wTpOxMil9">
+                                        <Elements>
+                                            <React.Fragment>
+                                                <CheckoutForm {... this.state} />
+                                            </React.Fragment>
+                                        </Elements>
+                                    </StripeProvider>
                                 </Form>
                             </React.Fragment>
                         )}
@@ -317,20 +310,4 @@ const PaymentDiv = Styled.div`
     -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
     -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
 	display:${({ verifyStep }) => (verifyStep === 2) ? "grid" : "none"}
-`
-
-const ConfirmDiv = Styled.div`
-    grid-template-columns: 2fr;
-    max-width: 800px;
-    width:80%;
-    padding:30px;
-    margin:40px auto;
-    background: #FFF;
-    border-radius: 10px;
-    -webkit-border-radius:10px;
-    -moz-border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
-    -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
-    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
-	display:${({ verifyStep }) => (verifyStep === 3) ? "grid" : "none"};
 `

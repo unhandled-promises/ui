@@ -5,7 +5,7 @@ export default ({ text, inverse, onClick }) => {
     if (inverse) {
         return <Button Inverse type="submit" onClick={onClick}>{text}</Button>
     } else {
-        return <Button type="submit">{text}</Button>
+        return <Button type="submit" onClick={onClick}>{text}</Button>
     }
 }
     
