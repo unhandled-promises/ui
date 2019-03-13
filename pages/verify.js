@@ -1,407 +1,394 @@
 import React, { Component } from 'react';
-import Link from 'next/link';
 import Router from 'next/router'
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
 import Styled from 'styled-components';
-import Button from '../components/Button';
 import Nav from '../components/Nav';
-import Footer from '../components/Footer';
 import Input from '../components/Input';
-import Selection from '../components/Selection';
-import Modal from '../components/Modal';
+import Footer from '../components/Footer';
+import FormInfo from "../components/FormInfo";
+import FormSubHeader from "../components/FormSubHeader";
+import FormSubInnerWrap from "../components/FormSubInnerWrap";
+import Provider from "../components/Provider";
+import SubmitButton from "../components/SubmitButton";
 import { CUSTOMERS_API, EMPLOYEES_API } from "../static/api-config";
 
-class Verify extends Component{
- state={
-  verifyStep:0,
-  emailInput:{
-    value:'',
-    regex:/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-    error:'Please enter a valid email',
-    isValid:true
-  },
-  codeInput:{
-    value:'',
-    regex:/[A-Z0-9{0,8}]/,
-    error:"Please enter a valid code",
-    isValid:true
-  },
-  secret:'',
-  firstNameInput:{
-    value:'',
-    regex:/^[a-z]+$/i,
-    error:"Please enter a valid first name",
-    isValid:true
-  },
-  lastNameInput:{
-    value:'',
-    regex:/^[a-z]+$/i,
-    error:"Please enter a valid last name",
-    isValid:true
-  },
-  dateInput:{
-    value:''
-  },
-  phoneInput:{
-    value:'',
-    regex:/(^([\d]{3}\-){2})[\d]{4}$/,
-    error:'Please enter a phone number in 555-555-5555 format',
-    isValid:true
-  },
-  passwordInput:{
-    value:'',
-    regex:/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-    error:"Please enter a valid password at least 8 characters in length, one number and special character (@$!%*#?&)",
-    isValid:true
-  },
-  id:'',
-  company:'',
-  role:'',
-  deviceInput:'',
-  // termsModal:false,
-  // byeModal:false,
-  // finalConsent:false
- }
+const EmployeeSchema = Yup.object().shape({
+    firstName: Yup.string()
+        .min(1, "Too Short!")
+        .max(50, "Too Long!")
+        .matches(/[A-Z0-9{0,8}]/, "Code doesn't match expected format!")
+        .required("Required"),
+    lastName: Yup.string()
+        .min(1, "Too Short!")
+        .max(50, "Too Long!")
+        .matches(/[A-Z0-9{0,8}]/, "Code doesn't match expected format!")
+        .required("Required"),
+    date: Yup.string()
+        .required("Required"),
+    phone: Yup.string()
+        .matches(/(^([\d]{3}\-){2})[\d]{4}$/, "Phone must be in the format 555-555-5555")
+        .required("Required"),
+    password: Yup.string()
+        .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, "Password must include a special character")
+        .required("Required"),
+});
 
- componentDidMount = async () => {
-    const values = Router.query;
+const VerifySchema = Yup.object().shape({
+    email: Yup.string()
+        .email('Invalid email')
+        .required('Required'),
+    code: Yup.string()
+        .length(8, "Code must be 8 characters!")
+        .matches(/[A-Z0-9{0,8}]/, "Code doesn't match expected format!")
+        .required("Required"),
+});
 
-    if (Object.entries(values).length !== 0 && values.constructor === Object) {
-        const verifyResponse = await this.verifyEmployee(values.e, values.t);
-        if(verifyResponse.success){
-          sessionStorage.setItem("jwt",verifyResponse.token)
-          const employeeData = jwt_decode(verifyResponse.token);
-          const companyName = await this.findCompanyNameById(employeeData.company);
-          this.setState({
-            company: companyName,
-            role: employeeData.role,
-            id:employeeData.id
-          })
-          this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}));
-        }
-    }
- }
-
- verifyEmployee = async (email,code) => {
-   console.log(`Verifying ${email} ${code}`);
-   const response = await fetch(`${EMPLOYEES_API}api/employee/verify`,{
-     method:"POST",
-     body:JSON.stringify({
-       "token":code,
-       "email":email
-     }),
-     headers:{
-       "Content-Type":"application/json"
-     }
-   });
-   const data = await response.json();
-   console.log(data);
-   return data;
- }
-
- findCompanyNameById = async (id) => {
-   console.log(`Looking up company for id ${id}`);
-   const jwt = await sessionStorage.getItem("jwt");
-   const companyResponse = await fetch(`${CUSTOMERS_API}api/customers/${id}`,{
-    headers:{
-      "Authorization": jwt
-    }
-   });
-   const companyData = await companyResponse.json();
-   console.log(companyData[0]);
-   return companyData[0].name;
- }
-
- updateEmployeeInformation = async (employee) => {
-   console.log(employee);
-   console.log(sessionStorage.getItem("jwt"));
-   const first = employee.firstName;
-   const last = employee.lastName;
-   const dob = employee.dob;
-   const phone = employee.phone;
-   const password = employee.password;
-   const employeeResponse = await fetch(`${EMPLOYEES_API}api/employee/${employee.id}`,{
-   method:"PUT",  
-   body:JSON.stringify({
-    "first_name": first,
-    "last_name": last,
-    "dob": dob,
-    "phone": phone,
-    "password": password
-   }),
-   headers:{
-     "Authorization":sessionStorage.getItem("jwt"),
-     "Content-Type":"application/json"
-    },
-  })
-
-   const employeeData = employeeResponse.json();
-   return employeeData;
- }
-
- validateForm = (name,value) => {
-  const isValid = (this.state[name].value === "" || this.state[name].regex.test(value)) ? true : false;
-  const updatedState = {...this.state[name]};
-  updatedState.isValid = isValid;
-  this.setState({
-    [name]:updatedState
-  })
- }
-
- handleBlur = (event) => {
-  console.log(event.target);
-  const {name} = event.target;
-  const value = this.state[name].value;
-  switch(name){
-    case "emailInput":
-      this.validateForm(name,value);
-      break;
-    case "codeInput":
-      this.validateForm(name,value);
-      break;
-    case "firstNameInput":
-      this.validateForm(name,value);
-      break;
-    case "lastNameInput":
-      this.validateForm(name,value);
-      break;
-    case "passwordInput":
-      this.validateForm(name,value);
-      break;
-    case "phoneInput":
-      this.validateForm(name,value);
-      break;
-  }
- }
-
- handleInputChange = (event) => {
-  const {name,value} = event.target;
-  const prevState = {...this.state[name]};
-  prevState.value = value;
-    this.setState({
-      [name]:prevState,
-    })
- }
-
- handleClick = async (event) => {
-  console.log(event.target);
-  const {codeInput,emailInput} = this.state;
-  const {name} = event.target;
-  switch(name){
-    case 'verifyEmployee':
-      if(this.state.emailInput.isValid && this.state.codeInput.isValid){
-        const verifyResponse = await this.verifyEmployee(emailInput.value,codeInput.value);
-        console.log(verifyResponse);
-        if(verifyResponse.success){
-          sessionStorage.setItem("jwt",verifyResponse.token)
-          const employeeData = await jwt_decode(verifyResponse.token);
-          const companyName = await this.findCompanyNameById(employeeData.company);
-          this.setState({
-            company: companyName,
-            role: employeeData.role,
-            id:employeeData.id
-          })
-          this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}));
-        }
-        else{
-          console.log(`Verification Failed`);
-        }
-      }
-      break;
-    
-    case "verifyInfo":
-      const validInfo = this.state.firstNameInput.isValid && this.state.lastNameInput.isValid && this.state.phoneInput.isValid;
-      if(validInfo){
-        const employee = {
-          firstName: this.state.firstNameInput.value,
-          lastName: this.state.lastNameInput.value,
-          dob: this.state.dateInput.value,
-          phone: this.state.phoneInput.value,
-          id: this.state.id,
-          password: this.state.passwordInput.value,
-          device: this.state.deviceInput,
-        }
-        await this.updateEmployeeInformation(employee)
-        this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}));
-      }
-      break;
-
-    case "verifyDevice":
-      this.setState((prevState)=>({verifyStep:prevState.verifyStep+1}));
-      window.location.href = `${EMPLOYEES_API}auth/fitbit?employeeId=${this.state.id}`
-      break;
-
-  }
- }
-  
- render(){
-   return(
-    <Body>
-    <Nav/>
-     <WelcomeDiv>
-        <VerifyDiv verifyStep={this.state.verifyStep}>
-         <h3>Welcome! To continue, please enter your email and verification code</h3>
-         <Input
-           type="text" 
-           placeholder="Enter Email" 
-           value={this.state.emailInput.value}
-           name="emailInput"
-           onChange={this.handleInputChange}
-           onBlur={this.handleBlur}
-           isValid={this.state.emailInput.isValid}
-           error={this.state.emailInput.error}/>
-           <Input
-           type="text" 
-           placeholder="Enter Code" 
-           value={this.state.codeInput.value}
-           name="codeInput"
-           onChange={this.handleInputChange}
-           onBlur={this.handleBlur}
-           isValid={this.state.codeInput.isValid}
-          error={this.state.codeInput.error}/>
-         <Button name="verifyEmployee" type="green" onClick={this.handleClick}>
-           Verify
-         </Button>
-        </VerifyDiv>
-        <InfoForm verifyStep={this.state.verifyStep}>
-          <h3>Please Verify/Enter Your Information:</h3>
-          <FieldDiv>
-            <p>Company: {this.state.company}</p>
-            <p>Role: {this.state.role}</p>
-            <Input 
-              type="text"
-              placeholder="First Name"
-              value={this.state.firstNameInput.value}
-              onChange={this.handleInputChange}
-              onBlur={this.handleBlur}
-              name="firstNameInput"
-              isValid={this.state.firstNameInput.isValid}
-              error={this.state.firstNameInput.error}/>
-            <Input 
-              type="text"
-              placeholder="Last Name"
-              value={this.state.lastNameInput.value}
-              onChange={this.handleInputChange}
-              onBlur={this.handleBlur}
-              name="lastNameInput"
-              isValid={this.state.lastNameInput.isValid}
-              error={this.state.lastNameInput.error}/>
-            <Input
-              type="text"
-              placeholder="Phone (xxx-xxx-xxxx)"
-              value={this.state.phoneInput.value}
-              onChange={this.handleInputChange}
-              onBlur={this.handleBlur}
-              name="phoneInput"
-              isValid={this.state.phoneInput.isValid}
-              error={this.state.phoneInput.error}/>
-              <Input
-              type="text"
-              placeholder="Enter password (at least 8 characters)"
-              value={this.state.passwordInput.value}
-              onChange={this.handleInputChange}
-              onBlur={this.handleBlur}
-              name="passwordInput"
-              isValid={this.state.passwordInput.isValid}
-              error={this.state.passwordInput.error}/>
-            <Input 
-              type="date"
-              value={this.state.dateInput.value}
-              onChange={this.handleInputChange}
-              name="dateInput"/>
-            <Selection 
-              options={["Select Device Type","Fitbit"]}
-              onChange={this.handleInputChange}
-              name="deviceInput"/>
-          </FieldDiv>
-          <Button 
-            name="verifyInfo"
-            type="green"
-            onClick={this.handleClick}>
-              Submit
-          </Button>
-        </InfoForm>
-        <DeviceForm verifyStep={this.state.verifyStep}>
-          <h3>Approve Access by Provider</h3>
-          <Button
-            name="verifyDevice"
-            type="green"
-            onClick={this.handleClick}>
-            Authorize with Provider
-          </Button>
-        </DeviceForm>
-     </WelcomeDiv>
-     <Footer/>
-    </Body>
-   )
- }
-}
-
-export default Verify;
-
-const Body =Styled.div`
-  min-height: 100vh;
-  display: grid;
-  grid-template-rows: auto 1fr auto
-`
-
-const WelcomeDiv = Styled.div`
-  background-color: #E5E5E5;
-  margin:.5rem;
-  display: grid;
-  grid-template-rows: 1fr auto auto;
-  justify-items: stretch;
-  align-items: center;
-  text-align: center;
-  
-  input{
-    display:block;
-    justify-self: stretch;
-    max-width: 100%;
-    margin: .5rem;
-  }
-  
+const Label = Styled.label`
+    display: flex;
+    flex-direction: column;
+    margin: 0.5em 0;
+    position: relative;
+	font: 13px Arial, Helvetica, sans-serif;
+	color: #888;
+	margin-bottom: 15px;
 `;
 
-const FieldDiv = Styled.div`
-  display: grid;
-  grid-template-columns: repeat(2,1fr);
-  input{
-    grid-column: 1/-1;
-  }
-`
+const Text = Styled.p`
+    font-family: 'Raleway', sans-serif;
+    color: ${props => props.color || '#4d4d4d'}
+`;
+
+class SignUp extends Component {
+    state = {
+        code: "",
+        firstName: "",
+        lastName: "",
+        date: "",
+        phone: "",
+        password: "",
+        email: "",
+        id: "",
+        company: "",
+        role: "",
+        secret: "",
+        verifyStep: 0,
+    }
+
+    componentDidMount = async () => {
+        const values = Router.query;
+
+        if (Object.entries(values).length !== 0 && values.constructor === Object) {
+            const verifyResponse = await this.verifyEmployee(values.e, values.t);
+            if (verifyResponse.success) {
+                sessionStorage.setItem("jwt", verifyResponse.token)
+                const employeeData = jwt_decode(verifyResponse.token);
+                const companyName = await this.findCompanyNameById(employeeData.company);
+                this.setState({
+                    company: companyName,
+                    role: employeeData.role,
+                    id: employeeData.id
+                })
+                this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }));
+            }
+        }
+    }
+
+    verifyEmployee = async (email, code) => {
+        const response = await fetch(`${EMPLOYEES_API}api/employee/verify`, {
+            method: "POST",
+            body: JSON.stringify({
+                "token": code,
+                "email": email
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const data = await response.json();
+        return data;
+    }
+
+    findCompanyNameById = async (id) => {
+        const jwt = await sessionStorage.getItem("jwt");
+        const companyResponse = await fetch(`${CUSTOMERS_API}api/customers/${id}`, {
+            headers: {
+                "Authorization": jwt
+            }
+        });
+        const companyData = await companyResponse.json();
+        return companyData[0].name;
+    }
+
+    updateEmployeeInformation = async (employee) => {
+        const first = employee.firstName;
+        const last = employee.lastName;
+        const dob = employee.dob;
+        const phone = employee.phone;
+        const password = employee.password;
+        const employeeResponse = await fetch(`${EMPLOYEES_API}api/employee/${employee.id}`, {
+            method: "PUT",
+            body: JSON.stringify({
+                "first_name": first,
+                "last_name": last,
+                "dob": dob,
+                "phone": phone,
+                "password": password
+            }),
+            headers: {
+                "Authorization": sessionStorage.getItem("jwt"),
+                "Content-Type": "application/json"
+            },
+        })
+
+        const employeeData = employeeResponse.json();
+        return employeeData;
+    }
+
+    render() {
+        return (
+            <React.Fragment>
+                <Nav />
+                <VerifyDiv verifyStep={this.state.verifyStep}>
+                    <Formik
+                        initialValues={{
+                            code: "",
+                            email: "",
+                        }}
+                        validationSchema={VerifySchema}
+                        onSubmit={async (values) => {
+                            const verifyResponse = await this.verifyEmployee(values.email, values.code);
+
+                            if (verifyResponse.success) {
+                                sessionStorage.setItem("jwt", verifyResponse.token)
+                                const employeeData = await jwt_decode(verifyResponse.token);
+                                const companyName = await this.findCompanyNameById(employeeData.company);
+                                this.setState({
+                                    company: companyName,
+                                    role: employeeData.role,
+                                    id: employeeData.id
+                                })
+                                this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }));
+                            } else {
+                                console.log(`Verification Failed`);
+                            }
+                        }}
+                        render={({ errors, touched, values, handleChange, handleBlur }) => (
+                            <React.Fragment>
+                                <FormInfo primary="Registration" secondary="Join your team today!" />
+                                <Form>
+                                    <FormSubHeader number="1" text="Verify Info" />
+                                    <FormSubInnerWrap>
+                                        <Label>
+                                            Email Address *
+                                {errors.email && touched.email && <Text color="red">{errors.email}</Text>}
+                                            <Input
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                value={values.email}
+                                                border={errors.email && "1px solid red"}
+                                                type="text"
+                                                name="email"
+                                                placeholder=""
+                                            />
+                                        </Label>
+                                        <Label>
+                                            Verify Code *
+                                {errors.code && touched.code && <Text color="red">{errors.code}</Text>}
+                                            <Input
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                value={values.code}
+                                                border={errors.code && "1px solid red"}
+                                                type="text"
+                                                name="code"
+                                                placeholder=""
+                                            />
+                                        </Label>
+                                    </FormSubInnerWrap>
+                                    <SubmitButton text="Verify Info" />
+                                </Form>
+                            </React.Fragment>
+                        )}
+                    />
+                </VerifyDiv>
+                <InfoDiv verifyStep={this.state.verifyStep}>
+                    <Formik
+                        initialValues={{
+                            firstName: "",
+                            lastName: "",
+                            date: "",
+                            phone: "",
+                            password: "",
+                        }}
+                        validationSchema={EmployeeSchema}
+                        onSubmit={async (values) => {
+                            const employee = {
+                                firstName: values.firstName,
+                                lastName: values.lastName,
+                                dob: values.date,
+                                phone: values.phone,
+                                id: this.state.id,
+                                password: values.password,
+                            }
+                            await this.updateEmployeeInformation(employee)
+                            this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }));
+                        }}
+                        render={({ errors, touched, values, handleChange, handleBlur, setFieldValue }) => (
+                            <React.Fragment>
+                                <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
+                                <Form>
+                                    <FormSubHeader number="2" text="Personal Info" />
+                                    <FormSubInnerWrap>
+                                        <p>Company: {this.state.company}</p>
+                                        <p>Role: {this.state.role}</p>
+                                        <Label>
+                                            First Name *
+                        {errors.firstName && touched.firstName && <Text color="red">{errors.firstName}</Text>}
+                                            <Input
+                                                type="text"
+                                                value={values.firstName}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                name="firstName"
+                                                border={errors.firstName && "1px solid red"}
+                                            />
+                                        </Label>
+                                        <Label>
+                                            Last Name *
+                        {errors.lastName && touched.lastName && <Text color="red">{errors.lastName}</Text>}
+                                            <Input
+                                                type="text"
+                                                value={values.lastName}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                name="lastName"
+                                                border={errors.lastName && "1px solid red"}
+                                            />
+                                        </Label>
+                                        <Label>
+                                            Phone *
+                        {errors.phone && touched.phone && <Text color="red">{errors.phone}</Text>}
+                                            <Input
+                                                type="text"
+                                                value={values.phone}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                name="phone"
+                                                border={errors.phone && "1px solid red"}
+                                            />
+                                        </Label>
+                                        <Label>
+                                            Password *
+                        {errors.password && touched.password && <Text color="red">{errors.password}</Text>}
+                                            <Input
+                                                type="password"
+                                                placeholder="Password"
+                                                value={values.password}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                name="password"
+                                                border={errors.password && "1px solid red"}
+                                            />
+                                        </Label>
+                                        <Label>
+                                            Date *
+                                        <Input
+                                                type="date"
+                                                value={values.date}
+                                                onChange={handleChange}
+                                                name="date" />
+                                        </Label>
+                                        <SubmitButton text="Create Profile" />
+                                    </FormSubInnerWrap>
+                                </Form>
+                            </React.Fragment>
+                        )}
+                    />
+                </InfoDiv>
+                <DeviceDiv verifyStep={this.state.verifyStep}>
+                    <Formik
+                        initialValues={{
+                            authProvider: true,
+                        }}
+                        onSubmit={async (values) => {
+                            if (values.authProvider) {
+                                window.location.href = `${EMPLOYEES_API}auth/fitbit?employeeId=${this.state.id}`
+                            } else {
+                                Router.push("/dashboard/employee");
+                            }
+                        }}
+                        render={({ setFieldValue, submitForm }) => (
+                            <React.Fragment>
+                                <FormInfo primary="Registration" secondary="Join your team today!" />
+                                <Form>
+                                    <FormSubHeader number="3" text="Device Info" />
+                                    <FormSubInnerWrap>
+                                        <h3>Approve Access by Provider</h3>
+                                        <Provider image="/static/images/fitbit-transparent-logo.png" alttext="Fitbit" available onClick={() => submitForm() } />
+                                        <Provider image="/static/images/garmin-transparent-logo.png" alttext="Garmin" onClick={() => setFieldValue("authProvider", false)} />
+                                        <Provider image="/static/images/apple-transparent-logo.png" alttext="Apple" onClick={() => setFieldValue("authProvider", false)} />
+                                        <br /><br />
+                                        <SubmitButton text="Do not authorize at this time" onClick={() => setFieldValue("authProvider", false)} />
+                                    </FormSubInnerWrap>
+                                    <SubmitButton text="Verify Info" />
+                                </Form>
+                            </React.Fragment>
+                        )}
+                    />
+                </DeviceDiv>
+                <Footer />
+            </React.Fragment>
+        )
+    }
+}
+
+export default SignUp;
 
 const VerifyDiv = Styled.div`
-  display:${({verifyStep})=>(verifyStep===0)?"grid":"none"};
-
-  @media(min-width: 1024px){
-    max-width: 50%;
-    justify-self: center;
-}
+    grid-template-columns: 2fr;
+    max-width: 800px;
+    width:80%;
+    padding:30px;
+    margin:40px auto;
+    background: #FFF;
+    border-radius: 10px;
+    -webkit-border-radius:10px;
+    -moz-border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+	display:${({ verifyStep }) => (verifyStep === 0) ? "grid" : "none"}
 `
 
-const InfoForm = Styled.div`
-  display:${({verifyStep})=>(verifyStep===1)?"grid":"none"};
-
-  @media(min-width: 1024px){
-    max-width: 50%;
-    justify-self: center;
-}
+const InfoDiv = Styled.div`
+    grid-template-columns: 2fr;
+    max-width: 800px;
+    width:80%;
+    padding:30px;
+    margin:40px auto;
+    background: #FFF;
+    border-radius: 10px;
+    -webkit-border-radius:10px;
+    -moz-border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+	display:${({ verifyStep }) => (verifyStep === 1) ? "grid" : "none"}
+`
+const DeviceDiv = Styled.div`
+    grid-template-columns: 2fr;
+    max-width: 800px;
+    width:80%;
+    padding:30px;
+    margin:40px auto;
+    background: #FFF;
+    border-radius: 10px;
+    -webkit-border-radius:10px;
+    -moz-border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+	display:${({ verifyStep }) => (verifyStep === 2) ? "grid" : "none"}
 `
 
-const DeviceForm = Styled.div`
-  display:${({verifyStep})=>(verifyStep===2)?"grid":"none"};
-
-  @media(min-width: 1024px){
-    max-width: 50%;
-    justify-self: center;
-}
-`
-
-// const ConsentForm = Styled.div`
-// display:${({verifyStep})=>(verifyStep===3)?"grid":"none"};
-
-// @media(min-width: 1024px){
-//   max-width: 50%;
-//   justify-self: center;
-// }
-// `

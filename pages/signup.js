@@ -1,300 +1,306 @@
 import React, { Component } from 'react';
-import Button from '../components/Button';
+import { Formik, Form, Field } from 'formik';
+import {Elements, StripeProvider} from 'react-stripe-elements-universal';
+import * as Yup from 'yup';
 import Styled from 'styled-components';
 import Nav from '../components/Nav';
 import Input from '../components/Input';
+import BundleOption from "../components/BundleOption";
+import BundleSubInnerWrap from "../components/BundleSubInnerWrap";
+import CheckoutForm from "../components/CheckoutForm";
 import Footer from '../components/Footer';
-import Selection from '../components/Selection';
-import Link from 'next/link';
-import Router from 'next/router'
-import { STATUS_CODES } from 'http';
-import { CUSTOMERS_API, EMPLOYEES_API } from "../static/api-config";
+import FormInfo from "../components/FormInfo";
+import FormSubHeader from "../components/FormSubHeader";
+import FormSubInnerWrap from "../components/FormSubInnerWrap";
+import ShowSelections from "../components/ShowSelections";
+import SubmitButton from "../components/SubmitButton";
+
+const CompanySchema = Yup.object().shape({
+    company_name: Yup.string()
+        .min(1, "Too Short!")
+        .max(100, "Too Long!")
+        .required("Required"),
+    address: Yup.string()
+        .min(2, "Too Short!")
+        .max(100, "Too Long!")
+        .required("Required"),
+    address2: Yup.string()
+        .min(2, "Too Short!")
+        .max(100, "Too Long!"),
+    city: Yup.string()
+        .min(2, "Too Short!")
+        .max(50, "Too Long!")
+        .required("Required"),
+    state: Yup.string()
+        .min(2, "Too Short!")
+        .max(20, "Too Long!")
+        .required("Required"),
+    zip: Yup.string()
+        .min(5, "Too Short!")
+        .max(15, "Too Long!")
+        .required("Required"),
+    email: Yup.string()
+        .email('Invalid email')
+        .required('Required'),
+});
+
+const Label = Styled.label`
+    display: flex;
+    flex-direction: column;
+    margin: 0.5em 0;
+    position: relative;
+	font: 13px Arial, Helvetica, sans-serif;
+	color: #888;
+	margin-bottom: 15px;
+`;
+
+const Text = Styled.p`
+    font-family: 'Raleway', sans-serif;
+    color: ${props => props.color || '#4d4d4d'}
+`;
 
 class SignUp extends Component {
-	state = {
-		verifyStep: 0,
-		companyNameInput:{
-			value: '',
-			regex: /^.{1,50}$/,
-			error: "Please enter a valid name.",
-			isValid: false
-		} ,
-		addressInput:{
-			 value: '',
-			 regex: /^\d+\s[A-z]+\s[A-z]+/g,
-			 error: "Please enter a valid address.",
-			 isValid: false
-		},
-		address2Input:{
-			value: '',
-	   },
-		cityInput: {
-			value: '',
-			regex: /[a-zA-Z\s]+/g,
-			error: "Please enter a valid city name.",
-			isValid: false
-	   },
-		stateInput: {
-			value: '',
-	   },
-		countryInput: {
-			value: '',
-			regex: /[a-zA-Z\s]+/g,
-			error: "Please enter a valid country name.",
-			isValid: false
-	   },
-		zipInput: {
-			value: '',
-			regex: /(^\d{5}$)|(^\d{5}-\d{4}$)/,
-			error: "Please enter a valid zip code.",
-			isValid: false
-	   },
-		emailInput: {
-			value: '',
-			regex: /^[^@]+@[^@]+\.[^@]+$/,
-			error: "Please enter a valid email address.",
-			isValid: false
-	   },
-		cardTypeInput: {
-			value: ''
-	   },
-		cardNumberInput: {
-			value: '',
-			regex: /^4[0-9]{12}(?:[0-9]{3})?$/,
-			error: "Please enter a valid credit card number.",
-			isValid: false
-	   },
-		cardExpInput: {
-			value: '',
-			regex: /^(0[1-9]|1[0-2])\/?([0-9]{4}|[0-9]{2})$/,
-			error: "Please enter a valid expiration date.",
-			isValid: false
-	   },
-		plan: ''
-	}
+    state = {
+        company_name: "",
+        address: "",
+        address2: "",
+        city: "",
+        state: "",
+        zip: "",
+        email: "",
+        plan: "",
+        verifyStep: 0,
+    }
 
-	handleInputChange = (event) => {
-		const { name, value } = event.target;
-		console.log(name, value);
-		const prevState = {...this.state[name]}
-		console.log (prevState);
-		prevState.value = value;
-		this.setState({ [name]: prevState, })
-	}
-
-	handleBlur = (event) => {
-		console.log(event.target);
-		const {name} = event.target;
-		const value = this.state[name].value;
-		if(name === event.target.name){
-			console.log(`validating ${event.target.name}`);
-			console.log(this.state[name]);
-			console.log(this.state[name].regex.test(value));
-			const isValid = (this.state[name].regex.test(value)) ? true : false;
-			const updatedState = {...this.state[name]};
-			updatedState.isValid = isValid;
-			this.setState({
-			  [name]:updatedState
-			})
-		  }
-	}
-
-	submitCompany = async () => {
-		const body = {
-			"name":this.state.companyNameInput.value,
-			"address": this.state.addressInput.value,
-			"address2": this.state.address2Input.value,
-			"city":this.state.cityInput.value,
-			"state":this.state.stateInput.value,
-			"country":this.state.countryInput.value,
-			"postal":this.state.zipInput.value,
-			"email":this.state.emailInput.value,
-			"package": this.state.plan,
-			"card_type":this.state.cardTypeInput.value,
-			"card_number": this.state.cardNumberInput.value,
-			"card_exp": this.state.cardExpInput.value,
-			"active":true
-        }
-
-		const response = await fetch (`${CUSTOMERS_API}api/customers`, {
-			method:"POST",
-			body:JSON.stringify(body),
-			headers: { 'Content-Type': 'application/json' }
-		});
-        const data = await response.json();
-
-        const empBody = {
-            "email": this.state.emailInput.value,
-            "company": data._id
-        }
-
-        if (response.status === 201) {
-            const resEmployee = await fetch (`${EMPLOYEES_API}api/employee/init`, {
-                method:"POST",
-                body:JSON.stringify(empBody),
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            const empData = await resEmployee.json();
-            Router.push(empData);
-        }
-	}
-
-	handleClick = (event) => {
-		const { name } = event.target;
-		console.log(event.target);
-		console.log(name);
-		if (name === "Bronze") {
-			this.setState((prevState) => ({ plan: name, verifyStep: prevState.verifyStep + 1 }))
-		} else if (name === "Silver") {
-			this.setState((prevState) => ({ plan: name, verifyStep: prevState.verifyStep + 1 }))
-		} else if (name === "Gold") {
-			this.setState((prevState) => ({ plan: name, verifyStep: prevState.verifyStep + 1 }))
-		} else if (name === "edit") {
-			this.setState((prevState) => ({ verifyStep: prevState.verifyStep - 3 }))
-		} else if (name === "submit") {
-			this.submitCompany();
-		} else {
-			this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }))
-			console.log("clicked");
-			console.log(this.state.verifyStep);
-		}
-		console.log(this.state.plan);
-	}
-
-	render() {
-		return (
-			<React.Fragment>
-				<Nav />
-				<SignUpDiv verifyStep={this.state.verifyStep}>
-					<h3>Register Your Company</h3>
-					<Input
-						placeholder="Company Name"
-						value={this.state.companyNameInput.value}
-						name="companyNameInput"
-						onChange={this.handleInputChange}
-						onBlur={this.handleBlur}
-					/>
-					<Input
-						placeholder="Address"
-						value={this.state.addressInput.value}
-						name="addressInput"
-						onChange={this.handleInputChange}
-						onBlur={this.handleBlur}
-					/>
-					<Input
-						placeholder="Address 2"
-						value={this.state.address2Input.value}
-						name="address2Input"
-						onChange={this.handleInputChange}
-					/>
-					<Input
-						placeholder="City"
-						value={this.state.cityInput.value}
-						name="cityInput"
-						onChange={this.handleInputChange}
-						onBlur={this.handleBlur}
-					/>
-					<Selection
-						options={["Select State","AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY"]}
-						value={this.state.stateInput.value}
-						name="stateInput"
-						onChange={this.handleInputChange}
-					/>
-					<Input
-						placeholder="Country"
-						value={this.state.countryInput.value}
-						name="countryInput"
-						onChange={this.handleInputChange}
-						onBlur={this.handleBlur}
-					/>
-					<Input
-						placeholder="Zip Code"
-						value={this.state.zipInput.value}
-						name="zipInput"
-						onChange={this.handleInputChange}
-						onBlur={this.handleBlur}
-					/>
-					<Input
-						placeholder="Email"
-						value={this.state.emailInput.value}
-						name="emailInput"
-						onChange={this.handleInputChange}
-						onBlur={this.handleBlur}
-					/>
-					<Button type="green" onClick={this.handleClick}>Next</Button>
-
-				</SignUpDiv>
-				<BundleDiv verifyStep={this.state.verifyStep}>
-					<h3>Select Your Bundle</h3>
-					<Button type="green" name="Bronze" onClick={this.handleClick}>Bronze - 1-200 Employees</Button>
-					<Button type="green" name="Silver" onClick={this.handleClick}>Silver - 201-500 Employees</Button>
-					<Button type="green" name="Gold" onClick={this.handleClick}>Gold - 501-1000 Employees</Button>
-				</BundleDiv>
-				<PaymentDiv verifyStep={this.state.verifyStep}>
-					<h3>Enter Your Payment Information</h3>
-					<Selection
-						options={["Select Card", "Visa", "Mastercard", "American Express"]}
-						value={this.state.cardTypeInput.value}
-						name="cardTypeInput"
-						onChange={this.handleInputChange}
-					/>
-					<Input
-						placeholder="Card Number"
-						value={this.state.cardNumberInput.value}
-						name="cardNumberInput"
-						onChange={this.handleInputChange}
-						onBlur={this.handleBlur}
-					/>
-					<Input
-						placeholder="Expiration Date"
-						value={this.state.cardExpInput.value}
-						name="cardExpInput"
-						onChange={this.handleInputChange}
-						onBlur={this.handleBlur}
-					/>
-					<Button type="green" onClick={this.handleClick}>Next</Button>
-				</PaymentDiv>
-				<ConfirmDiv verifyStep={this.state.verifyStep}>
-					<h3>Review and Confirm Purchase</h3>
-					<span><h4>Company Name: </h4>{this.state.companyNameInput.value}</span>
-					<span><h4>Address: </h4>{this.state.addressInput.value}</span>
-					<span><h4>Address 2: </h4>{this.state.address2Input.value}</span>
-					<span><h4>City: </h4>{this.state.cityInput.value}</span>
-					<span><h4>State: </h4>{this.state.stateInput.value}</span>
-					<span><h4>Country: </h4>{this.state.countryInput.value}</span>
-					<span><h4>Zip: </h4>{this.state.zipInput.value}</span>
-					<span><h4>Email: </h4>{this.state.emailInput.value}</span>
-					<span><h4>Plan Selected: </h4>{this.state.plan}</span>
-					<span><h4>Card Type: </h4>{this.state.cardTypeInput.value}</span>
-					<span><h4>Card Number: </h4>{this.state.cardNumberInput.value}</span>
-					<span><h4>Expiration Date: </h4>{this.state.cardExpInput.value}</span>
-					<Button type="green" name="submit" onClick={this.handleClick}>Submit</Button>
-					<Button type="blue" name="edit" onClick={this.handleClick}>Edit</Button>
-					<Link href="/"><Button type="red">Cancel</Button></Link>
-				</ConfirmDiv>
-				<Footer />
-			</React.Fragment>
-		)
-	}
+    render() {
+        return (
+            <React.Fragment>
+                <Nav />
+                <SignUpDiv verifyStep={this.state.verifyStep}>
+                    <Formik
+                        initialValues={{
+                            company_name: "",
+                            address: "",
+                            address2: "",
+                            email: "",
+                            city: "",
+                            state: "",
+                            zip: "",
+                        }}
+                        validationSchema={CompanySchema}
+                        onSubmit={values => {
+                            this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }))
+                            this.setState(values);
+                        }}
+                        render={({ errors, touched, values, handleChange, handleBlur }) => (
+                            <React.Fragment>
+                                <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
+                                <Form>
+                                    <FormSubHeader number="1" text="Company Info" />
+                                    <FormSubInnerWrap>
+                                        <Label>
+                                            Company Name *
+                                {errors.company_name && touched.company_name && <Text color="red">{errors.company_name}</Text>}
+                                            <Input
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                value={values.company_name}
+                                                border={errors.company_name && "1px solid red"}
+                                                type="text"
+                                                name="company_name"
+                                                placeholder=""
+                                            />
+                                        </Label>
+                                        <Label>
+                                            Email Address *
+                                {errors.email && touched.email && <Text color="red">{errors.email}</Text>}
+                                            <Input
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                value={values.email}
+                                                border={errors.email && "1px solid red"}
+                                                type="text"
+                                                name="email"
+                                                placeholder=""
+                                            />
+                                        </Label>
+                                        <Label>
+                                            Address *
+                                {errors.address && touched.address && <Text color="red">{errors.address}</Text>}
+                                            <Input
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                value={values.address}
+                                                border={errors.address && "1px solid red"}
+                                                type="text"
+                                                name="address"
+                                                placeholder="Address 1"
+                                            />
+                                        </Label>
+                                        <Label>
+                                            Address 2 *
+                                {errors.address2 && touched.address2 && <Text color="red">{errors.address2}</Text>}
+                                            <Input
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                value={values.address2}
+                                                border={errors.address2 && "1px solid red"}
+                                                type="text"
+                                                name="address2"
+                                                placeholder="Address 2"
+                                            />
+                                        </Label>
+                                        <Label>
+                                            City *
+                        {errors.city && touched.city && <Text color="red">{errors.city}</Text>}
+                                            <Input
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                value={values.city}
+                                                border={errors.city && "1px solid red"}
+                                                type="text"
+                                                name="city"
+                                                placeholder="City"
+                                            />
+                                        </Label>
+                                        <Label>
+                                            State *
+                        {errors.state && touched.state && <Text color="red">{errors.state}</Text>}
+                                            <Input
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                value={values.state}
+                                                border={errors.state && "1px solid red"}
+                                                type="text"
+                                                name="state"
+                                                placeholder="State"
+                                            />
+                                        </Label>
+                                        <Label>
+                                            Postal Code *
+                        {errors.city && touched.zip && <Text color="red">{errors.city}</Text>}
+                                            <Input
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                value={values.zip}
+                                                border={errors.zip && "1px solid red"}
+                                                type="text"
+                                                name="zip"
+                                                placeholder="Postal Code"
+                                            />
+                                        </Label>
+                                    </FormSubInnerWrap>
+                                    <SubmitButton text="Select Package" />
+                                </Form>
+                            </React.Fragment>
+                        )}
+                    />
+                </SignUpDiv>
+                <BundleDiv verifyStep={this.state.verifyStep}>
+                    <Formik
+                        initialValues={{
+                            plan: "",
+                        }}
+                        onSubmit={(values) => {
+                            this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }))
+                            this.setState(values);
+                        }}
+                        render={({ errors, touched, values, handleChange, handleBlur, setFieldValue }) => (
+                            <React.Fragment>
+                                <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
+                                <Form>
+                                    <FormSubHeader number="2" text="Available Bundles" />
+                                    <BundleSubInnerWrap>
+                                        <BundleOption colorChoice="#CD7F32" list={["Employees: 1-100", "Support: 8x5"]} price="$250" onClick={() => setFieldValue("plan", "bronze")} />
+                                        <BundleOption colorChoice="#C0C0C0" list={["Employees: 101-500", "Support: 24x5", "Personal Email Address"]} price="$500" onClick={() => setFieldValue("plan", "silver")} />
+                                        <BundleOption colorChoice="#FFD700" list={["Employees: 501-1000", "Support: 24x7", "Personal Email Address", "Personal Phone Number", "First Born"]} price="$1,000" onClick={() => setFieldValue("plan", "gold")} />
+                                    </BundleSubInnerWrap>
+                                </Form>
+                            </React.Fragment>
+                        )}
+                    />
+                </BundleDiv>
+                <PaymentDiv verifyStep={this.state.verifyStep}>
+                    <Formik
+                        initialValues={{
+                            editSubmit: "",
+                        }}
+                        onSubmit={async (values) => {
+                            if (values.editSubmit === "edit") {
+                                this.setState((prevState) => ({ verifyStep: prevState.verifyStep - 2 }))
+                            }
+                        }}
+                        render={({ setFieldValue }) => (
+                            <React.Fragment>
+                                <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
+                                <Form>
+                                    <FormSubHeader number="3" text="Validate Info" />
+                                    <ShowSelections {... this.state} />
+                                    <SubmitButton text="Edit Details" onClick={() => setFieldValue("editSubmit", "edit")} />
+                                    <br /><br />
+                                    <FormSubHeader number="4" text="Enter Payment" />
+                                    <StripeProvider apiKey="pk_test_kDKkByslO1VnLL3wTpOxMil9">
+                                        <Elements>
+                                            <CheckoutForm {... this.state} />
+                                        </Elements>
+                                    </StripeProvider>
+                                </Form>
+                            </React.Fragment>
+                        )}
+                    />
+                </PaymentDiv>
+                <Footer />
+            </React.Fragment>
+        )
+    }
 }
 
 export default SignUp;
 
 const SignUpDiv = Styled.div`
-	grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 2fr;
+    max-width: 800px;
+    width:80%;
+    padding:30px;
+    margin:40px auto;
+    background: #FFF;
+    border-radius: 10px;
+    -webkit-border-radius:10px;
+    -moz-border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
 	display:${({ verifyStep }) => (verifyStep === 0) ? "grid" : "none"}
 `
 
 const BundleDiv = Styled.div`
+    grid-template-columns: 2fr;
+    max-width: 800px;
+    width:80%;
+    padding:30px;
+    margin:40px auto;
+    background: #FFF;
+    border-radius: 10px;
+    -webkit-border-radius:10px;
+    -moz-border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
 	display:${({ verifyStep }) => (verifyStep === 1) ? "grid" : "none"}
 `
 
 const PaymentDiv = Styled.div`
+    grid-template-columns: 2fr;
+    max-width: 800px;
+    width:80%;
+    padding:30px;
+    margin:40px auto;
+    background: #FFF;
+    border-radius: 10px;
+    -webkit-border-radius:10px;
+    -moz-border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
 	display:${({ verifyStep }) => (verifyStep === 2) ? "grid" : "none"}
-`
-
-const ConfirmDiv = Styled.div`
-	grid-template-columns: repeat(3, 1fr);
-	display:${({ verifyStep }) => (verifyStep === 3) ? "grid" : "none"};
 `
