@@ -60,5 +60,4 @@ const EmployeeListDiv = Styled.div`
 `;
 
 const EmployeeCard = Styled.div`
-
 `;

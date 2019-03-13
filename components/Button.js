@@ -5,6 +5,7 @@ export default ({type,children,onClick,name,id,size}) => {
 
   return (
     <Button
+      size={size}
       name={name}
       id={id}
       type={type}
@@ -20,7 +21,7 @@ const Button = Styled.button`
       case "normal":
         return "1.5rem";
       case "small":
-        return "0";
+        return "1rem";
     }
   }};
   background-color:${({type}) => { 
@@ -43,7 +44,7 @@ const Button = Styled.button`
       case "small":
       return "0";
     }
-  }}1rem;
+  }};
   color: white;
   font-size:1rem;
 `

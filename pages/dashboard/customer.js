@@ -354,8 +354,8 @@ class Customer extends Component{
     const customerData = await jwt_decode(jwt);
     await this.setState({customerData:customerData})
     const employees = await this.findEmployeesByCompany(this.state.customerData.company);
-    await this.setState({employees:employees});
-    await this.state.employees.forEach(async (employee,index) => {
+    // await this.setState({employees:employees});
+    await employees.forEach(async (employee,index) => {
       const employeeHeartData = await this.fetchEmployeeHeartRate(employee._id);
       console.log(employeeHeartData);
       const employeesFitbit = [...employees];
@@ -382,7 +382,7 @@ class Customer extends Component{
             </NameDiv>
             {(this.state.navExpand)?
             <Button size="normal" type="green" onClick={this.handleNavClick} name="Home">Home</Button>:
-            <Button size="normal" type="transparent" onClick={this.handleNavClick} name="Home"><i class="fas fa-home"></i></Button>}
+            <Button size="small" type="transparent" onClick={this.handleNavClick} name="Home"><i class="fas fa-home"></i></Button>}
             {(this.state.navExpand)?
             <Button type="green" onClick={this.handleNavClick} name="Manage">Manage</Button>:
             <Button type="transparent" onClick={this.handleNavClick} name="Manage"><i class="fas fa-users"></i></Button>}
@@ -469,6 +469,8 @@ const NameDiv = Styled.div`
   margin:.5rem;
   color: white;
   text-decoration: none;
+  display: grid;
+  grid-template-columns: 1fr auto;
 
   h2{
     display: inline-block;
