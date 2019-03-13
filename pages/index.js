@@ -31,6 +31,7 @@ export default () => {
         </Testimonials>
         <How>
           <h2>How it Works</h2>
+          <p>It's bouncing around the Web like a beachball at a Nickelback concert. The safe word is WHiskey. Oh, man, he hit his ass with a parking cone! Nice. This is my hat now! This is totally my hat! So I galloped into a wooded glen, and after punch-dancing out my rage and suffering an extremely long and very painful fall, I realized what has to be done. Hey Sullivan, you chode! I owe you a shot in the nuts! My name is Rod, and I like to party. You know, pools are perfect for holding water... My name is Rod, and I like to party. I used to be legit. I was too legit. I was too legit to quit. but now I'm not legit. I'm unlegit. And for that reason, I must quit. My name is Rod, and I like to party. Oh, man, he hit his ass with a parking cone! Nice. Balls, man! We just ran over a small bus! God I go to church every goddamn Sunday! You gonna bring the demons out of me!? My name is Rod, and I like to party. Hey, Rod, what's that song about a grandma getting run over by a reindeer? This is my hat now! This is totally my hat! Balls, man! We just ran over a small bus! Funky Fresh. So I galloped into a wooded glen, and after punch-dancing out my rage and suffering an extremely long and very painful fall, I realized what has to be done.</p>
           <img src="/static/images/heart-health.jpeg" />
         </How>
         <Contact>
@@ -61,7 +62,7 @@ const Main = Styled.main`
 
 `
 const JoinDiv = Styled.div`
-  background-image: linear-gradient(to bottom right, #fed75e, #FFA600);
+  background: linear-gradient(to bottom right, #fed75e, #FFA600);
   display: grid;
   grid-template-rows: repeat (3, 1fr);
   border-radius: 25px;
@@ -83,14 +84,14 @@ const JoinDiv = Styled.div`
 `
 const Testimonials = Styled.div`
   display: grid;
-  grid-template-rows: 50px 50px 50px;
+  grid-template-rows: repeat (3, 1fr);
   grid-template-columns: repeat(3, 1fr);
   grid-template-areas: ". title ."
                         "message message message"
                          "card1 card2 card3";
   padding: 1rem;
   grid-gap: .75rem;
-  background-image: linear-gradient(to bottom right, #fed75e, #FFA600);
+  background: linear-gradient(to bottom right, #fed75e, #FFA600);
   border-radius: 25px;
   justify:center;
   text-align:center;
@@ -113,18 +114,35 @@ const TestCard3 = Styled(Card)`
   grid-area:card3;
 `
 const How = Styled.div `
-  background-image: linear-gradient(to bottom right, #fed75e, #FFA600);
+  background: linear-gradient(to bottom right, #fed75e, #FFA600);
   border-radius: 25px;
   text-align:center;
   display: grid;
+  grid-gap: .75rem;
+  grid-template-rows: repeat (2, 1fr);
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-areas: "title img"
+                      "message img"
+                      "message img";
+
+  h2 {
+    grid-area: title;
+  }
+
+  p {
+    grid-area: message;
+  }
 
   img {
-    width:20%;
+    grid-area: img;
+    width:50%;
     height: auto;
+    margin: auto;
   }
 `
 const Contact = Styled.div `
-  background-image: linear-gradient(to bottom right, #fed75e, #FFA600);
+  background: linear-gradient(to bottom right, #fed75e, #FFA600);
   border-radius: 25px;
   text-align:center;
+  display: grid;
 `
