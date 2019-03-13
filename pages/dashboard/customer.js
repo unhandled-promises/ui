@@ -15,7 +15,7 @@ class Customer extends Component{
     showHome:true,
     showManage: false,
     addModal:false,
-    navExpand:true,
+    navExpand:false,
     jwt:'',
     employees:[],
     activeEmployee:{},
@@ -140,7 +140,7 @@ class Customer extends Component{
 
   fetchEmployeeHeartRate = async (id) => {
 		const { jwt } = this.state;
-		const heartRateResponse = await fetch(`${EMPLOYEES_API}api/employee/${id}/activities/heart`,{
+		const heartRateResponse = await fetch(`${EMPLOYEES_API}api/employee/${id}/activities/today`,{
 			headers:{
 				"Authorization": jwt
 			}
@@ -384,18 +384,18 @@ class Customer extends Component{
             </NameDiv>
             {(this.state.navExpand)?
             <Button size="normal" type="green" onClick={this.handleNavClick} name="Home">Home</Button>:
-            <Button size="normal" type="green" onClick={this.handleNavClick} name="Home"><i class="fas fa-home"></i></Button>}
+            <Button size="normal" type="transparent" onClick={this.handleNavClick} name="Home"><i class="fas fa-home"></i></Button>}
             {(this.state.navExpand)?
             <Button type="green" onClick={this.handleNavClick} name="Manage">Manage</Button>:
-            <Button type="green" onClick={this.handleNavClick} name="Manage"><i class="fas fa-users"></i></Button>}
+            <Button type="transparent" onClick={this.handleNavClick} name="Manage"><i class="fas fa-users"></i></Button>}
             {(this.state.showManage)?
             (this.state.navExpand)?
             <Button type="blue" onClick={this.handleNavClick} name="Add">Add Employees</Button>:
-            <Button type="blue" onClick={this.handleNavClick} name="Add"><i class="fas fa-plus"></i></Button>:
+            <Button type="transparent" onClick={this.handleNavClick} name="Add"><i class="fas fa-plus"></i></Button>:
             null}
             {(this.state.navExpand)?
             <Button type="green" onClick={this.handleNavClick} name="Logout">Logout</Button>:
-            <Button type="green" onClick={this.handleNavClick} name="Logout"><i class="fas fa-sign-out-alt"></i></Button>}
+            <Button type="transparent" onClick={this.handleNavClick} name="Logout"><i class="fas fa-sign-out-alt"></i></Button>}
           </ControlPanel>
           <MainView>
             {(this.state.showHome)?<Home employees={this.state.employees}/>: null}
@@ -490,7 +490,7 @@ const DashBody = Styled.div`
      case true:
       return "1fr 80vw"
      case false:
-      return "50px 1fr"
+      return "120px 1fr"
       
    }
   }};
@@ -499,19 +499,43 @@ const DashBody = Styled.div`
   "Nav Nav"
   "Side Main"
   "Side Main";
-
 `
 
 const ControlPanel = Styled.div`
   display: grid;
   background-color: #333;
   grid-area: Side;
-  align-items: center;
+  grid-template-rows:${({toggle})=>{
+    switch(toggle){
+      case true:
+        return "auto repeat(3,1fr)"
+      case false:
+        return "repeat(4,100px)"
+    }
+  }};
+  align-items:${({toggle})=>{
+    switch(toggle){
+      case true:
+        return "stretch"
+      case false:
+        return "start"
+    }
+  }};
+
+  justify-items: ${({toggle})=>{
+    switch(toggle){
+      case true:
+        return "stretch"
+      case false:
+        return "center"
+    }
+  }};
 
   >h2{
     text-align:center;
-    
   }
+
+  
 `
 
 const MainView = Styled.div`

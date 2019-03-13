@@ -5,8 +5,21 @@ import Modal from '../Modal';
 
  const Home = ({employees}) => {
 
+  const getStatus = (bpm) => {
+    if(bpm > 160){
+      return "Danger"
+    } else if(bpm > 120){
+      return "Warning"
+    } else if(bpm > 60){
+      return "Normal"
+    }else if(bpm < 40){
+      return "Danger"
+    }
+  }
+
   const renderEmployees = (employeesArray) => {
     return employeesArray.map((employee,index)=>{
+      // const { restingHeartRate } = employee.heartRate.summary;
       return (
         <EmployeeCard key={index}>
           <Card 
@@ -15,8 +28,8 @@ import Modal from '../Modal';
             body={
             <div>
               <EmployeeAvatar src={employee.avatar}/>
-              <p>{`Heart Rate: ${employee.role}`}</p>
-              <p>{`Status: ${employee.role}`}</p>
+              {/* <p>{`Heart Rate: ${employee.heartRate.summary.restingHeartRate}`}</p> */}
+              {/* <p>{`Status: ${getStatus(restingHeartRate)}`}</p> */}
             </div>
             }  />
         </EmployeeCard>
