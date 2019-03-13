@@ -30,9 +30,16 @@ const ModalDiv = Styled.div`
 const ModalBody = Styled.section`
   position: fixed;
   background: #fff;
-  width: 80%;
+  width: 35%;
   height: auto;
   top: 50%;
   left:50%;
   transform: translate(-50%,-50%);
+  display: grid;
+  padding: 2rem;
+
+  button{
+    min-width: 50%;
+    justify-self: center;
+  }
 `;

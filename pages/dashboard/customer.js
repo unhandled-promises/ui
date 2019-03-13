@@ -15,6 +15,7 @@ class Customer extends Component{
     showHome:true,
     showManage: false,
     addModal:false,
+    navExpand:true,
     jwt:'',
     employees:[],
     activeEmployee:{},
@@ -137,6 +138,19 @@ class Customer extends Component{
     }
   }
 
+  fetchEmployeeHeartRate = async (id) => {
+		const { jwt } = this.state;
+		const heartRateResponse = await fetch(`${EMPLOYEES_API}api/employee/${id}/activities/heart`,{
+			headers:{
+				"Authorization": jwt
+			}
+		})
+    console.log(heartRateResponse);
+		const heartRateData = await heartRateResponse.json();
+    console.log(heartRateData);
+    return heartRateData;
+	}
+
   logUserOut = async () => {
     console.log(`Logging user out and removing jwt from session storage`);
     await sessionStorage.removeItem("jwt");
@@ -145,7 +159,9 @@ class Customer extends Component{
 
   // Click events for the side control panel
   handleNavClick = (event) => {
+    console.log(event.target);
     const { name } = event.target;
+    console.log(name);
     switch(name){
       case "Home":
         this.setState({
@@ -158,6 +174,12 @@ class Customer extends Component{
           showHome:false,
           showManage:true
         })
+        break;
+      case "Minimize":
+        this.setState({navExpand:false});
+        break;
+      case "Expand":
+        this.setState({navExpand:true});
         break;
       case "Add":
         this.setState({
@@ -183,7 +205,7 @@ class Customer extends Component{
     let employees;
     switch (name) {
       case "Add Employee":
-      const { emailInput, customerData } = this.state;
+      let { emailInput, customerData } = this.state;
         if(emailInput.isValid){
           console.log(emailInput.value);
           await this.createEmployee(emailInput.value,customerData.company);
@@ -245,7 +267,7 @@ class Customer extends Component{
         break;
 
       case "Update":
-      const { firstNameInput, lastNameInput, phoneInput, dateInput} = this.state;
+      const { firstNameInput, lastNameInput, phoneInput} = this.state;
       const { _id: id } = this.state.activeEmployee;
       console.log(`id: ${id}`);
         const validInfo = firstNameInput.isValid && lastNameInput.isValid && phoneInput.isValid && emailInput.isValid;
@@ -312,7 +334,6 @@ class Customer extends Component{
    }
 
   async componentWillMount(){
-    console.log(`will mount`);
     const jwt = await sessionStorage.getItem("jwt");
     if(jwt){
       await this.setState({jwt:jwt});
@@ -322,15 +343,18 @@ class Customer extends Component{
   }
 
   async componentDidMount(){
-    console.log(`did mount`);
     const jwt = await sessionStorage.getItem("jwt");
-    console.log(jwt);
     const customerData = await jwt_decode(jwt);
-    console.log(customerData);
-    this.setState({customerData:customerData})
+    await this.setState({customerData:customerData})
     const employees = await this.findEmployeesByCompany(this.state.customerData.company);
-    this.setState({employees:employees});
-    console.log(this.state.jwt);
+    await this.setState({employees:employees});
+    await this.state.employees.forEach(async (employee,index) => {
+      const employeeHeartData = await this.fetchEmployeeHeartRate(employee._id);
+      console.log(employeeHeartData);
+      const employeesFitbit = [...employees];
+      employeesFitbit[index].heartRate = employeeHeartData;
+      await this.setState({employees:employeesFitbit});
+    });
   }
 
   render(){
@@ -341,14 +365,21 @@ class Customer extends Component{
             <Nav />
           </NavDiv>
           <ControlPanel>
-            <h2>Hello, {this.state.customerData.email}</h2>
+            <NameDiv onClick={this.handleNavClick} name="NavToggle">
+              <h2>Hello, {this.state.customerData.email}</h2>
+              {(this.state.navExpand)?
+              <i class="fas fa-angle-double-left"></i>:
+              <i class="fas fa-angle-double-right"></i>}
+            </NameDiv>
             <Button type="green" onClick={this.handleNavClick} name="Home">Home</Button>
             <Button type="green" onClick={this.handleNavClick} name="Manage">Manage</Button>
             {(this.state.showManage)?<Button type="blue" onClick={this.handleNavClick} name="Add">Add Employees</Button>:null}
             <Button type="green" onClick={this.handleNavClick} name="Logout">Logout</Button>
           </ControlPanel>
-          {(this.state.showHome)?<Home employees={this.state.employees}/>: null}
-          {(this.state.showManage)?<Manage employees={this.state.employees} onClick={this.handleClick} />: null}
+          <MainView>
+            {(this.state.showHome)?<Home employees={this.state.employees}/>: null}
+            {(this.state.showManage)?<Manage employees={this.state.employees} onClick={this.handleClick} />: null}
+          </MainView>
         </DashBody>
         <Modal
           name="addModal"
@@ -372,6 +403,7 @@ class Customer extends Component{
           show={this.state.detailsModal}
           handleClose={this.handleClick}
           handleClick={this.handleClick}>
+          <h3>Edit Employee Information</h3>
           <Input
            type="text" 
            placeholder="Enter First Name" 
@@ -414,14 +446,17 @@ class Customer extends Component{
 
 export default Customer;
 
-const NavLink = Styled.a`
+const NameDiv = Styled.div`
   margin:.5rem;
   color: white;
   text-decoration: none;
+  h2{
+    display: inline-block;
+  }
 `
 
 const NavDiv = Styled.div`
-  grid-column:1/-1
+  grid-area: Nav;
 `;
 
 const DashBody = Styled.div`
@@ -429,16 +464,25 @@ const DashBody = Styled.div`
  height:100vh;
  width:100vw;
  grid-template-columns: 1fr 80vw;
- grid-template-rows: auto 1fr;
+ grid-template-rows: auto 1fr 1fr;
+ grid-template-areas:
+  "Nav Nav"
+  "Side Main"
+  "Side Main";
 
 `
 
 const ControlPanel = Styled.div`
   display: grid;
   background-color: #333;
+  grid-area: Side;
   
   >h2{
     text-align:center;
     
   }
+`
+
+const MainView = Styled.div`
+  grid-area: Main;
 `
