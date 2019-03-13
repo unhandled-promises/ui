@@ -159,9 +159,7 @@ class Customer extends Component{
 
   // Click events for the side control panel
   handleNavClick = (event) => {
-    console.log(event.target);
     const { name,id } = event.target;
-    console.log(name);
     switch(name){
       case "Home":
         this.setState({
