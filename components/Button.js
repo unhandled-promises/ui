@@ -1,10 +1,12 @@
 import React from 'react';
 import Styled from 'styled-components';
 
-export default ({type,children,onClick,name,id, className}) => {
+export default ({type,children,onClick,name,id,size, className}) => {
+
 
   return (
     <Button
+      size={size}
       name={name}
       id={id}
       type={type}
@@ -15,7 +17,14 @@ export default ({type,children,onClick,name,id, className}) => {
 }
 
 const Button = Styled.button`
-  padding: 1.5rem;
+  padding: ${({size})=>{
+    switch(size){
+      case "normal":
+        return "1.5rem";
+      case "small":
+        return "1rem";
+    }
+  }};
   background-color:${({type}) => { 
     switch (type){
       case 'green':
@@ -26,10 +35,20 @@ const Button = Styled.button`
         return '#AA5B5B'
       case 'dark':
         return '#1F2D3F'
+      case 'transparent':
+        return 'rgba(0,0,0,0)'
+
     }
   }};
   border: none;
-  margin: 1rem;
+  margin: ${({size})=>{
+    switch(size){
+      case "normal":
+        return "1rem";
+      case "small":
+      return "0";
+    }
+  }};
   color: white;
   font-size:1rem;
 `

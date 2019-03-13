@@ -15,6 +15,7 @@ class Customer extends Component{
     showHome:true,
     showManage: false,
     addModal:false,
+    navExpand:false,
     jwt:'',
     employees:[],
     activeEmployee:{},
@@ -137,6 +138,19 @@ class Customer extends Component{
     }
   }
 
+  fetchEmployeeHeartRate = async (id) => {
+		const { jwt } = this.state;
+		const heartRateResponse = await fetch(`${EMPLOYEES_API}api/employee/${id}/activities/today`,{
+			headers:{
+				"Authorization": jwt
+			}
+		})
+    console.log(heartRateResponse);
+		const heartRateData = await heartRateResponse.json();
+    console.log(heartRateData);
+    return heartRateData;
+	}
+
   logUserOut = async () => {
     console.log(`Logging user out and removing jwt from session storage`);
     await sessionStorage.removeItem("jwt");
@@ -145,7 +159,7 @@ class Customer extends Component{
 
   // Click events for the side control panel
   handleNavClick = (event) => {
-    const { name } = event.target;
+    const { name,id } = event.target;
     switch(name){
       case "Home":
         this.setState({
@@ -158,6 +172,12 @@ class Customer extends Component{
           showHome:false,
           showManage:true
         })
+        break;
+      case "Minimize":
+        this.setState({navExpand:false});
+        break;
+      case "Expand":
+        this.setState({navExpand:true});
         break;
       case "Add":
         this.setState({
@@ -176,6 +196,15 @@ class Customer extends Component{
         this.setState({detailsModal:true});
         break;
     }
+
+    switch(id){
+      case "Minimize":
+        this.setState({navExpand:false});
+        break;
+      case "Expand":
+        this.setState({navExpand:true});
+        break;
+    }
   }
 
   handleClick = async (event) => {
@@ -183,7 +212,7 @@ class Customer extends Component{
     let employees;
     switch (name) {
       case "Add Employee":
-      const { emailInput, customerData } = this.state;
+      let { emailInput, customerData } = this.state;
         if(emailInput.isValid){
           console.log(emailInput.value);
           await this.createEmployee(emailInput.value,customerData.company);
@@ -245,7 +274,7 @@ class Customer extends Component{
         break;
 
       case "Update":
-      const { firstNameInput, lastNameInput, phoneInput, dateInput} = this.state;
+      const { firstNameInput, lastNameInput, phoneInput} = this.state;
       const { _id: id } = this.state.activeEmployee;
       console.log(`id: ${id}`);
         const validInfo = firstNameInput.isValid && lastNameInput.isValid && phoneInput.isValid && emailInput.isValid;
@@ -312,7 +341,6 @@ class Customer extends Component{
    }
 
   async componentWillMount(){
-    console.log(`will mount`);
     const jwt = await sessionStorage.getItem("jwt");
     if(jwt){
       await this.setState({jwt:jwt});
@@ -322,33 +350,55 @@ class Customer extends Component{
   }
 
   async componentDidMount(){
-    console.log(`did mount`);
     const jwt = await sessionStorage.getItem("jwt");
-    console.log(jwt);
     const customerData = await jwt_decode(jwt);
-    console.log(customerData);
-    this.setState({customerData:customerData})
+    await this.setState({customerData:customerData})
     const employees = await this.findEmployeesByCompany(this.state.customerData.company);
-    this.setState({employees:employees});
-    console.log(this.state.jwt);
+    // await this.setState({employees:employees});
+    await employees.forEach(async (employee,index) => {
+      const employeeHeartData = await this.fetchEmployeeHeartRate(employee._id);
+      console.log(employeeHeartData);
+      const employeesFitbit = [...employees];
+      employeesFitbit[index].heartRate = employeeHeartData;
+      await this.setState({employees:employeesFitbit});
+    });
   }
 
   render(){
     return(
       <React.Fragment>
-        <DashBody>
+        <DashBody toggle={this.state.navExpand}>
           <NavDiv>
             <Nav />
           </NavDiv>
-          <ControlPanel>
-            <h2>Hello, {this.state.customerData.email}</h2>
-            <Button type="green" onClick={this.handleNavClick} name="Home">Home</Button>
-            <Button type="green" onClick={this.handleNavClick} name="Manage">Manage</Button>
-            {(this.state.showManage)?<Button type="blue" onClick={this.handleNavClick} name="Add">Add Employees</Button>:null}
-            <Button type="green" onClick={this.handleNavClick} name="Logout">Logout</Button>
+          <ControlPanel toggle={this.state.navExpand}>
+            <NameDiv>
+              {(this.state.navExpand)?
+              <h2>Hello, {this.state.customerData.email}</h2>:
+              null}
+              {(this.state.navExpand)?
+              <Button size="normal" type="transparent" onClick={this.handleNavClick} name="Minimize"><i id="Minimize" class="fas fa-angle-double-left"></i></Button>:
+              <Button size="small" type="transparent" onClick={this.handleNavClick} name="Expand"><i id="Expand" class="fas fa-angle-double-right"></i></Button>}
+            </NameDiv>
+            {(this.state.navExpand)?
+            <Button size="normal" type="green" onClick={this.handleNavClick} name="Home">Home</Button>:
+            <Button size="small" type="transparent" onClick={this.handleNavClick} name="Home"><i class="fas fa-home"></i></Button>}
+            {(this.state.navExpand)?
+            <Button type="green" onClick={this.handleNavClick} name="Manage">Manage</Button>:
+            <Button type="transparent" onClick={this.handleNavClick} name="Manage"><i class="fas fa-users"></i></Button>}
+            {(this.state.showManage)?
+            (this.state.navExpand)?
+            <Button type="blue" onClick={this.handleNavClick} name="Add">Add Employees</Button>:
+            <Button type="transparent" onClick={this.handleNavClick} name="Add"><i class="fas fa-plus"></i></Button>:
+            null}
+            {(this.state.navExpand)?
+            <Button type="green" onClick={this.handleNavClick} name="Logout">Logout</Button>:
+            <Button type="transparent" onClick={this.handleNavClick} name="Logout"><i class="fas fa-sign-out-alt"></i></Button>}
           </ControlPanel>
-          {(this.state.showHome)?<Home employees={this.state.employees}/>: null}
-          {(this.state.showManage)?<Manage employees={this.state.employees} onClick={this.handleClick} />: null}
+          <MainView>
+            {(this.state.showHome)?<Home employees={this.state.employees}/>: null}
+            {(this.state.showManage)?<Manage employees={this.state.employees} onClick={this.handleClick} />: null}
+          </MainView>
         </DashBody>
         <Modal
           name="addModal"
@@ -372,6 +422,7 @@ class Customer extends Component{
           show={this.state.detailsModal}
           handleClose={this.handleClick}
           handleClick={this.handleClick}>
+          <h3>Edit Employee Information</h3>
           <Input
            type="text" 
            placeholder="Enter First Name" 
@@ -414,31 +465,79 @@ class Customer extends Component{
 
 export default Customer;
 
-const NavLink = Styled.a`
+const NameDiv = Styled.div`
   margin:.5rem;
   color: white;
   text-decoration: none;
+  display: grid;
+  grid-template-columns: 1fr auto;
+
+  h2{
+    display: inline-block;
+  }
 `
 
 const NavDiv = Styled.div`
-  grid-column:1/-1
+  grid-area: Nav;
 `;
 
 const DashBody = Styled.div`
  display: grid;
  height:100vh;
  width:100vw;
- grid-template-columns: 1fr 80vw;
- grid-template-rows: auto 1fr;
-
+ grid-template-columns:${({toggle})=>{
+   switch(toggle){
+     case true:
+      return "1fr 80vw"
+     case false:
+      return "120px 1fr"
+      
+   }
+  }};
+ grid-template-rows: auto 1fr 1fr;
+ grid-template-areas:
+  "Nav Nav"
+  "Side Main"
+  "Side Main";
 `
 
 const ControlPanel = Styled.div`
   display: grid;
   background-color: #333;
-  
+  grid-area: Side;
+  grid-template-rows:${({toggle})=>{
+    switch(toggle){
+      case true:
+        return "auto repeat(3,1fr)"
+      case false:
+        return "repeat(4,100px)"
+    }
+  }};
+  align-items:${({toggle})=>{
+    switch(toggle){
+      case true:
+        return "stretch"
+      case false:
+        return "start"
+    }
+  }};
+
+  justify-items: ${({toggle})=>{
+    switch(toggle){
+      case true:
+        return "stretch"
+      case false:
+        return "center"
+    }
+  }};
+
   >h2{
     text-align:center;
-    
   }
+
+  
+`
+
+const MainView = Styled.div`
+  grid-area: Main;
 `

@@ -9,7 +9,7 @@ export default ({ todayStats }) => {
         <h3>Today's Stats</h3>
       </CardHeading>
       <CardBody>
-        <p>Resting Heart Rate: {todayStats.summary.restingHeartRate}</p>
+        <p>Heart Rate: {todayStats.summary.restingHeartRate} <IconDetails colorChoice={"red"} className="fas fa-heartbeat"></IconDetails></p>
         <p>Steps: {todayStats.summary.steps} </p>
         <p>Calories Burned: {todayStats.summary.caloriesOut} </p>
       </CardBody>
@@ -24,6 +24,8 @@ const Card = Styled.div`
   justify-items: center;
   box-shadow: #696773 -10px 5px 10px;
   min-height: 200px;
+  margin-bottom: 20px;
+  margin-top: 10px;
 `
 
 const CardHeading = Styled.div`
@@ -37,4 +39,20 @@ const CardBody = Styled.div`
   margin:0;
   align-self: center;
   margin: 10px;
+  background-color: #fff;
+  width: 95%;
+  h4{
+    padding: 0px 15px;
+  }
+  p{
+    padding: 0px 15px;
+  }
+`
+
+const IconBlock = Styled.i`
+    color: #FFFFFF;
+`
+
+const IconDetails = Styled.i`
+    color: ${props => props.colorChoice};
 `

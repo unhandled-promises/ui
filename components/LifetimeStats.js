@@ -26,6 +26,8 @@ const Card = Styled.div`
   background-color: #EFEFEF;
   box-shadow: #696773 -10px 5px 10px;
   min-height: 200px;
+  margin-bottom: 20px;
+  margin-top: 10px;
 `
 
 const CardHeading = Styled.div`
@@ -39,4 +41,11 @@ const CardBody = Styled.div`
   margin:0;
   align-self: center;
   margin: 10px;
+  background-color: #fff;
+  h4{
+    padding: 0px 15px;
+  }
+  p{
+    padding: 0px 15px;
+  }
 `

@@ -2,31 +2,32 @@ import React from 'react'
 import Styled from 'styled-components';
 import * as moment from "moment";
 
-export default ({ employeeInfo }) => {
+export default ({ devices }) => {
   return (
-
     <Card>
       <CardHeading>
-        <h3>{employeeInfo.first_name} {employeeInfo.last_name}</h3>
+        <h3>Devices</h3>
       </CardHeading>
       <CardBody>
-        <img
-          src={employeeInfo.avatar}
-          style={{ height: 50, left: 10, borderRadius: "50%" }}
-          alt=""
-        />
-        <p>Date of Birth: {moment(employeeInfo.dob).format('YYYY-MM-DD')}</p>
-        <p>Email: {employeeInfo.email}</p>
+        {devices.map((device, i) => {
+          return (
+            <Group>
+              <h4>{device.deviceVersion}</h4>
+              <p>Battery: {device.battery}</p>
+              <p>Last Sync Time: {moment(device.lastSyncTime).format('YYYY-MM-DD')}</p>
+              <p>Type: {device.type}</p>
+            </Group>
+          )
+        })}
       </CardBody>
     </Card>
   )
-};
+}
 
 const Card = Styled.div`
   display: grid;
   grid-template-rows: auto 1fr;
   background-color: #EFEFEF;
-  justify-items: center;
   box-shadow: #696773 -10px 5px 10px;
   min-height: 200px;
   margin-bottom: 20px;
@@ -44,11 +45,15 @@ const CardBody = Styled.div`
   margin:0;
   align-self: center;
   margin: 10px;
-  background-color: #fff;
-  h4{
-    padding: 0px 15px;
-  }
-  p{
-    padding: 0px 15px;
-  }
 `
+
+const Group = Styled.div`
+  position: relative;
+  display: block;
+  padding: 10px 15px;
+  margin-bottom: -1px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+`
+

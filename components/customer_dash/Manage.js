@@ -44,12 +44,15 @@ import Card from '../Card';
 export default Manage;
 
 const ManageDiv= Styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
+margin: 1rem;
+display: grid;
+grid-template-columns: repeat(3,1fr);
+justify-items: center;
 
-  >h1{
-    justify-self: center;
-  }
+h1{
+  grid-column: 1/-1;
+  justify-self: center;
+}
 `
 
 const EmployeeListDiv = Styled.div`
@@ -57,5 +60,4 @@ const EmployeeListDiv = Styled.div`
 `;
 
 const EmployeeCard = Styled.div`
-
 `;
