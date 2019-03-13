@@ -13,7 +13,8 @@ const Footer =Styled.div `
 	bottom:0;
 	margin-bottom:0;
 	text-align:center;
-	background-color: #9FBEBA;
+	background-color: #1f2d3f;
+	opacity: .9;
 	color: white;
 	overflow:auto;
 	display: flex;

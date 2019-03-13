@@ -4,7 +4,7 @@ import Styled from 'styled-components';
 export default ({image}) => {
 	return (
 		<Hero img={image}>
-			<HeroText>Start Working Safer Today!</HeroText>
+			<HeroText>fit2work</HeroText>
 		</Hero>
 	)
 }

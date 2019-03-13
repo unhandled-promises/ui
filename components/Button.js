@@ -1,7 +1,8 @@
 import React from 'react';
 import Styled from 'styled-components';
 
-export default ({type,children,onClick,name,id,size}) => {
+export default ({type,children,onClick,name,id,size, className}) => {
+
 
   return (
     <Button
@@ -32,8 +33,11 @@ const Button = Styled.button`
         return '#5B85AA'
       case 'red':
         return '#AA5B5B'
+      case 'dark':
+        return '#1F2D3F'
       case 'transparent':
         return 'rgba(0,0,0,0)'
+
     }
   }};
   border: none;

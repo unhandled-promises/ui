@@ -1,10 +1,11 @@
 import React from 'react'
 import Styled from 'styled-components'
 import Nav from '../components/Nav'
-import Hero from '../components/Hero'
 import Card from '../components/Card'
+import Button from '../components/Button'
 import Footer from '../components/Footer'
 import Link from 'next/link'
+import Input from '../components/Input'
 
 const placeholder1 = "Doggo ipsum he made many woofs such treat wow very biscit mlem stop it fren very good spot you are doing me the shock, doggorino ruff borkf extremely cuuuuuute very taste wow. you are doing me the shock you are doin me a concern borkf."
 
@@ -12,20 +13,39 @@ const placeholder2 = "Very taste wow yapper smol wow such tempt, bork shooberino
 
 const placeholder3 = "Blep long bois wow very biscit bork such treat floofs, thicc mlem puggo wow very biscit. Ruff puggo fluffer pats, ur givin me a spook.  Clouds shoober borking doggo very taste wow shoober borkf, much ruin diet most angery pupper I have ever seen doggorino boofers. Borkf most angery pupper I have ever seen pupper you are doing me the shock, clouds."
 
-
 export default () => {
   return (
     <Body>
-      <Nav sticky={false}/>
-      <Hero image="/static/images/endurance-exercise-female.jpg" />
+      <Nav sticky={false} />
       <Main>
-        <Card title="Much Health" body={placeholder1} />
-        <Card title="So Fit" body={placeholder2} />
-        <Card title="Such Safe" body={placeholder3} />
         <JoinDiv>
-          <h2>Sign Up <Link href="/signup"><a>Here</a></Link></h2>
-          <h3>Already a Member? <Link href="/login"><a>Login</a></Link></h3>
+          <h1>Fit2Work is the next level of employee wellness.</h1>
+          <Link href="/signup"><Create type="dark">Create an Account</Create></Link>
+          <h4>Already a member? <Link href="/login"><a>Login</a></Link></h4>
         </JoinDiv>
+        <Testimonials>
+          <h2>TESTIMONIALS</h2>
+          <p>Here's what some of our clients are saying about us!</p>
+          <TestCard1 title="Much Health" body={placeholder1} />
+          <TestCard2 title="So Fit" body={placeholder2} />
+          <TestCard3 title="Such Safe" body={placeholder3} />
+        </Testimonials>
+        <How>
+          <h2>HOW IT WORKS</h2>
+          <p>It's bouncing around the Web like a beachball at a Nickelback concert. The safe word is WHiskey. Oh, man, he hit his ass with a parking cone! Nice. This is my hat now! This is totally my hat! So I galloped into a wooded glen, and after punch-dancing out my rage and suffering an extremely long and very painful fall, I realized what has to be done. Hey Sullivan, you chode! I owe you a shot in the nuts! My name is Rod, and I like to party. You know, pools are perfect for holding water... My name is Rod, and I like to party. I used to be legit. I was too legit. I was too legit to quit. but now I'm not legit. I'm unlegit. And for that reason, I must quit. My name is Rod, and I like to party. Oh, man, he hit his ass with a parking cone! Nice. Balls, man! We just ran over a small bus! God I go to church every goddamn Sunday! You gonna bring the demons out of me!? My name is Rod, and I like to party. Hey, Rod, what's that song about a grandma getting run over by a reindeer? This is my hat now! This is totally my hat! Balls, man! We just ran over a small bus! Funky Fresh. So I galloped into a wooded glen, and after punch-dancing out my rage and suffering an extremely long and very painful fall, I realized what has to be done.</p>
+          <img src="/static/images/heart-health.jpeg" />
+        </How>
+        <Contact>
+          <h2>CONTACT US</h2>
+          <form>
+          <p>Curious? Reach out to us and request a demo!</p>
+          <Input type="name" placeholder="Name"/>
+          <Input type="email" placeholder="Email"/>
+          <Input type="phone" placeholder="Phone Number"/>
+          <Button type="dark">Submit</Button>
+          </form>
+          <img src="/static/images/yoga.jpeg"/>
+        </Contact>
       </Main>
       <Footer />
     </Body>
@@ -33,20 +53,138 @@ export default () => {
 }
 
 const Body = Styled.div`
+  background: url("/static/images/endurance-exercise-female.jpg") no-repeat fixed center;
   display: grid;
-  grid-template-rows: 100px auto 1fr auto;
+  grid-template-rows: 100px auto 1fr;
 `
 
 const Main = Styled.main`
-  background-color: #FFF;
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  grid-gap: .75rem;
+  display:grid;
+  grid-template-rows: repeat(4,1fr);
+  grid-gap:500px;
   padding: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  
+  h1,h2,h3,h4 {
+    font-family: 'Roboto', sans-serif;
+  }
+
+`
+const JoinDiv = Styled.div`
+  background: linear-gradient(to bottom right, #fed75e, #FFA600);
+  max-width: 30vw;
+  display: grid;
+  grid-template-rows: repeat (3, 1fr);
+  border-radius: 25px;
+  opacity: .9;
+  justify-self: left;
+  text-align: center;
+
+  h1 {
+    grid-row-start: 1 / span 1;
+  }
+
+  a {
+    text-decoration:none;
+    color: #000;
+  }
+  a :hover {
+    color: #9FBEBA;
+  }
+`
+const Create = Styled(Button)`
+  width: 50%;
+
+  & : hover {
+    background-color: #000;
+  }
 `
 
-const JoinDiv = Styled.div`
-  grid-column: 1/-1;
-  justify-self: center;
-  text-align: center;
+const Testimonials = Styled.div`
+  display: grid;
+  grid-template-rows: repeat (3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-areas: ". title ."
+                        "message message message"
+                         "card1 card2 card3";
+  padding: 1rem;
+  grid-gap: .75rem;
+  background: linear-gradient(to bottom right, #fed75e, #FFA600);
+  border-radius: 25px;
+  justify:center;
+  text-align:center;
+
+  h2 {
+    grid-area: title;
+  }
+  p {
+    grid-area: message;
+    margin: 10;
+  }
+`
+const TestCard1 = Styled(Card)`
+  grid-area:card1;
+`
+const TestCard2 = Styled(Card)`
+  grid-area:card2;
+`
+const TestCard3 = Styled(Card)`
+  grid-area:card3;
+`
+const How = Styled.div `
+  background: linear-gradient(to bottom right, #fed75e, #FFA600);
+  border-radius: 25px;
+  text-align:center;
+  display: grid;
+  grid-gap: .75rem;
+  grid-template-rows: repeat (2, 1fr);
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-areas: "title img"
+                      "message img"
+                      "message img";
+
+  h2 {
+    grid-area: title;
+  }
+
+  p {
+    grid-area: message;
+    margin: 20px;
+    text-align:left;
+  }
+
+  img {
+    grid-area: img;
+    width:50%;
+    height: auto;
+    margin: auto;
+  }
+`
+const Contact = Styled.div `
+  background: linear-gradient(to bottom right, #fed75e, #FFA600);
+  border-radius: 25px;
+  text-align:center;
+  display: grid;
+  grid-gap: .75rem;
+  grid-template-rows: repeat (2, 1fr);
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-areas: "title img"
+                      "message img"
+                      "message img";
+
+  h2 {
+    grid-area: title;
+  }
+  
+  form {
+    grid-area:message;
+    margin: auto;
+  }
+  
+  img {
+    grid-area: img;
+    width:50%;
+    height: auto;
+    margin: auto;
+  }
 `

@@ -1,9 +1,9 @@
 import React from 'react';
 import Styled from 'styled-components';
 
-export default ({title,body}) => {
+export default ({title,body,className}) => {
 	return (
-		<Card>
+		<Card className ={className}>
 			<CardHeading>
         <h3>{title}</h3>
       </CardHeading>
