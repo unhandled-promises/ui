@@ -1,28 +1,62 @@
 import React, { Component } from 'react';
 import Styled from 'styled-components';
-import Button from '../../components/Button';
 import Footer from '../../components/Footer';
-import Card from '../../components/Card';
 import FullNav from '../../components/FullNav';
-import Toggle from '../../components/Toggle';
 import Input from '../../components/Input';
 import Modal from '../../components/Modal';
-import Selection from '../../components/Selection';
-import { CUSTOMERS_API, EMPLOYEES_API } from "../../static/api-config";
+import { EMPLOYEES_API } from "../../static/api-config";
 import Link from 'next/link';
 import Router from 'next/router';
+import Badges from '../../components/Badges'
+import Friends from '../../components/Friends'
+import LifetimeStats from '../../components/LifetimeStats'
+import EmployeeCard from '../../components/EmployeeCard'
+import { Container, Row, Col } from 'styled-bootstrap-grid';
+import DailyStats from '../../components/DailyStats';
 
 class Employee extends Component {
 	state = {
-		stopTransmission: false,
+		todayStats: {
+			summary: {
+				restingHeartRate: '',
+				steps: '',
+				caloriesBurned: '',
+			},
+		},
+		lifetimeStats: {
+			best: {
+				total: {
+					distance: {
+						date: '',
+						value: ''
+					},
+					steps: {
+						date: '',
+						value: ''
+					}
+				}
+			},
+			lifetime: {
+				total: {
+					distance: '',
+					steps: ''
+				}
+			}
+		},
+		badges: {
+			badges: []
+		},
+		friends: { friends: [] },
 		editModal: false,
 		jwt: '',
 		employeeData: {
+			
 			firstName: '',
 			lastName: '',
 			password: '',
 			phone: '',
-			dob:''
+			dob: '',
+			email: ''
 		},
 		firstNameInput: {
 			value: '',
@@ -34,7 +68,7 @@ class Employee extends Component {
 			value: '',
 			regex: /^[a-z]+$/i,
 			error: "Please enter a valid last name",
-			isValid:true
+			isValid: true
 		},
 		passwordInput: {
 			value: '',
@@ -57,46 +91,33 @@ class Employee extends Component {
 	async componentDidMount() {
 		const jwt = await sessionStorage.getItem("jwt");
 		if (jwt) {
-			await this.setState({ jwt: jwt });
-			const tokenData = await jwt_decode(jwt);
-			const employeeData = await this.fetchEmployeeInfo(tokenData.id);
-			await this.setState({ employeeData: employeeData });
-			setInterval(()=>{this.fetchEmployeeHeartRate(tokenData.id)},10000)
+			this.setState({ jwt: jwt });
+			this.fetchData("/", "employeeData");
+			this.fetchData("/activities/lifetime/", "lifetimeStats");
+			this.fetchData('/badges/', 'badges')
+			this.fetchData("/activities/today/", "todayStats");
+			this.fetchData("/friends/", "friends");
+			// setInterval(()=>{this.fetchEmployeeHeartRate(tokenData.id)},10000)
 		} else {
-			Router.push("/login");
+			Router.push("/login/");
 		}
 	}
 
-	fetchEmployeeInfo = async (id) => {
+	fetchData = async (url, stateKey) => {
 		const { jwt } = this.state;
-		const getInfoResponse = await fetch(`${EMPLOYEES_API}api/employee/${id}`,{
-			method:"GET",
-			headers:{
-				"Authorization": jwt
-			}
-		});
-		const getInfoData = await getInfoResponse.json();
-		return getInfoData;
-	}
-
-	fetchEmployeeHeartRate = async (id) => {
-		const { jwt } = this.state;
-		const heartRateResponse = await fetch(`${EMPLOYEES_API}api/employee/${id}/activities/heart`,{
-			headers:{
-				"Authorization": jwt
-			}
-		})
-
-		const heartRateData = await heartRateResponse.json();
-		console.log(heartRateData);
-	}
-
-	toggleTransmission = () => {
-		if (this.state.stopTransmission === false) {
-			this.setState({ stopTransmission: true })
-		} else {
-			this.setState({ stopTransmission: false })
-		}
+		const token = await jwt_decode(jwt);
+		try {
+			const response = await fetch(`${EMPLOYEES_API}api/employee/${token.id}${url}`, {
+				method: "GET",
+				headers: {
+					"Authorization": jwt
+				}
+			});
+			const jsonResponse = await response.json();
+			await this.setState({ [stateKey]: jsonResponse })
+		} catch (error) {
+			console.log(error);
+		};
 	}
 
 	handleInputChange = (event) => {
@@ -145,7 +166,7 @@ class Employee extends Component {
 	updateAccountInfo = async (updatedInfo) => {
 		console.log("Updating User")
 		const { id, firstName, lastName, password, phone, dob } = updatedInfo;
-		const {jwt} = this.state;
+		const { jwt } = this.state;
 		const updateResponse = await fetch(`${EMPLOYEES_API}api/employee/${id}`, {
 			method: "PUT",
 			body: JSON.stringify({
@@ -168,14 +189,14 @@ class Employee extends Component {
 		console.log(`Logging user out and removing jwt from session storage`);
 		await sessionStorage.removeItem("jwt");
 		Router.push("/login");
-	  }
+	}
 
 	handleClick = async (event) => {
 		const { name } = event.target;
 		switch (name) {
 			case "edit":
 				const { id } = this.state.employeeData;
-				const { first_name:firstName, last_name:lastName, password, phone, dob } = this.state.employeeData;
+				const { first_name: firstName, last_name: lastName, password, phone, dob } = this.state.employeeData;
 				const prevFirstNameState = { ...this.state.firstNameInput };
 				const prevLastNameState = { ...this.state.lastNameInput };
 				const prevPhoneState = { ...this.state.phoneInput };
@@ -206,9 +227,9 @@ class Employee extends Component {
 				break;
 			case "Update":
 				const { firstNameInput, lastNameInput, phoneInput, passwordInput, dateInput } = this.state;
-				const { _id:employeeId } = this.state.employeeData;	
+				const { _id: employeeId } = this.state.employeeData;
 				console.log(`id: ${employeeId}`);
-				const validInfo = firstNameInput.isValid && lastNameInput.isValid  && passwordInput.isValid;
+				const validInfo = firstNameInput.isValid && lastNameInput.isValid && passwordInput.isValid;
 				if (validInfo) {
 					const updatedInfo = {
 						firstName: firstNameInput.value,
@@ -228,7 +249,7 @@ class Employee extends Component {
 					console.log(`Please enter valid information`);
 				}
 				break;
-				case "Logout":
+			case "Logout":
 				this.logUserOut();
 				break;
 
@@ -242,37 +263,41 @@ class Employee extends Component {
 					<Link href="/dashboard/employee"><NavLink>Home</NavLink></Link>
 					<NavLink onClick={this.handleClick} name="Logout">Logout</NavLink>
 				</FullNav>
-				<WelcomeDiv><h1>Welcome {this.state.employeeData.email}!</h1></WelcomeDiv>
-				<CardWrapper>
-					<Card title="Heart Rate" />
-					<Card title="Coordinates" />
-					<Card title="Altitude" />
-				</CardWrapper>
-				<ButtonDiv>
-					<Button type="green">Trends</Button>
-					<Button type="red" onClick={this.toggleTransmission}>{this.state.stopTransmission ? "Start Transmission" : "Stop Transmission"}</Button>
-					<Button type="blue" name="edit" onClick={this.handleClick}>Edit Account</Button>
-				</ButtonDiv>
+				<WelcomeDiv><h1>{this.state.employeeData.first_name}'s Dashboard</h1></WelcomeDiv>
+				<Container>
+					<Row>
+						<Col col="3">
+							<EmployeeCard employeeInfo={this.state.employeeData} />
+							<LifetimeStats lifetimeStats={this.state.lifetimeStats} />
+						</Col>
+						<Col col="5">
+							<DailyStats todayStats={this.state.todayStats} />
+						</Col>
+						<Col col="2">
+							<Friends friends={this.state.friends.friends} />
+							<Badges badges={this.state.badges} />
+						</Col>
+					</Row>
+				</Container>
 				<Modal name="editModal"
 					buttonNames={["Update"]}
 					show={this.state.editModal}
 					handleClick={this.handleClick}
 					handleClose={this.handleClick}>
 					<h3>Edit Your Information</h3>
-					<Input type="text" name="firstNameInput" placeholder="First Name" value={this.state.firstNameInput.value } onChange={this.handleInputChange} onBlur={this.handleBlur} />
+					<Input type="text" name="firstNameInput" placeholder="First Name" value={this.state.firstNameInput.value} onChange={this.handleInputChange} onBlur={this.handleBlur} />
 					<Input type="text" name="lastNameInput" placeholder="Last Name" value={this.state.lastNameInput.value} onChange={this.handleInputChange} onBlur={this.handleBlur} />
 					<Input type="password" name="passwordInput" placeholder="Password" value={this.state.passwordInput.value} onChange={this.handleInputChange} onBlur={this.handleBlur} />
 					<Input type="text" name="phoneInput" placeholder="Phone Number" value={this.state.phoneInput.value} onChange={this.handleInputChange} onBlur={this.handleBlur} />
 					<Input type="date" name="dateInput" placeholder="Date of Birth" value={this.state.dateInput.value} onChange={this.handleInputChange} />
 				</Modal>
 				<Footer />
-			</React.Fragment>
+			</React.Fragment >
 		)
 	}
 }
 
 export default Employee;
-
 
 const NavLink = Styled.a`
 	margin:.5rem;
