@@ -13,6 +13,7 @@ import LifetimeStats from '../../components/LifetimeStats'
 import EmployeeCard from '../../components/EmployeeCard'
 import { Container, Row, Col } from 'styled-bootstrap-grid';
 import DailyStats from '../../components/DailyStats';
+import Devices from '../../components/Devices';
 
 class Employee extends Component {
 	state = {
@@ -20,7 +21,7 @@ class Employee extends Component {
 			summary: {
 				restingHeartRate: '',
 				steps: '',
-				caloriesBurned: '',
+				caloriesOut: '',
 			},
 		},
 		lifetimeStats: {
@@ -46,6 +47,7 @@ class Employee extends Component {
 		badges: {
 			badges: []
 		},
+		devices: [[]],
 		friends: { friends: [] },
 		editModal: false,
 		jwt: '',
@@ -97,6 +99,7 @@ class Employee extends Component {
 			this.fetchData('/badges/', 'badges')
 			this.fetchData("/activities/today/", "todayStats");
 			this.fetchData("/friends/", "friends");
+			this.fetchData("/devices/", "devices");
 			// setInterval(()=>{this.fetchEmployeeHeartRate(tokenData.id)},10000)
 		} else {
 			Router.push("/login/");
@@ -269,6 +272,7 @@ class Employee extends Component {
 						<Col col="3">
 							<EmployeeCard employeeInfo={this.state.employeeData} />
 							<LifetimeStats lifetimeStats={this.state.lifetimeStats} />
+							<Devices devices={this.state.devices} />
 						</Col>
 						<Col col="5">
 							<DailyStats todayStats={this.state.todayStats} />
