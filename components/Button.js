@@ -1,7 +1,7 @@
 import React from 'react';
 import Styled from 'styled-components';
 
-export default ({type,children,onClick,name,id}) => {
+export default ({type,children,onClick,name,id, className}) => {
 
   return (
     <Button

@@ -19,7 +19,7 @@ export default () => {
       <Main>
         <JoinDiv>
           <h1>Fit2Work is the next level of employee wellness.</h1>
-          <Link href="/signup"><Button type="dark">Create an Account</Button></Link>
+          <Link href="/signup"><Create type="dark">Create an Account</Create></Link>
           <h4>Already a member? <Link href="/login"><a>Login</a></Link></h4>
         </JoinDiv>
         <Testimonials>
@@ -31,7 +31,7 @@ export default () => {
         </Testimonials>
         <How>
           <h2>How it Works</h2>
-          <p>It's bouncing around the Web like a beachball at a Nickelback concert. The safe word is WHiskey. Oh, man, he hit his ass with a parking cone! Nice. This is my hat now! This is totally my hat! So I galloped into a wooded glen, and after punch-dancing out my rage and suffering an extremely long and very painful fall, I realized what has to be done. Hey Sullivan, you chode! I owe you a shot in the nuts! My name is Rod, and I like to party. You know, pools are perfect for holding water... My name is Rod, and I like to party. I used to be legit. I was too legit. I was too legit to quit. but now I'm not legit. I'm unlegit. And for that reason, I must quit. My name is Rod, and I like to party. Oh, man, he hit his ass with a parking cone! Nice. Balls, man! We just ran over a small bus! God I go to church every goddamn Sunday! You gonna bring the demons out of me!? My name is Rod, and I like to party. Hey, Rod, what's that song about a grandma getting run over by a reindeer? This is my hat now! This is totally my hat! Balls, man! We just ran over a small bus! Funky Fresh. So I galloped into a wooded glen, and after punch-dancing out my rage and suffering an extremely long and very painful fall, I realized what has to be done.</p>
+          <h4>It's bouncing around the Web like a beachball at a Nickelback concert. The safe word is WHiskey. Oh, man, he hit his ass with a parking cone! Nice. This is my hat now! This is totally my hat! So I galloped into a wooded glen, and after punch-dancing out my rage and suffering an extremely long and very painful fall, I realized what has to be done. Hey Sullivan, you chode! I owe you a shot in the nuts! My name is Rod, and I like to party. You know, pools are perfect for holding water... My name is Rod, and I like to party. I used to be legit. I was too legit. I was too legit to quit. but now I'm not legit. I'm unlegit. And for that reason, I must quit. My name is Rod, and I like to party. Oh, man, he hit his ass with a parking cone! Nice. Balls, man! We just ran over a small bus! God I go to church every goddamn Sunday! You gonna bring the demons out of me!? My name is Rod, and I like to party. Hey, Rod, what's that song about a grandma getting run over by a reindeer? This is my hat now! This is totally my hat! Balls, man! We just ran over a small bus! Funky Fresh. So I galloped into a wooded glen, and after punch-dancing out my rage and suffering an extremely long and very painful fall, I realized what has to be done.</h4>
           <img src="/static/images/heart-health.jpeg" />
         </How>
         <Contact>
@@ -63,6 +63,7 @@ const Main = Styled.main`
 `
 const JoinDiv = Styled.div`
   background: linear-gradient(to bottom right, #fed75e, #FFA600);
+  max-width: 30vw;
   display: grid;
   grid-template-rows: repeat (3, 1fr);
   border-radius: 25px;
@@ -82,6 +83,10 @@ const JoinDiv = Styled.div`
     color: #9FBEBA;
   }
 `
+const Create = Styled(Button)`
+  width: 50%;
+`
+
 const Testimonials = Styled.div`
   display: grid;
   grid-template-rows: repeat (3, 1fr);
@@ -129,7 +134,7 @@ const How = Styled.div `
     grid-area: title;
   }
 
-  p {
+  h4 {
     grid-area: message;
   }
 
