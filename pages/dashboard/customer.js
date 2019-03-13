@@ -160,7 +160,7 @@ class Customer extends Component{
   // Click events for the side control panel
   handleNavClick = (event) => {
     console.log(event.target);
-    const { name } = event.target;
+    const { name,id } = event.target;
     console.log(name);
     switch(name){
       case "Home":
@@ -196,6 +196,15 @@ class Customer extends Component{
         break;
       case "detailsModal":
         this.setState({detailsModal:true});
+        break;
+    }
+
+    switch(id){
+      case "Minimize":
+        this.setState({navExpand:false});
+        break;
+      case "Expand":
+        this.setState({navExpand:true});
         break;
     }
   }
@@ -360,21 +369,33 @@ class Customer extends Component{
   render(){
     return(
       <React.Fragment>
-        <DashBody>
+        <DashBody toggle={this.state.navExpand}>
           <NavDiv>
             <Nav />
           </NavDiv>
-          <ControlPanel>
-            <NameDiv onClick={this.handleNavClick} name="NavToggle">
-              <h2>Hello, {this.state.customerData.email}</h2>
+          <ControlPanel toggle={this.state.navExpand}>
+            <NameDiv>
               {(this.state.navExpand)?
-              <i class="fas fa-angle-double-left"></i>:
-              <i class="fas fa-angle-double-right"></i>}
+              <h2>Hello, {this.state.customerData.email}</h2>:
+              null}
+              {(this.state.navExpand)?
+              <Button size="normal" type="transparent" onClick={this.handleNavClick} name="Minimize"><i id="Minimize" class="fas fa-angle-double-left"></i></Button>:
+              <Button size="small" type="transparent" onClick={this.handleNavClick} name="Expand"><i id="Expand" class="fas fa-angle-double-right"></i></Button>}
             </NameDiv>
-            <Button type="green" onClick={this.handleNavClick} name="Home">Home</Button>
-            <Button type="green" onClick={this.handleNavClick} name="Manage">Manage</Button>
-            {(this.state.showManage)?<Button type="blue" onClick={this.handleNavClick} name="Add">Add Employees</Button>:null}
-            <Button type="green" onClick={this.handleNavClick} name="Logout">Logout</Button>
+            {(this.state.navExpand)?
+            <Button size="normal" type="green" onClick={this.handleNavClick} name="Home">Home</Button>:
+            <Button size="normal" type="green" onClick={this.handleNavClick} name="Home"><i class="fas fa-home"></i></Button>}
+            {(this.state.navExpand)?
+            <Button type="green" onClick={this.handleNavClick} name="Manage">Manage</Button>:
+            <Button type="green" onClick={this.handleNavClick} name="Manage"><i class="fas fa-users"></i></Button>}
+            {(this.state.showManage)?
+            (this.state.navExpand)?
+            <Button type="blue" onClick={this.handleNavClick} name="Add">Add Employees</Button>:
+            <Button type="blue" onClick={this.handleNavClick} name="Add"><i class="fas fa-plus"></i></Button>:
+            null}
+            {(this.state.navExpand)?
+            <Button type="green" onClick={this.handleNavClick} name="Logout">Logout</Button>:
+            <Button type="green" onClick={this.handleNavClick} name="Logout"><i class="fas fa-sign-out-alt"></i></Button>}
           </ControlPanel>
           <MainView>
             {(this.state.showHome)?<Home employees={this.state.employees}/>: null}
@@ -450,6 +471,7 @@ const NameDiv = Styled.div`
   margin:.5rem;
   color: white;
   text-decoration: none;
+
   h2{
     display: inline-block;
   }
@@ -463,7 +485,15 @@ const DashBody = Styled.div`
  display: grid;
  height:100vh;
  width:100vw;
- grid-template-columns: 1fr 80vw;
+ grid-template-columns:${({toggle})=>{
+   switch(toggle){
+     case true:
+      return "1fr 80vw"
+     case false:
+      return "50px 1fr"
+      
+   }
+  }};
  grid-template-rows: auto 1fr 1fr;
  grid-template-areas:
   "Nav Nav"
@@ -476,7 +506,8 @@ const ControlPanel = Styled.div`
   display: grid;
   background-color: #333;
   grid-area: Side;
-  
+  align-items: center;
+
   >h2{
     text-align:center;
     
