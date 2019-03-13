@@ -5,6 +5,7 @@ import Card from '../components/Card'
 import Button from '../components/Button'
 import Footer from '../components/Footer'
 import Link from 'next/link'
+import Input from '../components/Input'
 
 const placeholder1 = "Doggo ipsum he made many woofs such treat wow very biscit mlem stop it fren very good spot you are doing me the shock, doggorino ruff borkf extremely cuuuuuute very taste wow. you are doing me the shock you are doin me a concern borkf."
 
@@ -23,20 +24,26 @@ export default () => {
           <h4>Already a member? <Link href="/login"><a>Login</a></Link></h4>
         </JoinDiv>
         <Testimonials>
-          <h2>Testimonials</h2>
+          <h2>TESTIMONIALS</h2>
           <p>Here's what some of our clients are saying about us!</p>
           <TestCard1 title="Much Health" body={placeholder1} />
           <TestCard2 title="So Fit" body={placeholder2} />
           <TestCard3 title="Such Safe" body={placeholder3} />
         </Testimonials>
         <How>
-          <h2>How it Works</h2>
+          <h2>HOW IT WORKS</h2>
           <p>It's bouncing around the Web like a beachball at a Nickelback concert. The safe word is WHiskey. Oh, man, he hit his ass with a parking cone! Nice. This is my hat now! This is totally my hat! So I galloped into a wooded glen, and after punch-dancing out my rage and suffering an extremely long and very painful fall, I realized what has to be done. Hey Sullivan, you chode! I owe you a shot in the nuts! My name is Rod, and I like to party. You know, pools are perfect for holding water... My name is Rod, and I like to party. I used to be legit. I was too legit. I was too legit to quit. but now I'm not legit. I'm unlegit. And for that reason, I must quit. My name is Rod, and I like to party. Oh, man, he hit his ass with a parking cone! Nice. Balls, man! We just ran over a small bus! God I go to church every goddamn Sunday! You gonna bring the demons out of me!? My name is Rod, and I like to party. Hey, Rod, what's that song about a grandma getting run over by a reindeer? This is my hat now! This is totally my hat! Balls, man! We just ran over a small bus! Funky Fresh. So I galloped into a wooded glen, and after punch-dancing out my rage and suffering an extremely long and very painful fall, I realized what has to be done.</p>
           <img src="/static/images/heart-health.jpeg" />
         </How>
         <Contact>
-          <h2>Contact Us</h2>
+          <h2>CONTACT US</h2>
+          <form>
           <p>Curious? Reach out to us and request a demo!</p>
+          <Input type="name" placeholder="Name"/>
+          <Input type="email" placeholder="Email"/>
+          <Input type="phone" placeholder="Phone Number"/>
+          <Button type="dark">Submit</Button>
+          </form>
           <img src="/static/images/yoga.jpeg"/>
         </Contact>
       </Main>
@@ -87,6 +94,10 @@ const JoinDiv = Styled.div`
 `
 const Create = Styled(Button)`
   width: 50%;
+
+  & : hover {
+    background-color: #000;
+  }
 `
 
 const Testimonials = Styled.div`
@@ -164,10 +175,12 @@ const Contact = Styled.div `
   h2 {
     grid-area: title;
   }
-  p {
-    grid-area: message;
-    margin: 10;
+  
+  form {
+    grid-area:message;
+    margin: auto;
   }
+  
   img {
     grid-area: img;
     width:50%;
