@@ -9,12 +9,12 @@ export default ({number, text}) => {
 
 const FormSubHeader = Styled.div `
     font: normal 20px 'Bitter', serif;
-    color: #2A88AD;
+    color: #364252;
     margin-bottom: 5px;
 `
 
 const FormSubHeaderSpan = Styled.span`
-    background: #2A88AD;
+    background: #364252;
     padding: 5px 10px 5px 10px;
     position: absolute;
     border-radius: 50%;
