@@ -42,7 +42,7 @@ export default () => {
           <Input type="name" placeholder="Name"/>
           <Input type="email" placeholder="Email"/>
           <Input type="phone" placeholder="Phone Number"/>
-          <Button type="dark">Submit</Button>
+          <Send type="dark">Submit</Send>
           </form>
           <img src="/static/images/yoga.jpeg"/>
         </Contact>
@@ -94,6 +94,8 @@ const JoinDiv = Styled.div`
 `
 const Create = Styled(Button)`
   width: 50%;
+  height: 100%;
+  justify-self:center;
 
   & : hover {
     background-color: #000;
@@ -174,6 +176,7 @@ const Contact = Styled.div `
 
   h2 {
     grid-area: title;
+    margin:auto;
   }
   
   form {
@@ -187,4 +190,13 @@ const Contact = Styled.div `
     height: auto;
     margin: auto;
   }
+`
+
+const Send = Styled(Button)`
+height: 100%;
+justify-self:center;
+
+& : hover {
+  background-color: #000;
+}
 `
