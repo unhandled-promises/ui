@@ -33,6 +33,8 @@ const Button = Styled.button`
         return '#5B85AA'
       case 'red':
         return '#AA5B5B'
+      case 'orange':
+        return '#FFA600'
       case 'dark':
         return '#1F2D3F'
       case 'transparent':

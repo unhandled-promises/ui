@@ -381,18 +381,18 @@ class Customer extends Component{
               <Button size="small" type="transparent" onClick={this.handleNavClick} name="Expand"><i id="Expand" class="fas fa-angle-double-right"></i></Button>}
             </NameDiv>
             {(this.state.navExpand)?
-            <Button size="normal" type="green" onClick={this.handleNavClick} name="Home">Home</Button>:
+            <Button size="normal" type="orange" onClick={this.handleNavClick} name="Home">Home</Button>:
             <Button size="small" type="transparent" onClick={this.handleNavClick} name="Home"><i class="fas fa-home"></i></Button>}
             {(this.state.navExpand)?
-            <Button type="green" onClick={this.handleNavClick} name="Manage">Manage</Button>:
+            <Button size="normal" type="orange" onClick={this.handleNavClick} name="Manage">Manage</Button>:
             <Button type="transparent" onClick={this.handleNavClick} name="Manage"><i class="fas fa-users"></i></Button>}
             {(this.state.showManage)?
             (this.state.navExpand)?
-            <Button type="blue" onClick={this.handleNavClick} name="Add">Add Employees</Button>:
+            <Button size="normal" type="blue" onClick={this.handleNavClick} name="Add">Add Employees</Button>:
             <Button type="transparent" onClick={this.handleNavClick} name="Add"><i class="fas fa-plus"></i></Button>:
             null}
             {(this.state.navExpand)?
-            <Button type="green" onClick={this.handleNavClick} name="Logout">Logout</Button>:
+            <Button size="normal" type="orange" onClick={this.handleNavClick} name="Logout">Logout</Button>:
             <Button type="transparent" onClick={this.handleNavClick} name="Logout"><i class="fas fa-sign-out-alt"></i></Button>}
           </ControlPanel>
           <MainView>
@@ -482,6 +482,7 @@ const NavDiv = Styled.div`
 `;
 
 const DashBody = Styled.div`
+ font-family: 'Baloo Chettan', cursive;
  display: grid;
  height:100vh;
  width:100vw;
@@ -503,7 +504,7 @@ const DashBody = Styled.div`
 
 const ControlPanel = Styled.div`
   display: grid;
-  background-color: #333;
+  background-color: #1f2d3f;
   grid-area: Side;
   grid-template-rows:${({toggle})=>{
     switch(toggle){
