@@ -45,6 +45,7 @@ const CardBody = Styled.div`
   align-self: center;
   margin: 10px;
   background-color: #fff;
+  width: 95%;
   h4{
     padding: 0px 15px;
   }

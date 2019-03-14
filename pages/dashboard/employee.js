@@ -266,15 +266,14 @@ class Employee extends Component {
 					<Link href="/dashboard/employee"><NavLink>Home</NavLink></Link>
 					<NavLink onClick={this.handleClick} name="Logout">Logout</NavLink>
 				</FullNav>
-				<WelcomeDiv><h1>{this.state.employeeData.first_name}'s Dashboard</h1></WelcomeDiv>
 				<Container>
 					<Row>
 						<Col col="3">
-							<EmployeeCard employeeInfo={this.state.employeeData} />
 							<LifetimeStats lifetimeStats={this.state.lifetimeStats} />
 							<Devices devices={this.state.devices} />
 						</Col>
 						<Col col="5">
+							<EmployeeCard employeeInfo={this.state.employeeData} />
 							<DailyStats todayStats={this.state.todayStats} />
 						</Col>
 						<Col col="2">
