@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Formik, Form } from 'formik';
+import Link from 'next/link';
 import Styled from 'styled-components';
+import FullNav from '../components/FullNav';
 import * as Yup from 'yup';
 import { EMPLOYEES_API } from "../static/api-config";
 import Router from 'next/router';
@@ -35,6 +37,13 @@ const Text = Styled.p`
     color: ${props => props.color || '#4d4d4d'}
 `;
 
+const NavLink = Styled.a`
+	margin:.5rem;
+	color: white;
+    text-decoration: none;
+    cursor: pointer;
+`;
+
 class Login extends Component {
     state = {
         authError: false,
@@ -43,7 +52,10 @@ class Login extends Component {
     render() {
         return (
             <React.Fragment>
-                <Nav />
+                <FullNav>
+                    <Link href="/"><NavLink>Home</NavLink></Link>
+                    <Link href="/"><NavLink></NavLink></Link>
+                </FullNav>
                 <LoginDiv>
                     <Formik
                         initialValues={{
