@@ -371,8 +371,8 @@ class Customer extends Component{
           <NavDiv>
             <Nav />
           </NavDiv>
-          <ControlPanel toggle={this.state.navExpand}>
-            <NameDiv>
+          <ControlPanel add={this.state.showManage} toggle={this.state.navExpand}>
+            <NameDiv toggle={this.state.navExpand}>
               {(this.state.navExpand)?
               <h2>Hello, {this.state.customerData.email}</h2>:
               null}
@@ -475,6 +475,10 @@ const NameDiv = Styled.div`
   h2{
     display: inline-block;
   }
+
+  @media(max-width:768px){
+    display: none;
+  }
 `
 
 const NavDiv = Styled.div`
@@ -486,7 +490,6 @@ const DashBody = Styled.div`
  display: grid;
  height:100vh;
  width:100vw;
- transition: 1000ms;
  grid-template-columns:${({toggle})=>{
    switch(toggle){
      case true:
@@ -514,7 +517,6 @@ const ControlPanel = Styled.div`
   width:100%;
   background-color: #1f2d3f;
   grid-area: Side;
-  transition: 1000ms;
   grid-template-rows:${({toggle})=>{
     switch(toggle){
       case true:
@@ -546,8 +548,19 @@ const ControlPanel = Styled.div`
   }
 
   @media(max-width:768px){
-    grid-template-columns:repeat(4,1fr)
+    grid-template-columns:${({add})=>{
+      switch(add){
+        case true:
+          return 'repeat(4,1fr)'
+        case false:
+          return 'repeat(3,1fr)' 
+      }
+    }};
     grid-template-rows:1fr;
+    justify-items: center;
+    align-self: end;
+    height: 10vh;
+    bottom: 0;
   }
 `
 
