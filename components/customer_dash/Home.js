@@ -8,9 +8,9 @@ import Modal from '../Modal';
   const getStatus = (bpm) => {
     if(bpm > 160){
       return "Danger"
-    } else if(bpm > 120){
+    } else if(bpm > 120 && bpm < 159){
       return "Warning"
-    } else if(bpm > 60){
+    } else if(bpm > 41 && bpm < 80){
       return "Normal"
     }else if(bpm < 40){
       return "Danger"
@@ -25,13 +25,15 @@ import Modal from '../Modal';
       return (
         <EmployeeCard key={index}>
           <Card 
+            status={getStatus(restingHeartRate)}
             key={index}
             title={`${employee.first_name} ${employee.last_name}`}
             body={
             <div>
               <EmployeeAvatar src={employee.avatar}/>
-              <p>{`Heart Rate: ${employee.heartRate.summary.restingHeartRate}`}</p>
-              <p>{`Status: ${getStatus(restingHeartRate)}`}</p>
+              <p><i class="fas fa-heartbeat"></i>{` ${employee.heartRate.summary.restingHeartRate}`}</p>
+              <p><i class="fas fa-shoe-prints"></i>{` ${employee.heartRate.summary.steps}`}</p>
+              <p>{`Status: ${getStatus(Number(restingHeartRate))}`}</p>
             </div>
             }  />
         </EmployeeCard>
@@ -52,7 +54,7 @@ export default Home;
 const HomeDiv = Styled.div`
   margin: 1rem;
   display: grid;
-  grid-template-columns: repeat(3,1fr);
+  grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
   justify-items: center;
 
   h1{
@@ -62,7 +64,7 @@ const HomeDiv = Styled.div`
 `
 
 const EmployeeCard = Styled.div`
-  min-width: 30%;
+  min-width: 75%;
 `;
 
 const EmployeeAvatar = Styled.img`

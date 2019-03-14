@@ -18,6 +18,23 @@ export default ({type,children,onClick,name,id,size, className}) => {
 }
 
 const Button = Styled.button`
+  width: ${({size})=>{
+    switch (size){
+      case 'small':
+        return '100%';
+      case 'normal':
+        return 'auto';
+    }
+  }};
+  height: ${({size})=>{
+    switch (size){
+      case 'small':
+        return '100%';
+      case 'normal':
+        return 'auto';
+    }
+  }};
+
   padding: ${({size})=>{
     switch(size){
       case "normal":
@@ -34,6 +51,10 @@ const Button = Styled.button`
         return '#5B85AA'
       case 'red':
         return '#AA5B5B'
+      case 'orange':
+        return '#FFA600'
+      case 'alt-orange':
+        return '#fed75e'
       case 'dark':
         return '#1F2D3F'
       case 'transparent':

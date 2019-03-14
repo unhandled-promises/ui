@@ -7,7 +7,6 @@ import Input from '../../components/Input';
 import Manage from '../../components/customer_dash/Manage';
 import Modal from '../../components/Modal';
 import Nav from '../../components/Nav';
-import FullNav from '../../components/FullNav';
 import { CUSTOMERS_API, EMPLOYEES_API } from "../../static/api-config";
 
 class Customer extends Component{
@@ -274,15 +273,16 @@ class Customer extends Component{
         break;
 
       case "Update":
-      const { firstNameInput, lastNameInput, phoneInput} = this.state;
+      const { firstNameInput, lastNameInput, phoneInput, dateInput } = this.state;
+      
       const { _id: id } = this.state.activeEmployee;
       console.log(`id: ${id}`);
-        const validInfo = firstNameInput.isValid && lastNameInput.isValid && phoneInput.isValid && emailInput.isValid;
+        const validInfo = firstNameInput.isValid && lastNameInput.isValid && phoneInput.isValid && this.state.emailInput.isValid;
         if(validInfo){
           const updatedInfo = {
             firstName: firstNameInput.value,
             lastName: lastNameInput.value,
-            email: emailInput.value,
+            email: this.state.emailInput.value,
             phone: phoneInput.value,
             dob: dateInput.value,
             id: id
@@ -381,19 +381,19 @@ class Customer extends Component{
               <Button size="small" type="transparent" onClick={this.handleNavClick} name="Expand"><i id="Expand" class="fas fa-angle-double-right"></i></Button>}
             </NameDiv>
             {(this.state.navExpand)?
-            <Button size="normal" type="green" onClick={this.handleNavClick} name="Home">Home</Button>:
+            <Button size="normal" type="orange" onClick={this.handleNavClick} name="Home">Home</Button>:
             <Button size="small" type="transparent" onClick={this.handleNavClick} name="Home"><i class="fas fa-home"></i></Button>}
             {(this.state.navExpand)?
-            <Button type="green" onClick={this.handleNavClick} name="Manage">Manage</Button>:
-            <Button type="transparent" onClick={this.handleNavClick} name="Manage"><i class="fas fa-users"></i></Button>}
+            <Button size="normal" type="orange" onClick={this.handleNavClick} name="Manage">Manage</Button>:
+            <Button size="small" type="transparent" onClick={this.handleNavClick} name="Manage"><i class="fas fa-users"></i></Button>}
             {(this.state.showManage)?
             (this.state.navExpand)?
-            <Button type="blue" onClick={this.handleNavClick} name="Add">Add Employees</Button>:
-            <Button type="transparent" onClick={this.handleNavClick} name="Add"><i class="fas fa-plus"></i></Button>:
+            <Button size="normal" type="alt-orange" onClick={this.handleNavClick} name="Add">Add Employees</Button>:
+            <Button size="small" type="transparent" onClick={this.handleNavClick} name="Add"><i class="fas fa-plus"></i></Button>:
             null}
             {(this.state.navExpand)?
-            <Button type="green" onClick={this.handleNavClick} name="Logout">Logout</Button>:
-            <Button type="transparent" onClick={this.handleNavClick} name="Logout"><i class="fas fa-sign-out-alt"></i></Button>}
+            <Button size="normal" type="orange" onClick={this.handleNavClick} name="Logout">Logout</Button>:
+            <Button size="small" type="transparent" onClick={this.handleNavClick} name="Logout"><i class="fas fa-sign-out-alt"></i></Button>}
           </ControlPanel>
           <MainView>
             {(this.state.showHome)?<Home employees={this.state.employees}/>: null}
@@ -471,7 +471,7 @@ const NameDiv = Styled.div`
   text-decoration: none;
   display: grid;
   grid-template-columns: 1fr auto;
-
+  transition: 1000ms;
   h2{
     display: inline-block;
   }
@@ -482,16 +482,17 @@ const NavDiv = Styled.div`
 `;
 
 const DashBody = Styled.div`
+ font-family: 'Baloo Chettan', cursive;
  display: grid;
  height:100vh;
  width:100vw;
+ transition: 1000ms;
  grid-template-columns:${({toggle})=>{
    switch(toggle){
      case true:
       return "1fr 80vw"
      case false:
-      return "120px 1fr"
-      
+      return "120px 1fr" 
    }
   }};
  grid-template-rows: auto 1fr 1fr;
@@ -499,18 +500,27 @@ const DashBody = Styled.div`
   "Nav Nav"
   "Side Main"
   "Side Main";
+
+  @media(max-width: 768px){
+    grid-template-areas:
+    "Nav Nav"
+    "Main Main"
+    "Side Side"
+  }
 `
 
 const ControlPanel = Styled.div`
   display: grid;
-  background-color: #333;
+  width:100%;
+  background-color: #1f2d3f;
   grid-area: Side;
+  transition: 1000ms;
   grid-template-rows:${({toggle})=>{
     switch(toggle){
       case true:
         return "auto repeat(3,1fr)"
       case false:
-        return "repeat(4,100px)"
+        return "repeat(5,100px)"
     }
   }};
   align-items:${({toggle})=>{
@@ -527,7 +537,7 @@ const ControlPanel = Styled.div`
       case true:
         return "stretch"
       case false:
-        return "center"
+        return "stretch"
     }
   }};
 
@@ -535,7 +545,10 @@ const ControlPanel = Styled.div`
     text-align:center;
   }
 
-  
+  @media(max-width:768px){
+    grid-template-columns:repeat(4,1fr)
+    grid-template-rows:1fr;
+  }
 `
 
 const MainView = Styled.div`
