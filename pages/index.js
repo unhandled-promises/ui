@@ -44,7 +44,7 @@ export default () => {
           <ContactInput type="name" placeholder="Name"/>
           <ContactInput type="email" placeholder="Email"/>
           <ContactInput type="phone" placeholder="Phone Number"/>
-          <Send type="dark">Submit</Send>
+          <Send type="dark" size="normal">Submit</Send>
           </form>
           <Wrap>
           <img src="/static/images/yoga.jpeg"/>
@@ -194,9 +194,6 @@ const ContactInput = Styled(Input)`
 `
 
 const Send = Styled(Button)`
-height: 100%;
-justify-self:center;
-
 & : hover {
   background-color: #131B26;
 }
