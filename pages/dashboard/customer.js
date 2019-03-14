@@ -7,7 +7,6 @@ import Input from '../../components/Input';
 import Manage from '../../components/customer_dash/Manage';
 import Modal from '../../components/Modal';
 import Nav from '../../components/Nav';
-import FullNav from '../../components/FullNav';
 import { CUSTOMERS_API, EMPLOYEES_API } from "../../static/api-config";
 
 class Customer extends Component{
@@ -550,8 +549,6 @@ const ControlPanel = Styled.div`
     grid-template-columns:repeat(4,1fr)
     grid-template-rows:1fr;
   }
-
-  
 `
 
 const MainView = Styled.div`
