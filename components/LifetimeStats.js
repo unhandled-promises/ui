@@ -23,7 +23,8 @@ export default ({ lifetimeStats }) => {
 const Card = Styled.div`
   display: grid;
   grid-template-rows: auto 1fr;
-  background-color: #EFEFEF;
+  background: linear-gradient(to bottom right, #fed75e, #FFA600);
+  border-radius: 25px;
   box-shadow: #696773 -10px 5px 10px;
   min-height: 200px;
   margin-bottom: 20px;

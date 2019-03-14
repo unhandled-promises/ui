@@ -306,6 +306,7 @@ const NavLink = Styled.a`
 	margin:.5rem;
 	color: white;
 	text-decoration: none;
+	cursor: pointer;
 `
 const WelcomeDiv = Styled.div`
 	text-align:center;
