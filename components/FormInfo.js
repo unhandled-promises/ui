@@ -8,7 +8,7 @@ export default ({primary, secondary}) => {
 }
 
 const FormPrimary = Styled.h1 `
-    background: #2A88AD;
+    background: #364252;
 	padding: 20px 30px 15px 30px;
 	margin: -30px -30px 30px -30px;
 	border-radius: 10px 10px 0 0;

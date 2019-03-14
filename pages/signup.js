@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { Formik, Form, Field } from 'formik';
 import {Elements, StripeProvider} from 'react-stripe-elements-universal';
 import * as Yup from 'yup';
+import Link from 'next/link';
 import Styled from 'styled-components';
-import Nav from '../components/Nav';
+import FullNav from '../components/FullNav';
 import Input from '../components/Input';
 import BundleOption from "../components/BundleOption";
 import BundleSubInnerWrap from "../components/BundleSubInnerWrap";
@@ -59,6 +60,13 @@ const Text = Styled.p`
     color: ${props => props.color || '#4d4d4d'}
 `;
 
+const NavLink = Styled.a`
+	margin:.5rem;
+	color: white;
+    text-decoration: none;
+    cursor: pointer;
+`;
+
 class SignUp extends Component {
     state = {
         company_name: "",
@@ -75,7 +83,10 @@ class SignUp extends Component {
     render() {
         return (
             <React.Fragment>
-                <Nav />
+                <FullNav>
+                    <Link href="/"><NavLink>Home</NavLink></Link>
+                    <Link href="/"><NavLink></NavLink></Link>
+                </FullNav>
                 <SignUpDiv verifyStep={this.state.verifyStep}>
                     <Formik
                         initialValues={{
@@ -228,6 +239,7 @@ class SignUp extends Component {
                         onSubmit={async (values) => {
                             if (values.editSubmit === "edit") {
                                 this.setState((prevState) => ({ verifyStep: prevState.verifyStep - 2 }))
+                                values.editSubmit = "";
                             }
                         }}
                         render={({ setFieldValue }) => (

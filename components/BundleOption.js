@@ -28,7 +28,7 @@ export default ({ colorChoice, list, price, onClick }) => {
 
 const BundleOption = Styled.div`
     float: left;
-    background: #2A88AD;
+    background: #364252;
     text-align: center;
     border-radius: 5px;
     padding: 10px;

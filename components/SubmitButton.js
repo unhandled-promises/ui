@@ -10,13 +10,13 @@ export default ({ text, inverse, onClick }) => {
 }
     
 const Button = Styled.button`
-    background: ${props => props.Inverse ? "#FFFFFF" : "#2A88AD"};
+    background: ${props => props.Inverse ? "#FFFFFF" : "#364252"};
     padding: 8px 20px 8px 20px;
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     color: #fff;
-    color: ${props => props.Inverse ? "#2A88AD" : "#FFFFFF"};
+    color: ${props => props.Inverse ? "#364252" : "#FFFFFF"};
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.12);
     font: normal 30px 'Bitter', serif;
     -moz-box-shadow: inset 0px 2px 2px 0px rgba(255, 255, 255, 0.17);

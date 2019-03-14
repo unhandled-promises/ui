@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import Router from 'next/router'
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
+import Link from 'next/link';
 import Styled from 'styled-components';
-import Nav from '../components/Nav';
+import FullNav from '../components/FullNav';
 import Input from '../components/Input';
 import Footer from '../components/Footer';
 import FormInfo from "../components/FormInfo";
@@ -57,6 +58,13 @@ const Label = Styled.label`
 const Text = Styled.p`
     font-family: 'Raleway', sans-serif;
     color: ${props => props.color || '#4d4d4d'}
+`;
+
+const NavLink = Styled.a`
+	margin:.5rem;
+	color: white;
+    text-decoration: none;
+    cursor: pointer;
 `;
 
 class SignUp extends Component {
@@ -148,7 +156,10 @@ class SignUp extends Component {
     render() {
         return (
             <React.Fragment>
-                <Nav />
+                <FullNav>
+                    <Link href="/"><NavLink>Home</NavLink></Link>
+                    <Link href="/"><NavLink></NavLink></Link>
+                </FullNav>
                 <VerifyDiv verifyStep={this.state.verifyStep}>
                     <Formik
                         initialValues={{
@@ -331,7 +342,6 @@ class SignUp extends Component {
                                         <br /><br />
                                         <SubmitButton text="Do not authorize at this time" onClick={() => setFieldValue("authProvider", false)} />
                                     </FormSubInnerWrap>
-                                    <SubmitButton text="Verify Info" />
                                 </Form>
                             </React.Fragment>
                         )}

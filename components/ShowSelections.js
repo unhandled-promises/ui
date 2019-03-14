@@ -35,7 +35,7 @@ const ListItem = Styled.a`
     padding: .4em .4em .4em .8em;
     *padding: .4em;
     margin: .5em 0 .5em 2.5em;
-    background: #BCD6E0;
+    background: #B1BAC9;
     color: #444;
     text-decoration: none;
     transition: all .3s ease-out; 
@@ -50,7 +50,7 @@ const ListItem = Styled.a`
         left: -2.5em;
         top: 50%;
         margin-top: -1em;
-        background: #2A88AD;
+        background: #364252;
         height: 2em;
         width: 2em;
         line-height: 2em;
@@ -70,6 +70,6 @@ const ListItem = Styled.a`
     
     :hover:after{
         left: -.5em;
-        border-left-color: #2A88AD;             
+        border-left-color: #364252;             
     }   
 `
