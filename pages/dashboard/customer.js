@@ -274,15 +274,16 @@ class Customer extends Component{
         break;
 
       case "Update":
-      const { firstNameInput, lastNameInput, phoneInput} = this.state;
+      const { firstNameInput, lastNameInput, phoneInput, dateInput } = this.state;
+      
       const { _id: id } = this.state.activeEmployee;
       console.log(`id: ${id}`);
-        const validInfo = firstNameInput.isValid && lastNameInput.isValid && phoneInput.isValid && emailInput.isValid;
+        const validInfo = firstNameInput.isValid && lastNameInput.isValid && phoneInput.isValid && this.state.emailInput.isValid;
         if(validInfo){
           const updatedInfo = {
             firstName: firstNameInput.value,
             lastName: lastNameInput.value,
-            email: emailInput.value,
+            email: this.state.emailInput.value,
             phone: phoneInput.value,
             dob: dateInput.value,
             id: id
@@ -471,7 +472,7 @@ const NameDiv = Styled.div`
   text-decoration: none;
   display: grid;
   grid-template-columns: 1fr auto;
-
+  transition: 1000ms;
   h2{
     display: inline-block;
   }
@@ -492,8 +493,7 @@ const DashBody = Styled.div`
      case true:
       return "1fr 80vw"
      case false:
-      return "120px 1fr"
-      
+      return "120px 1fr" 
    }
   }};
  grid-template-rows: auto 1fr 1fr;

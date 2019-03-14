@@ -3,7 +3,7 @@ import Styled from 'styled-components';
 
 export default ({title,body,className,status}) => {
 	return (
-		<Card color={status} className ={className}>
+		<Card status={status} className ={className}>
 			<CardHeading>
         <h3>{title}</h3>
       </CardHeading>
@@ -17,8 +17,9 @@ export default ({title,body,className,status}) => {
 const Card = Styled.div`
   display: grid;
   grid-template-rows: auto 1fr;
-  background-color: ${({color})=>{
-    switch (color){
+  background-color: ${({status})=>{
+    console.log(status);
+    switch (status){
       case 'Normal':
         return '#74d1ff'
       case 'Warning':

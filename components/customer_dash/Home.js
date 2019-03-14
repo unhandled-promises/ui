@@ -8,9 +8,9 @@ import Modal from '../Modal';
   const getStatus = (bpm) => {
     if(bpm > 160){
       return "Danger"
-    } else if(bpm > 120){
+    } else if(bpm > 120 && bpm < 159){
       return "Warning"
-    } else if(bpm > 60){
+    } else if(bpm > 41 && bpm < 80){
       return "Normal"
     }else if(bpm < 40){
       return "Danger"
@@ -33,7 +33,7 @@ import Modal from '../Modal';
               <EmployeeAvatar src={employee.avatar}/>
               <p><i class="fas fa-heartbeat"></i>{` ${employee.heartRate.summary.restingHeartRate}`}</p>
               <p><i class="fas fa-shoe-prints"></i>{` ${employee.heartRate.summary.steps}`}</p>
-              <p>{`Status: ${getStatus(restingHeartRate)}`}</p>
+              <p>{`Status: ${getStatus(Number(restingHeartRate))}`}</p>
             </div>
             }  />
         </EmployeeCard>
