@@ -1,7 +1,7 @@
 import React from 'react';
 import Styled from 'styled-components';
 
-export default  ({placeholder,value,name,onChange,onBlur,type,isValid,error}) => {
+export default  ({placeholder,value,name,onChange,onBlur,type,isValid,error, className}) => {
   return (
     <React.Fragment>
       <Input
@@ -10,7 +10,8 @@ export default  ({placeholder,value,name,onChange,onBlur,type,isValid,error}) =>
         value={value}
         name={name}
         onChange={onChange}
-        onBlur={onBlur} />
+        onBlur={onBlur}
+        className={className} />
       {(isValid)?
         null:
       <MessageDiv>
