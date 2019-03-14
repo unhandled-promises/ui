@@ -1,14 +1,25 @@
 import React, { Component } from 'react';
+import Link from 'next/link';
 import Styled from 'styled-components';
-import Nav from '../components/Nav';
+import FullNav from '../components/FullNav';
 import Footer from '../components/Footer';
+
+const NavLink = Styled.a`
+	margin:.5rem;
+	color: white;
+    text-decoration: none;
+    cursor: pointer;
+`;
 
 class Terms extends Component {
 
     render() {
         return (
             <React.Fragment>
-                <Nav />
+                <FullNav>
+                    <Link href="/"><NavLink>Home</NavLink></Link>
+                    <Link href="/"><NavLink></NavLink></Link>
+                </FullNav>
                 <SpecialSauceDiv>
                     <h1>Terms and Conditions ("Terms")</h1>
 
