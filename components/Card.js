@@ -32,8 +32,6 @@ const CardHeading = Styled.div`
 
 const CardBody = Styled.div`
   margin:0;
-  align-self: center;
-  display:grid;
-  justify-items: center;
+  text-align: center;
   margin: 10px;
 `

@@ -388,7 +388,7 @@ class Customer extends Component{
             <Button type="transparent" onClick={this.handleNavClick} name="Manage"><i class="fas fa-users"></i></Button>}
             {(this.state.showManage)?
             (this.state.navExpand)?
-            <Button size="normal" type="blue" onClick={this.handleNavClick} name="Add">Add Employees</Button>:
+            <Button size="normal" type="alt-orange" onClick={this.handleNavClick} name="Add">Add Employees</Button>:
             <Button type="transparent" onClick={this.handleNavClick} name="Add"><i class="fas fa-plus"></i></Button>:
             null}
             {(this.state.navExpand)?
@@ -486,6 +486,7 @@ const DashBody = Styled.div`
  display: grid;
  height:100vh;
  width:100vw;
+ transition:grid-template-columns 1000ms linear;
  grid-template-columns:${({toggle})=>{
    switch(toggle){
      case true:
@@ -504,6 +505,7 @@ const DashBody = Styled.div`
 
 const ControlPanel = Styled.div`
   display: grid;
+  width:100%;
   background-color: #1f2d3f;
   grid-area: Side;
   grid-template-rows:${({toggle})=>{

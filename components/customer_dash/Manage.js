@@ -18,8 +18,9 @@ import Card from '../Card';
               <p>{`Email: ${employee.email}`}</p>
               <p>{`Phone: ${employee.phone}`}</p>
               <Button
+                size="small"
                 id={index}
-                type="blue"
+                type="orange"
                 onClick={onClick}
                 name="Edit">
                 Edit
@@ -60,4 +61,7 @@ const EmployeeListDiv = Styled.div`
 `;
 
 const EmployeeCard = Styled.div`
+  div>button{
+    text-align: center;
+  }
 `;

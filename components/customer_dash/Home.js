@@ -21,7 +21,7 @@ import Modal from '../Modal';
     return employeesArray.map((employee,index)=>{
       console.log(`printing employee:`);
       console.log(employee);
-      // const { restingHeartRate } = employee.heartRate.summary;
+      const { restingHeartRate } = employee.heartRate.summary;
       return (
         <EmployeeCard key={index}>
           <Card 
@@ -30,8 +30,9 @@ import Modal from '../Modal';
             body={
             <div>
               <EmployeeAvatar src={employee.avatar}/>
-              {/* <p>{`Heart Rate: ${employee.heartRate.summary.restingHeartRate}`}</p> */}
-              {/* <p>{`Status: ${getStatus(restingHeartRate)}`}</p> */}
+              <p><i class="fas fa-heartbeat"></i>{` ${employee.heartRate.summary.restingHeartRate}`}</p>
+              <p><i class="fas fa-shoe-prints"></i>{` ${employee.heartRate.summary.steps}`}</p>
+              <p>{`Status: ${getStatus(restingHeartRate)}`}</p>
             </div>
             }  />
         </EmployeeCard>
