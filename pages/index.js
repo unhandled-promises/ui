@@ -33,18 +33,22 @@ export default () => {
         <How>
           <h2>HOW IT WORKS</h2>
           <p>It's bouncing around the Web like a beachball at a Nickelback concert. The safe word is WHiskey. Oh, man, he hit his ass with a parking cone! Nice. This is my hat now! This is totally my hat! So I galloped into a wooded glen, and after punch-dancing out my rage and suffering an extremely long and very painful fall, I realized what has to be done. Hey Sullivan, you chode! I owe you a shot in the nuts! My name is Rod, and I like to party. You know, pools are perfect for holding water... My name is Rod, and I like to party. I used to be legit. I was too legit. I was too legit to quit. but now I'm not legit. I'm unlegit. And for that reason, I must quit. My name is Rod, and I like to party. Oh, man, he hit his ass with a parking cone! Nice. Balls, man! We just ran over a small bus! God I go to church every goddamn Sunday! You gonna bring the demons out of me!? My name is Rod, and I like to party. Hey, Rod, what's that song about a grandma getting run over by a reindeer? This is my hat now! This is totally my hat! Balls, man! We just ran over a small bus! Funky Fresh. So I galloped into a wooded glen, and after punch-dancing out my rage and suffering an extremely long and very painful fall, I realized what has to be done.</p>
+          <Wrap>
           <img src="/static/images/heart-health.jpeg" />
+          </Wrap>
         </How>
         <Contact>
           <h2>CONTACT US</h2>
           <form>
           <p>Curious? Reach out to us and request a demo!</p>
-          <Input type="name" placeholder="Name"/>
-          <Input type="email" placeholder="Email"/>
-          <Input type="phone" placeholder="Phone Number"/>
-          <Button type="dark">Submit</Button>
+          <ContactInput type="name" placeholder="Name"/>
+          <ContactInput type="email" placeholder="Email"/>
+          <ContactInput type="phone" placeholder="Phone Number"/>
+          <Send type="dark" size="normal">Submit</Send>
           </form>
+          <Wrap>
           <img src="/static/images/yoga.jpeg"/>
+          </Wrap>
         </Contact>
       </Main>
       <Footer />
@@ -60,11 +64,11 @@ const Body = Styled.div`
 
 const Main = Styled.main`
   display:grid;
-  grid-template-rows: repeat(4,1fr);
+  grid-template-rows: 400px 400px 1fr 500px;
   grid-gap:500px;
   padding: 1rem;
   font-family: 'Montserrat', sans-serif;
-  
+
   h1,h2,h3,h4 {
     font-family: 'Roboto', sans-serif;
   }
@@ -80,23 +84,21 @@ const JoinDiv = Styled.div`
   justify-self: left;
   text-align: center;
 
-  h1 {
-    grid-row-start: 1 / span 1;
-  }
-
   a {
     text-decoration:none;
     color: #000;
   }
   a :hover {
-    color: #9FBEBA;
+    color: #131B26;
   }
 `
 const Create = Styled(Button)`
-  width: 50%;
+  width: 70%;
+  height: 100%;
+  justify-self:center;
 
   & : hover {
-    background-color: #000;
+    background-color: #131B26;
   }
 `
 
@@ -155,9 +157,9 @@ const How = Styled.div `
 
   img {
     grid-area: img;
-    width:50%;
-    height: auto;
     margin: auto;
+    width: 100%;
+    object-fit: cover;
   }
 `
 const Contact = Styled.div `
@@ -166,14 +168,13 @@ const Contact = Styled.div `
   text-align:center;
   display: grid;
   grid-gap: .75rem;
-  grid-template-rows: repeat (2, 1fr);
-  grid-template-columns: repeat(2, 1fr);
   grid-template-areas: "title img"
                       "message img"
                       "message img";
 
   h2 {
     grid-area: title;
+    margin:auto;
   }
   
   form {
@@ -183,8 +184,35 @@ const Contact = Styled.div `
   
   img {
     grid-area: img;
-    width:50%;
-    height: auto;
     margin: auto;
+    width: 100%;
   }
+`
+const ContactInput = Styled(Input)` 
+  margin:auto;
+  width: 100%;
+`
+
+const Send = Styled(Button)`
+& : hover {
+  background-color: #131B26;
+}
+`
+
+const Wrap = Styled.div `
+grid-area: img;
+margin: auto;
+position: relative;
+
+& : after {
+  content:"";
+  position: absolute;
+  top:0;
+  left:0;
+  height:100%;
+  width:100%;
+  background: #FFA600;
+  opacity: .5;
+  box-shadow: 0 0 20px 200px #FFA600 inset;
+}
 `

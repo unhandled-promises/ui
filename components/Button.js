@@ -10,7 +10,8 @@ export default ({type,children,onClick,name,id,size, className}) => {
       name={name}
       id={id}
       type={type}
-      onClick={onClick}>
+      onClick={onClick}
+      className={className}>
       {children}
     </Button>
   )
