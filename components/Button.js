@@ -17,6 +17,23 @@ export default ({type,children,onClick,name,id,size, className}) => {
 }
 
 const Button = Styled.button`
+  width: ${({size})=>{
+    switch (size){
+      case 'small':
+        return '100%';
+      case 'normal':
+        return 'auto';
+    }
+  }};
+  height: ${({size})=>{
+    switch (size){
+      case 'small':
+        return '100%';
+      case 'normal':
+        return 'auto';
+    }
+  }};
+
   padding: ${({size})=>{
     switch(size){
       case "normal":

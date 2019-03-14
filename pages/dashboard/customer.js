@@ -385,15 +385,15 @@ class Customer extends Component{
             <Button size="small" type="transparent" onClick={this.handleNavClick} name="Home"><i class="fas fa-home"></i></Button>}
             {(this.state.navExpand)?
             <Button size="normal" type="orange" onClick={this.handleNavClick} name="Manage">Manage</Button>:
-            <Button type="transparent" onClick={this.handleNavClick} name="Manage"><i class="fas fa-users"></i></Button>}
+            <Button size="small" type="transparent" onClick={this.handleNavClick} name="Manage"><i class="fas fa-users"></i></Button>}
             {(this.state.showManage)?
             (this.state.navExpand)?
             <Button size="normal" type="alt-orange" onClick={this.handleNavClick} name="Add">Add Employees</Button>:
-            <Button type="transparent" onClick={this.handleNavClick} name="Add"><i class="fas fa-plus"></i></Button>:
+            <Button size="small" type="transparent" onClick={this.handleNavClick} name="Add"><i class="fas fa-plus"></i></Button>:
             null}
             {(this.state.navExpand)?
             <Button size="normal" type="orange" onClick={this.handleNavClick} name="Logout">Logout</Button>:
-            <Button type="transparent" onClick={this.handleNavClick} name="Logout"><i class="fas fa-sign-out-alt"></i></Button>}
+            <Button size="small" type="transparent" onClick={this.handleNavClick} name="Logout"><i class="fas fa-sign-out-alt"></i></Button>}
           </ControlPanel>
           <MainView>
             {(this.state.showHome)?<Home employees={this.state.employees}/>: null}
@@ -486,7 +486,7 @@ const DashBody = Styled.div`
  display: grid;
  height:100vh;
  width:100vw;
- transition:grid-template-columns 1000ms linear;
+ transition: 1000ms;
  grid-template-columns:${({toggle})=>{
    switch(toggle){
      case true:
@@ -501,6 +501,13 @@ const DashBody = Styled.div`
   "Nav Nav"
   "Side Main"
   "Side Main";
+
+  @media(max-width: 768px){
+    grid-template-areas:
+    "Nav Nav"
+    "Main Main"
+    "Side Side"
+  }
 `
 
 const ControlPanel = Styled.div`
@@ -508,12 +515,13 @@ const ControlPanel = Styled.div`
   width:100%;
   background-color: #1f2d3f;
   grid-area: Side;
+  transition: 1000ms;
   grid-template-rows:${({toggle})=>{
     switch(toggle){
       case true:
         return "auto repeat(3,1fr)"
       case false:
-        return "repeat(4,100px)"
+        return "repeat(5,100px)"
     }
   }};
   align-items:${({toggle})=>{
@@ -530,12 +538,17 @@ const ControlPanel = Styled.div`
       case true:
         return "stretch"
       case false:
-        return "center"
+        return "stretch"
     }
   }};
 
   >h2{
     text-align:center;
+  }
+
+  @media(max-width:768px){
+    grid-template-columns:repeat(4,1fr)
+    grid-template-rows:1fr;
   }
 
   

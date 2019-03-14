@@ -25,6 +25,7 @@ import Modal from '../Modal';
       return (
         <EmployeeCard key={index}>
           <Card 
+            status={getStatus(restingHeartRate)}
             key={index}
             title={`${employee.first_name} ${employee.last_name}`}
             body={
@@ -53,7 +54,7 @@ export default Home;
 const HomeDiv = Styled.div`
   margin: 1rem;
   display: grid;
-  grid-template-columns: repeat(3,1fr);
+  grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
   justify-items: center;
 
   h1{
@@ -63,7 +64,7 @@ const HomeDiv = Styled.div`
 `
 
 const EmployeeCard = Styled.div`
-  min-width: 30%;
+  min-width: 75%;
 `;
 
 const EmployeeAvatar = Styled.img`
