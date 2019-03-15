@@ -21,7 +21,13 @@ import Modal from '../Modal';
     return employeesArray.map((employee,index)=>{
       console.log(`printing employee:`);
       console.log(employee);
-      const { restingHeartRate } = employee.heartRate.summary;
+      let restingHeartRate;
+      if( employee.heartRate.summary ){
+        restingHeartRate = employee.heartRate.summary.restingHeartRate;
+      }
+      else{
+        restingHeartRate = "-"
+      }
       return (
         <EmployeeCard key={index}>
           <Card 
