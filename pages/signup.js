@@ -1,20 +1,36 @@
-import React, { Component } from 'react';
-import { Formik, Form, Field } from 'formik';
-import {Elements, StripeProvider} from 'react-stripe-elements-universal';
-import * as Yup from 'yup';
-import Link from 'next/link';
-import Styled from 'styled-components';
-import FullNav from '../components/FullNav';
-import Input from '../components/Input';
+import React, { Component } from "react";
+import { Formik, Form, Field } from "formik";
+import { Elements, StripeProvider } from "react-stripe-elements-universal";
+import * as Yup from "yup";
+import Link from "next/link";
+import Styled from "styled-components";
+import FullNav from "../components/FullNav";
+import Input from "../components/Input";
 import BundleOption from "../components/BundleOption";
 import BundleSubInnerWrap from "../components/BundleSubInnerWrap";
 import CheckoutForm from "../components/CheckoutForm";
-import Footer from '../components/Footer';
+import Footer from "../components/Footer";
 import FormInfo from "../components/FormInfo";
 import FormSubHeader from "../components/FormSubHeader";
 import FormSubInnerWrap from "../components/FormSubInnerWrap";
 import ShowSelections from "../components/ShowSelections";
 import SubmitButton from "../components/SubmitButton";
+import PropTypes from "prop-types";
+import classNames from "classnames";
+import { withStyles } from "@material-ui/core/styles";
+import MenuItem from "@material-ui/core/MenuItem";
+import TextField from "@material-ui/core/TextField";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Button from "@material-ui/core/Button"
+import Select from "@material-ui/core/Select";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import Stepper from "@material-ui/core/Stepper";
+import Step from "@material-ui/core/Step";
+import StepLabel from "@material-ui/core/StepLabel";
+import Typography from "@material-ui/core/Typography";
+import NativeSelect from '@material-ui/core/NativeSelect';
 
 const CompanySchema = Yup.object().shape({
     company_name: Yup.string()
@@ -41,24 +57,84 @@ const CompanySchema = Yup.object().shape({
         .max(15, "Too Long!")
         .required("Required"),
     email: Yup.string()
-        .email('Invalid email')
-        .required('Required'),
+        .email("Invalid email")
+        .required("Required"),
 });
 
-const Label = Styled.label`
-    display: flex;
-    flex-direction: column;
-    margin: 0.5em 0;
-    position: relative;
-	font: 13px Arial, Helvetica, sans-serif;
-	color: #888;
-	margin-bottom: 15px;
-`;
+const styles = theme => ({
+    container: {
+        display: "flex",
+        flexWrap: "wrap",
+    },
+    textField: {
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+    },
+    dense: {
+        marginTop: 16,
+    },
+    menu: {
+        width: 200,
+    },
+    cssLabel: {
+        color: "black",
+    },
+    cssOutlinedInput: {
+        "&$cssFocused $notchedOutline": {
+            borderColor: `${theme.palette.primary.main} !important`,
+        },
+        boxSizing: "border-box",
+    },
 
-const Text = Styled.p`
-    font-family: 'Raleway', sans-serif;
-    color: ${props => props.color || '#4d4d4d'}
-`;
+    cssFocused: {},
+
+    notchedOutline: {
+        // borderWidth: "1px",
+        // borderColor: "black !important"
+    },
+
+    button: {
+        margin: theme.spacing.unit,
+    },
+    instructions: {
+        marginTop: theme.spacing.unit,
+        marginBottom: theme.spacing.unit,
+    },
+    formControl: {
+        backgroundColor: "white",
+    },
+    selectEmpty: {
+        marginTop: theme.spacing.unit * 2,
+    },
+    white: {
+        backgroundColor: "white",
+    },
+    tiered: {
+
+        [theme.breakpoints.down("sm")]: {
+            width: "100%",
+        },
+    },
+    tieredWrap: {
+        display: "flex",
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+});
+
+const allStates = ["Alabama", "Alaska", "Arizona", "Arkansas",
+    "California", "Colorado", "Connecticut", "Delaware",
+    "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana",
+    "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine",
+    "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi",
+    "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
+    "New Jersey", "New Mexico", "New York", "North Carolina",
+    "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania",
+    "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
+    "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia",
+    "Wisconsin", "Wyoming"];
 
 const NavLink = Styled.a`
 	margin:.5rem;
@@ -66,6 +142,50 @@ const NavLink = Styled.a`
     text-decoration: none;
     cursor: pointer;
 `;
+
+const renderTextField = ({
+    field,
+    form: { values, touched, errors, handleBlur, handleChange },
+    ...props
+}) => (
+        <TextField
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values[field.name]}
+            id={field.name}
+            error={touched[field.name] && Boolean(errors[field.name])}
+            label={props.label}
+            type="text"
+            name={field.name}
+            margin="normal"
+            variant="outlined"
+            required={props.required}
+            fullWidth={props.fullWidth}
+            className={props.classes.white}
+            InputLabelProps={{
+                classes: {
+                    root: props.classes.cssLabel,
+                    focused: props.classes.cssFocused,
+                },
+            }}
+            InputProps={{
+                classes: {
+                    root: props.classes.cssOutlinedInput,
+                    focused: props.classes.cssFocused,
+                    notchedOutline: props.classes.notchedOutline,
+                },
+                startAdornment: (
+                    <InputAdornment position="start">
+                        <i className={props.icon}></i>
+                    </InputAdornment>
+                ),
+            }}
+        />
+    )
+
+function getSteps() {
+    return ["Info", "Package", "Purchase"];
+}
 
 class SignUp extends Component {
     state = {
@@ -77,10 +197,45 @@ class SignUp extends Component {
         zip: "",
         email: "",
         plan: "",
+        activeStep: 0,
         verifyStep: 0,
+        skipped: new Set(),
+    }
+
+    handleNext = () => {
+        const { activeStep } = this.state;
+        let { skipped } = this.state;
+        if (this.isStepSkipped(activeStep)) {
+            skipped = new Set(skipped.values());
+            skipped.delete(activeStep);
+        }
+        this.setState({
+            activeStep: activeStep + 1,
+            skipped,
+        });
+    };
+
+    handleBack = () => {
+        this.setState(state => ({
+            activeStep: state.activeStep - 1,
+        }));
+    };
+
+    handleReset = () => {
+        this.setState({
+            activeStep: 0,
+        });
+    };
+
+    isStepSkipped(step) {
+        return this.state.skipped.has(step);
     }
 
     render() {
+        const { classes } = this.props;
+        const steps = getSteps();
+        const { activeStep } = this.state;
+
         return (
             <React.Fragment>
                 <FullNav>
@@ -102,106 +257,76 @@ class SignUp extends Component {
                         onSubmit={values => {
                             this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }))
                             this.setState(values);
+                            this.handleNext();
                         }}
                         render={({ errors, touched, values, handleChange, handleBlur }) => (
                             <React.Fragment>
                                 <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
                                 <Form>
-                                    <FormSubHeader number="1" text="Company Info" />
+                                    <Stepper activeStep={activeStep}>
+                                        {steps.map((label, index) => {
+                                            const props = {};
+                                            const labelProps = {};
+                                            return (
+                                                <Step key={label} {...props}>
+                                                    <StepLabel {...labelProps}>{label}</StepLabel>
+                                                </Step>
+                                            );
+                                        })}
+                                    </Stepper>
                                     <FormSubInnerWrap>
-                                        <Label>
-                                            Company Name *
-                                {errors.company_name && touched.company_name && <Text color="red">{errors.company_name}</Text>}
-                                            <Input
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.company_name}
-                                                border={errors.company_name && "1px solid red"}
-                                                type="text"
-                                                name="company_name"
-                                                placeholder=""
-                                            />
-                                        </Label>
-                                        <Label>
-                                            Email Address *
-                                {errors.email && touched.email && <Text color="red">{errors.email}</Text>}
-                                            <Input
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.email}
-                                                border={errors.email && "1px solid red"}
-                                                type="text"
-                                                name="email"
-                                                placeholder=""
-                                            />
-                                        </Label>
-                                        <Label>
-                                            Address *
-                                {errors.address && touched.address && <Text color="red">{errors.address}</Text>}
-                                            <Input
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.address}
-                                                border={errors.address && "1px solid red"}
-                                                type="text"
-                                                name="address"
-                                                placeholder="Address 1"
-                                            />
-                                        </Label>
-                                        <Label>
-                                            Address 2 *
-                                {errors.address2 && touched.address2 && <Text color="red">{errors.address2}</Text>}
-                                            <Input
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.address2}
-                                                border={errors.address2 && "1px solid red"}
-                                                type="text"
-                                                name="address2"
-                                                placeholder="Address 2"
-                                            />
-                                        </Label>
-                                        <Label>
-                                            City *
-                        {errors.city && touched.city && <Text color="red">{errors.city}</Text>}
-                                            <Input
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.city}
-                                                border={errors.city && "1px solid red"}
-                                                type="text"
-                                                name="city"
-                                                placeholder="City"
-                                            />
-                                        </Label>
-                                        <Label>
-                                            State *
-                        {errors.state && touched.state && <Text color="red">{errors.state}</Text>}
-                                            <Input
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.state}
-                                                border={errors.state && "1px solid red"}
-                                                type="text"
-                                                name="state"
-                                                placeholder="State"
-                                            />
-                                        </Label>
-                                        <Label>
-                                            Postal Code *
-                        {errors.city && touched.zip && <Text color="red">{errors.city}</Text>}
-                                            <Input
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.zip}
-                                                border={errors.zip && "1px solid red"}
-                                                type="text"
-                                                name="zip"
-                                                placeholder="Postal Code"
-                                            />
-                                        </Label>
+                                        <Field name="company_name" component={renderTextField} label="Company Name" icon="far fa-building" classes={classes} required={true} fullWidth={true} />
+                                        <Field name="email" component={renderTextField} label="Email" icon="far fa-envelope" classes={classes} required={true} fullWidth={true} />
+                                        <Field name="address" component={renderTextField} label="Address 1" icon="far fa-address-card" classes={classes} required={true} fullWidth={true} />
+                                        <Field name="address2" component={renderTextField} label="Address 2" icon="far fa-address-card" classes={classes} required={false} fullWidth={true} />
+
+                                        <div className={classes.tieredWrap}>
+                                            <div className={classes.tiered} textAlign="left">
+                                                <Field name="city" component={renderTextField} label="City" icon="far fa-flag" classes={classes} required={true} fullWidth={true} />
+                                            </div>
+                                            <div className={classes.tiered} textAlign="center">
+                                                <FormControl required className={classes.formControl} margin="normal">
+                                                    <InputLabel
+                                                        ref={ref => {
+                                                            this.InputLabelRef = ref;
+                                                        }}
+                                                        shrink
+                                                        htmlFor="state"
+                                                        variant="outlined"
+                                                    >
+                                                        State
+                                                    </InputLabel>
+                                                    <Select
+                                                        onChange={handleChange}
+                                                        value={values.state}
+                                                        input={
+                                                            <OutlinedInput
+                                                                labelWidth={0}
+                                                                name="state"
+                                                                id="state"
+                                                            />
+                                                        }
+                                                        style={{ width: 250 }}
+                                                    >
+                                                        <MenuItem value="">
+                                                            <em>None</em>
+                                                        </MenuItem>
+                                                        {allStates.map(states => (
+                                                            <MenuItem value={states} key={states}>
+                                                                {states}
+                                                            </MenuItem>
+                                                        ))}
+                                                    </Select>
+                                                </FormControl>
+                                            </div>
+                                            <div className={classes.tiered} textAlign="right">
+                                                <Field name="zip" component={renderTextField} label="Postal Code" icon="far fa-flag" classes={classes} required={true} fullWidth={true} align="right" />
+                                            </div>
+                                        </div>
                                     </FormSubInnerWrap>
-                                    <SubmitButton text="Select Package" />
+                                    <Button variant="contained" color="primary" type="submit" className={classes.button}>
+                                        Select Package
+                                    </Button>
                                 </Form>
                             </React.Fragment>
                         )}
@@ -215,12 +340,23 @@ class SignUp extends Component {
                         onSubmit={(values) => {
                             this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }))
                             this.setState(values);
+                            this.handleNext();
                         }}
                         render={({ errors, touched, values, handleChange, handleBlur, setFieldValue }) => (
                             <React.Fragment>
                                 <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
                                 <Form>
-                                    <FormSubHeader number="2" text="Available Bundles" />
+                                    <Stepper activeStep={activeStep}>
+                                        {steps.map((label, index) => {
+                                            const props = {};
+                                            const labelProps = {};
+                                            return (
+                                                <Step key={label} {...props}>
+                                                    <StepLabel {...labelProps}>{label}</StepLabel>
+                                                </Step>
+                                            );
+                                        })}
+                                    </Stepper>
                                     <BundleSubInnerWrap>
                                         <BundleOption colorChoice="#CD7F32" list={["Employees: 1-100", "Support: 8x5"]} price="$250" onClick={() => setFieldValue("plan", "bronze")} />
                                         <BundleOption colorChoice="#C0C0C0" list={["Employees: 101-500", "Support: 24x5", "Personal Email Address"]} price="$500" onClick={() => setFieldValue("plan", "silver")} />
@@ -240,13 +376,24 @@ class SignUp extends Component {
                             if (values.editSubmit === "edit") {
                                 this.setState((prevState) => ({ verifyStep: prevState.verifyStep - 2 }))
                                 values.editSubmit = "";
+                                this.handleReset();
                             }
                         }}
                         render={({ setFieldValue }) => (
                             <React.Fragment>
                                 <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
                                 <Form>
-                                    <FormSubHeader number="3" text="Validate Info" />
+                                    <Stepper activeStep={activeStep}>
+                                        {steps.map((label, index) => {
+                                            const props = {};
+                                            const labelProps = {};
+                                            return (
+                                                <Step key={label} {...props}>
+                                                    <StepLabel {...labelProps}>{label}</StepLabel>
+                                                </Step>
+                                            );
+                                        })}
+                                    </Stepper>
                                     <ShowSelections {... this.state} />
                                     <SubmitButton text="Edit Details" onClick={() => setFieldValue("editSubmit", "edit")} />
                                     <br /><br />
@@ -267,7 +414,11 @@ class SignUp extends Component {
     }
 }
 
-export default SignUp;
+SignUp.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(SignUp);
 
 const SignUpDiv = Styled.div`
     grid-template-columns: 2fr;
