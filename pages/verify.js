@@ -12,6 +12,7 @@ import FormSubHeader from "../components/FormSubHeader";
 import FormSubInnerWrap from "../components/FormSubInnerWrap";
 import Provider from "../components/Provider";
 import SubmitButton from "../components/SubmitButton";
+import Progress from "../components/Progress";
 import { CUSTOMERS_API, EMPLOYEES_API } from "../static/api-config";
 
 const EmployeeSchema = Yup.object().shape({
@@ -161,6 +162,7 @@ class SignUp extends Component {
                     <Link href="/"><NavLink></NavLink></Link>
                 </FullNav>
                 <VerifyDiv verifyStep={this.state.verifyStep}>
+                <Progress />
                     <Formik
                         initialValues={{
                             code: "",

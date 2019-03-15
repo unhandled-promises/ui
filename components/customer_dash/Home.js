@@ -22,7 +22,7 @@ import Modal from '../Modal';
       console.log(`printing employee:`);
       console.log(employee);
       let restingHeartRate;
-      // if( employee.heartRate.summary ){
+      // if(employee.heartRate){
       //   restingHeartRate = employee.heartRate.summary.restingHeartRate;
       // }
       // else{
