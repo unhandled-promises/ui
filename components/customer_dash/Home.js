@@ -22,12 +22,12 @@ import Modal from '../Modal';
       console.log(`printing employee:`);
       console.log(employee);
       let restingHeartRate;
-      if( employee.heartRate.summary ){
-        restingHeartRate = employee.heartRate.summary.restingHeartRate;
-      }
-      else{
-        restingHeartRate = "-"
-      }
+      // if( employee.heartRate.summary ){
+      //   restingHeartRate = employee.heartRate.summary.restingHeartRate;
+      // }
+      // else{
+      //   restingHeartRate = "-"
+      // }
       return (
         <EmployeeCard key={index}>
           <Card 
@@ -37,9 +37,12 @@ import Modal from '../Modal';
             body={
             <div>
               <EmployeeAvatar src={employee.avatar}/>
-              <p><i class="fas fa-heartbeat"></i>{` ${employee.heartRate.summary.restingHeartRate}`}</p>
+              <p><i class="fas fa-heartbeat"></i>{`-`}</p>
+              <p><i class="fas fa-shoe-prints"></i>{`-`}</p>
+              <p>{`Status: -`}</p>
+              {/* <p><i class="fas fa-heartbeat"></i>{` ${employee.heartRate.summary.restingHeartRate}`}</p>
               <p><i class="fas fa-shoe-prints"></i>{` ${employee.heartRate.summary.steps}`}</p>
-              <p>{`Status: ${getStatus(Number(restingHeartRate))}`}</p>
+              <p>{`Status: ${getStatus(Number(restingHeartRate))}`}</p> */}
             </div>
             }  />
         </EmployeeCard>
