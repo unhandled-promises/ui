@@ -17,17 +17,17 @@ export default ({title,body,className,status}) => {
 const Card = Styled.div`
   display: grid;
   grid-template-rows: auto 1fr;
-  background-color: ${({status})=>{
+  border: ${({status})=>{
     console.log(status);
     switch (status){
       case 'Normal':
-        return '#74d1ff'
+        return '5px solid #0070ff'
       case 'Warning':
-        return '#ffa274'
+        return '5px solid #ffa274'
       case 'Danger':
-        return '#ff8074'
+        return '5px solid #ff8074'
       default:
-        return '#ddd'
+        return 'none'
     }
   }};
   justify-items: center;
