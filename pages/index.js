@@ -32,15 +32,18 @@ export default () => {
         </Testimonials>
         <How>
           <h2>HOW IT WORKS</h2>
-          <p>It's bouncing around the Web like a beachball at a Nickelback concert. The safe word is WHiskey. Oh, man, he hit his ass with a parking cone! Nice. This is my hat now! This is totally my hat! So I galloped into a wooded glen, and after punch-dancing out my rage and suffering an extremely long and very painful fall, I realized what has to be done. Hey Sullivan, you chode! I owe you a shot in the nuts! My name is Rod, and I like to party. You know, pools are perfect for holding water... My name is Rod, and I like to party. I used to be legit. I was too legit. I was too legit to quit. but now I'm not legit. I'm unlegit. And for that reason, I must quit. My name is Rod, and I like to party. Oh, man, he hit his ass with a parking cone! Nice. Balls, man! We just ran over a small bus! God I go to church every goddamn Sunday! You gonna bring the demons out of me!? My name is Rod, and I like to party. Hey, Rod, what's that song about a grandma getting run over by a reindeer? This is my hat now! This is totally my hat! Balls, man! We just ran over a small bus! Funky Fresh. So I galloped into a wooded glen, and after punch-dancing out my rage and suffering an extremely long and very painful fall, I realized what has to be done.</p>
+          <p>Having a healthy, happy workforce is one of the keys to increased productivity and efficiency. 
+            Fit2Work allows companies and their employees to link their fitness tracker device to our online display dashboard. 
+            Utilizing the Fitbit API, employees are able to see their heart rate, steps, and calories burned among other statistics. Company 
+            owners can view employee heart rate and will be able to know if a safety action is needed. Magna adipisicing voluptate aliqua quis aliqua quis culpa sunt ex occaecat commodo dolore laborum fugiat. Ullamco occaecat non laborum sint nisi. Irure non sunt et exercitation sit commodo aute tempor. Duis in enim enim veniam enim in occaecat ad officia esse mollit id. Consequat qui veniam laborum amet commodo. Eiusmod ullamco quis amet laborum aliquip fugiat consectetur irure ut sunt.</p>
           <Wrap>
-          <img src="/static/images/heart-health.jpeg" />
+          <img src="/static/images/athlete-bike.jpg" />
           </Wrap>
         </How>
         <Contact>
           <h2>CONTACT US</h2>
           <form>
-          <p>Curious? Reach out to us and request a demo!</p>
+          <p>Curious? Reach out and request a demo!</p>
           <ContactInput type="name" placeholder="Name"/>
           <ContactInput type="email" placeholder="Email"/>
           <ContactInput type="phone" placeholder="Phone Number"/>
@@ -64,7 +67,7 @@ const Body = Styled.div`
 
 const Main = Styled.main`
   display:grid;
-  grid-template-rows: 400px 400px 1fr 500px;
+  grid-template-rows: 400px 400px 500px 500px;
   grid-gap:500px;
   padding: 1rem;
   font-family: 'Montserrat', sans-serif;
@@ -139,7 +142,6 @@ const How = Styled.div `
   text-align:center;
   display: grid;
   grid-gap: .75rem;
-  grid-template-rows: repeat (2, 1fr);
   grid-template-columns: repeat(2, 1fr);
   grid-template-areas: "title img"
                       "message img"
@@ -159,7 +161,6 @@ const How = Styled.div `
     grid-area: img;
     margin: auto;
     width: 100%;
-    object-fit: cover;
   }
 `
 const Contact = Styled.div `
@@ -212,7 +213,6 @@ position: relative;
   height:100%;
   width:100%;
   background: #FFA600;
-  opacity: .5;
-  box-shadow: 0 0 20px 200px #FFA600 inset;
+  opacity: .6;
 }
 `
