@@ -202,7 +202,8 @@ class SignUp extends Component {
                             );
                         })}
                     </Stepper>
-                    <CompanyInfo classes={classes} handler={this.handler} />
+                    <CompanyInfo classes={classes} handler={this.handler} scope="new" />
+                    {/* <CompanyInfo classes={classes} handler={this.handler} scope="update" customerId="5c89a4dcf609b0001e6e31e1" jwt="lkjlaksdjflkajdsf" /> */}
                 </SignUpDiv>
                 <BundleDiv verifyStep={this.state.verifyStep}>
                     <Formik

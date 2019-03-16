@@ -7,11 +7,12 @@ export default ({
     form: { values, touched, errors, handleBlur, handleChange },
     ...props
 }) => {
+
     return (
         <TextField
             onChange={handleChange}
             onBlur={handleBlur}
-            value={values[field.name]}
+            value={values[field.name] || ""}
             id={field.name}
             error={touched[field.name] && Boolean(errors[field.name])}
             label={props.label}

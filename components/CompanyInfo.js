@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field } from "formik";
 import FormSubInnerWrap from "../components/FormSubInnerWrap";
 import Button from "@material-ui/core/Button"
 import CustomTextField from "../components/CustomTextField";
 import CustomSelectField from "../components/CustomSelectField";
 import * as Yup from "yup";
+import { CUSTOMERS_API } from "../static/api-config";
 
 const CompanySchema = Yup.object().shape({
     company_name: Yup.string()
@@ -47,18 +48,37 @@ const allStates = ["Alabama", "Alaska", "Arizona", "Arkansas",
     "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia",
     "Wisconsin", "Wyoming"];
 
-export default ({...props}) => {
+function CompanyInfo ({ ...props }) {
+    const [company, setCompany] = useState({address: "", address2: "", city: "", company_name: "", email: "", state: "", zip: ""});
+
+    useEffect(() => {
+        if (props.scope === "update") {
+            const fetchData = async () => {
+                try {
+                    const companyResponse = await fetch(`${CUSTOMERS_API}api/customers/${props.customerId}`, {
+                        method: "GET",
+                        headers: {
+                            "Authorization": props.jwt
+                        }
+                    });
+                    const custMap = await companyResponse.json();
+                    custMap[0].company_name = custMap[0].name;
+                    custMap[0].zip = custMap[0].postal;
+
+                    setCompany(custMap[0]);
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+
+            fetchData();
+        }
+    }, []);
+
     return (
         <Formik
-            initialValues={{
-                company_name: "",
-                address: "",
-                address2: "",
-                email: "",
-                city: "",
-                state: "",
-                zip: "",
-            }}
+            initialValues={company}
+            enableReinitialize={true}
             validationSchema={CompanySchema}
             onSubmit={values => {
                 props.handler(values);
@@ -73,23 +93,25 @@ export default ({...props}) => {
                             <Field name="address2" component={CustomTextField} label="Address 2" icon="far fa-address-card" classes={props.classes} required={false} fullWidth={true} />
 
                             <div className={props.classes.tieredWrap}>
-                                <div className={props.classes.tiered} textAlign="left">
+                                <div className={props.classes.tiered}>
                                     <Field name="city" component={CustomTextField} label="City" icon="far fa-city" classes={props.classes} required={true} fullWidth={true} />
                                 </div>
-                                <div className={props.classes.tiered} textAlign="center">
+                                <div className={props.classes.tiered}>
                                     <Field name="state" component={CustomSelectField} label="State" classes={props.classes} required={true} selection={allStates} />
                                 </div>
-                                <div className={props.classes.tiered} textAlign="right">
+                                <div className={props.classes.tiered}>
                                     <Field name="zip" component={CustomTextField} label="Postal Code" icon="far fa-mailbox" classes={props.classes} required={true} fullWidth={true} align="right" />
                                 </div>
                             </div>
                         </FormSubInnerWrap>
                         <Button variant="contained" color="primary" type="submit" className={props.classes.button}>
-                            Select Package
-                    </Button>
+                            {props.scope === "new" ? "Select Package" : "Update Company Info"}
+                        </Button>
                     </Form>
                 </React.Fragment>
             )}
         />
     )
 };
+
+export default CompanyInfo;
