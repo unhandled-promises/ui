@@ -30,7 +30,7 @@ export default class MyDocument extends Document {
           {this.props.styleTags}
           
             <link href="https://fonts.googleapis.com/css?family=Allan|Baloo+Chettan|Changa+One|Delius|Emblema+One|Vast+Shadow|Roboto|Montserrat" rel="stylesheet" />
-          
+            <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
         </Head>
         <style>{`body{ margin:0 }`}
         </style>
