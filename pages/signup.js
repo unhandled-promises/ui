@@ -139,7 +139,7 @@ class SignUp extends Component {
         email: "",
         plan: "",
         activeStep: 0,
-        verifyStep: 0,
+        // verifyStep: 0,
         skipped: new Set(),
     }
 
@@ -173,7 +173,6 @@ class SignUp extends Component {
     }
 
     handler(value) {
-        this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }))
         this.handleNext();
         this.setState(value)
     }
@@ -189,7 +188,7 @@ class SignUp extends Component {
                     <Link href="/"><NavLink>Home</NavLink></Link>
                     <Link href="/"><NavLink></NavLink></Link>
                 </FullNav>
-                <SignUpDiv verifyStep={this.state.verifyStep}>
+                <SignUpDiv activeStep={this.state.activeStep}>
                     <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
                     <Stepper activeStep={activeStep}>
                         {steps.map((label, index) => {
@@ -205,13 +204,12 @@ class SignUp extends Component {
                     <CompanyInfo classes={classes} handler={this.handler} scope="new" />
                     {/* <CompanyInfo classes={classes} handler={this.handler} scope="update" customerId="5c89a4dcf609b0001e6e31e1" jwt="lkjlaksdjflkajdsf" /> */}
                 </SignUpDiv>
-                <BundleDiv verifyStep={this.state.verifyStep}>
+                <BundleDiv activeStep={this.state.activeStep}>
                     <Formik
                         initialValues={{
                             plan: "",
                         }}
                         onSubmit={(values) => {
-                            this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }))
                             this.setState(values);
                             this.handleNext();
                         }}
@@ -240,14 +238,14 @@ class SignUp extends Component {
                         )}
                     />
                 </BundleDiv>
-                <PaymentDiv verifyStep={this.state.verifyStep}>
+                <PaymentDiv activeStep={this.state.activeStep}>
                     <Formik
                         initialValues={{
                             editSubmit: "",
                         }}
                         onSubmit={async (values) => {
                             if (values.editSubmit === "edit") {
-                                this.setState((prevState) => ({ verifyStep: prevState.verifyStep - 2 }))
+                                this.setState((prevState) => ({ activeStep: prevState.activeStep - 2 }))
                                 values.editSubmit = "";
                                 this.handleReset();
                             }
@@ -306,7 +304,7 @@ const SignUpDiv = Styled.div`
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
     -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
     -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
-	display:${({ verifyStep }) => (verifyStep === 0) ? "grid" : "none"}
+	display:${({ activeStep }) => (activeStep === 0) ? "grid" : "none"}
 `
 
 const BundleDiv = Styled.div`
@@ -322,7 +320,7 @@ const BundleDiv = Styled.div`
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
     -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
     -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
-	display:${({ verifyStep }) => (verifyStep === 1) ? "grid" : "none"}
+	display:${({ activeStep }) => (activeStep === 1) ? "grid" : "none"}
 `
 
 const PaymentDiv = Styled.div`
@@ -338,5 +336,5 @@ const PaymentDiv = Styled.div`
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
     -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
     -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
-	display:${({ verifyStep }) => (verifyStep === 2) ? "grid" : "none"}
+	display:${({ activeStep }) => (activeStep === 2) ? "grid" : "none"}
 `
