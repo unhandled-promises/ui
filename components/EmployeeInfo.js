@@ -27,6 +27,7 @@ const EmployeeSchema = Yup.object().shape({
         .required("Required"),
     password2: Yup.string()
         .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, "Password must include a special character")
+        .oneOf([Yup.ref('password'), "Both Passwords must match"])
         .required("Required"),
 });
 

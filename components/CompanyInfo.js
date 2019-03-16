@@ -97,7 +97,8 @@ function CompanyInfo ({ ...props }) {
                                     <Field name="city" component={CustomTextField} label="City" icon="far fa-city" classes={props.classes} required={true} fullWidth={true} />
                                 </div>
                                 <div className={props.classes.tiered}>
-                                    <Field name="state" component={CustomSelectField} label="State" classes={props.classes} required={true} selection={allStates} />
+                                    {/* <Field name="state" component={CustomSelectField} label="State" classes={props.classes} required={true} selection={allStates} /> */}
+                                    <Field name="state" component={CustomSelectField} label="State" icon="far fa-city" classes={props.classes} required={true} select={true} fullWidth={true} selection={allStates} />
                                 </div>
                                 <div className={props.classes.tiered}>
                                     <Field name="zip" component={CustomTextField} label="Postal Code" icon="far fa-mailbox" classes={props.classes} required={true} fullWidth={true} align="right" />
