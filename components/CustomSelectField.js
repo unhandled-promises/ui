@@ -14,10 +14,10 @@ export default ({
         <FormControl required className={props.classes.formControl} margin="normal">
             <InputLabel
                 shrink
-                htmlFor="state"
+                htmlFor={field.name}
                 variant="outlined"
             >
-                State
+                {props.label}
         </InputLabel>
             <Select
                 onChange={handleChange}
@@ -25,8 +25,8 @@ export default ({
                 input={
                     <OutlinedInput
                         labelWidth={0}
-                        name="state"
-                        id="state"
+                        name={field.name}
+                        id={field.name}
                     />
                 }
                 style={{ width: 250 }}
