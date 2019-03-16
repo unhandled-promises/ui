@@ -22,12 +22,12 @@ import Modal from '../Modal';
       console.log(`printing employee:`);
       console.log(employee);
       let restingHeartRate;
-      // if(employee.heartRate){
-      //   restingHeartRate = employee.heartRate.summary.restingHeartRate;
-      // }
-      // else{
-      //   restingHeartRate = "-"
-      // }
+      if(employee.heartRate.summary !== 'null'){
+        restingHeartRate = employee.heartRate.summary.restingHeartRate;
+      }
+      else{
+        restingHeartRate = "-"
+      }
       return (
         <EmployeeCard key={index}>
           <Card 
