@@ -1,64 +1,115 @@
-import React, { Component } from 'react';
-import { Formik, Form, Field } from 'formik';
-import {Elements, StripeProvider} from 'react-stripe-elements-universal';
-import * as Yup from 'yup';
-import Link from 'next/link';
-import Styled from 'styled-components';
-import FullNav from '../components/FullNav';
-import Input from '../components/Input';
+import React, { Component } from "react";
+import { Formik, Form } from "formik";
+import { Elements, StripeProvider } from "react-stripe-elements-universal";
+import Link from "next/link";
+import Styled from "styled-components";
+import FullNav from "../components/FullNav";
 import BundleOption from "../components/BundleOption";
 import BundleSubInnerWrap from "../components/BundleSubInnerWrap";
 import CheckoutForm from "../components/CheckoutForm";
-import Footer from '../components/Footer';
+import Footer from "../components/Footer";
 import FormInfo from "../components/FormInfo";
 import FormSubHeader from "../components/FormSubHeader";
-import FormSubInnerWrap from "../components/FormSubInnerWrap";
 import ShowSelections from "../components/ShowSelections";
 import SubmitButton from "../components/SubmitButton";
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
+import Stepper from "@material-ui/core/Stepper";
+import Step from "@material-ui/core/Step";
+import StepLabel from "@material-ui/core/StepLabel";
+import CompanyInfo from "../components/CompanyInfo";
 
-const CompanySchema = Yup.object().shape({
-    company_name: Yup.string()
-        .min(1, "Too Short!")
-        .max(100, "Too Long!")
-        .required("Required"),
-    address: Yup.string()
-        .min(2, "Too Short!")
-        .max(100, "Too Long!")
-        .required("Required"),
-    address2: Yup.string()
-        .min(2, "Too Short!")
-        .max(100, "Too Long!"),
-    city: Yup.string()
-        .min(2, "Too Short!")
-        .max(50, "Too Long!")
-        .required("Required"),
-    state: Yup.string()
-        .min(2, "Too Short!")
-        .max(20, "Too Long!")
-        .required("Required"),
-    zip: Yup.string()
-        .min(5, "Too Short!")
-        .max(15, "Too Long!")
-        .required("Required"),
-    email: Yup.string()
-        .email('Invalid email')
-        .required('Required'),
+// const CompanySchema = Yup.object().shape({
+//     company_name: Yup.string()
+//         .min(1, "Too Short!")
+//         .max(100, "Too Long!")
+//         .required("Required"),
+//     address: Yup.string()
+//         .min(2, "Too Short!")
+//         .max(100, "Too Long!")
+//         .required("Required"),
+//     address2: Yup.string()
+//         .min(2, "Too Short!")
+//         .max(100, "Too Long!"),
+//     city: Yup.string()
+//         .min(2, "Too Short!")
+//         .max(50, "Too Long!")
+//         .required("Required"),
+//     state: Yup.string()
+//         .min(4, "Too Short!")
+//         .max(20, "Too Long!")
+//         .required("Required"),
+//     zip: Yup.string()
+//         .min(5, "Too Short!")
+//         .max(15, "Too Long!")
+//         .required("Required"),
+//     email: Yup.string()
+//         .email("Invalid email")
+//         .required("Required"),
+// });
+
+const styles = theme => ({
+    container: {
+        display: "flex",
+        flexWrap: "wrap",
+    },
+    textField: {
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+    },
+    dense: {
+        marginTop: 16,
+    },
+    menu: {
+        width: 200,
+    },
+    cssLabel: {
+        color: "black",
+    },
+    cssOutlinedInput: {
+        "&$cssFocused $notchedOutline": {
+            borderColor: `${theme.palette.primary.main} !important`,
+        },
+        boxSizing: "border-box",
+    },
+
+    cssFocused: {},
+
+    notchedOutline: {
+        // borderWidth: "1px",
+        // borderColor: "black !important"
+    },
+
+    button: {
+        margin: theme.spacing.unit,
+    },
+    instructions: {
+        marginTop: theme.spacing.unit,
+        marginBottom: theme.spacing.unit,
+    },
+    formControl: {
+        backgroundColor: "white",
+    },
+    selectEmpty: {
+        marginTop: theme.spacing.unit * 2,
+    },
+    white: {
+        backgroundColor: "white",
+    },
+    tiered: {
+
+        [theme.breakpoints.down("sm")]: {
+            width: "100%",
+        },
+    },
+    tieredWrap: {
+        display: "flex",
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
 });
-
-const Label = Styled.label`
-    display: flex;
-    flex-direction: column;
-    margin: 0.5em 0;
-    position: relative;
-	font: 13px Arial, Helvetica, sans-serif;
-	color: #888;
-	margin-bottom: 15px;
-`;
-
-const Text = Styled.p`
-    font-family: 'Raleway', sans-serif;
-    color: ${props => props.color || '#4d4d4d'}
-`;
 
 const NavLink = Styled.a`
 	margin:.5rem;
@@ -67,7 +118,17 @@ const NavLink = Styled.a`
     cursor: pointer;
 `;
 
+function getSteps() {
+    return ["Info", "Package", "Purchase"];
+}
+
 class SignUp extends Component {
+    constructor(props) {
+        super(props)
+
+        this.handler = this.handler.bind(this)
+    }
+
     state = {
         company_name: "",
         address: "",
@@ -77,10 +138,51 @@ class SignUp extends Component {
         zip: "",
         email: "",
         plan: "",
+        activeStep: 0,
         verifyStep: 0,
+        skipped: new Set(),
+    }
+
+    handleNext = () => {
+        const { activeStep } = this.state;
+        let { skipped } = this.state;
+        if (this.isStepSkipped(activeStep)) {
+            skipped = new Set(skipped.values());
+            skipped.delete(activeStep);
+        }
+        this.setState({
+            activeStep: activeStep + 1,
+            skipped,
+        });
+    };
+
+    handleBack = () => {
+        this.setState(state => ({
+            activeStep: state.activeStep - 1,
+        }));
+    };
+
+    handleReset = () => {
+        this.setState({
+            activeStep: 0,
+        });
+    };
+
+    isStepSkipped(step) {
+        return this.state.skipped.has(step);
+    }
+
+    handler(value) {
+        this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }))
+        this.handleNext();
+        this.setState(value)
     }
 
     render() {
+        const { classes } = this.props;
+        const steps = getSteps();
+        const { activeStep } = this.state;
+
         return (
             <React.Fragment>
                 <FullNav>
@@ -88,124 +190,20 @@ class SignUp extends Component {
                     <Link href="/"><NavLink></NavLink></Link>
                 </FullNav>
                 <SignUpDiv verifyStep={this.state.verifyStep}>
-                    <Formik
-                        initialValues={{
-                            company_name: "",
-                            address: "",
-                            address2: "",
-                            email: "",
-                            city: "",
-                            state: "",
-                            zip: "",
-                        }}
-                        validationSchema={CompanySchema}
-                        onSubmit={values => {
-                            this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }))
-                            this.setState(values);
-                        }}
-                        render={({ errors, touched, values, handleChange, handleBlur }) => (
-                            <React.Fragment>
-                                <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
-                                <Form>
-                                    <FormSubHeader number="1" text="Company Info" />
-                                    <FormSubInnerWrap>
-                                        <Label>
-                                            Company Name *
-                                {errors.company_name && touched.company_name && <Text color="red">{errors.company_name}</Text>}
-                                            <Input
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.company_name}
-                                                border={errors.company_name && "1px solid red"}
-                                                type="text"
-                                                name="company_name"
-                                                placeholder=""
-                                            />
-                                        </Label>
-                                        <Label>
-                                            Email Address *
-                                {errors.email && touched.email && <Text color="red">{errors.email}</Text>}
-                                            <Input
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.email}
-                                                border={errors.email && "1px solid red"}
-                                                type="text"
-                                                name="email"
-                                                placeholder=""
-                                            />
-                                        </Label>
-                                        <Label>
-                                            Address *
-                                {errors.address && touched.address && <Text color="red">{errors.address}</Text>}
-                                            <Input
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.address}
-                                                border={errors.address && "1px solid red"}
-                                                type="text"
-                                                name="address"
-                                                placeholder="Address 1"
-                                            />
-                                        </Label>
-                                        <Label>
-                                            Address 2 *
-                                {errors.address2 && touched.address2 && <Text color="red">{errors.address2}</Text>}
-                                            <Input
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.address2}
-                                                border={errors.address2 && "1px solid red"}
-                                                type="text"
-                                                name="address2"
-                                                placeholder="Address 2"
-                                            />
-                                        </Label>
-                                        <Label>
-                                            City *
-                        {errors.city && touched.city && <Text color="red">{errors.city}</Text>}
-                                            <Input
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.city}
-                                                border={errors.city && "1px solid red"}
-                                                type="text"
-                                                name="city"
-                                                placeholder="City"
-                                            />
-                                        </Label>
-                                        <Label>
-                                            State *
-                        {errors.state && touched.state && <Text color="red">{errors.state}</Text>}
-                                            <Input
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.state}
-                                                border={errors.state && "1px solid red"}
-                                                type="text"
-                                                name="state"
-                                                placeholder="State"
-                                            />
-                                        </Label>
-                                        <Label>
-                                            Postal Code *
-                        {errors.city && touched.zip && <Text color="red">{errors.city}</Text>}
-                                            <Input
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.zip}
-                                                border={errors.zip && "1px solid red"}
-                                                type="text"
-                                                name="zip"
-                                                placeholder="Postal Code"
-                                            />
-                                        </Label>
-                                    </FormSubInnerWrap>
-                                    <SubmitButton text="Select Package" />
-                                </Form>
-                            </React.Fragment>
-                        )}
-                    />
+                    <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
+                    <Stepper activeStep={activeStep}>
+                        {steps.map((label, index) => {
+                            const props = {};
+                            const labelProps = {};
+                            return (
+                                <Step key={label} {...props}>
+                                    <StepLabel {...labelProps}>{label}</StepLabel>
+                                </Step>
+                            );
+                        })}
+                    </Stepper>
+                    <CompanyInfo classes={classes} handler={this.handler} scope="new" />
+                    {/* <CompanyInfo classes={classes} handler={this.handler} scope="update" customerId="5c89a4dcf609b0001e6e31e1" jwt="lkjlaksdjflkajdsf" /> */}
                 </SignUpDiv>
                 <BundleDiv verifyStep={this.state.verifyStep}>
                     <Formik
@@ -215,12 +213,23 @@ class SignUp extends Component {
                         onSubmit={(values) => {
                             this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }))
                             this.setState(values);
+                            this.handleNext();
                         }}
                         render={({ errors, touched, values, handleChange, handleBlur, setFieldValue }) => (
                             <React.Fragment>
                                 <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
                                 <Form>
-                                    <FormSubHeader number="2" text="Available Bundles" />
+                                    <Stepper activeStep={activeStep}>
+                                        {steps.map((label, index) => {
+                                            const props = {};
+                                            const labelProps = {};
+                                            return (
+                                                <Step key={label} {...props}>
+                                                    <StepLabel {...labelProps}>{label}</StepLabel>
+                                                </Step>
+                                            );
+                                        })}
+                                    </Stepper>
                                     <BundleSubInnerWrap>
                                         <BundleOption colorChoice="#CD7F32" list={["Employees: 1-100", "Support: 8x5"]} price="$250" onClick={() => setFieldValue("plan", "bronze")} />
                                         <BundleOption colorChoice="#C0C0C0" list={["Employees: 101-500", "Support: 24x5", "Personal Email Address"]} price="$500" onClick={() => setFieldValue("plan", "silver")} />
@@ -240,13 +249,24 @@ class SignUp extends Component {
                             if (values.editSubmit === "edit") {
                                 this.setState((prevState) => ({ verifyStep: prevState.verifyStep - 2 }))
                                 values.editSubmit = "";
+                                this.handleReset();
                             }
                         }}
                         render={({ setFieldValue }) => (
                             <React.Fragment>
                                 <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
                                 <Form>
-                                    <FormSubHeader number="3" text="Validate Info" />
+                                    <Stepper activeStep={activeStep}>
+                                        {steps.map((label, index) => {
+                                            const props = {};
+                                            const labelProps = {};
+                                            return (
+                                                <Step key={label} {...props}>
+                                                    <StepLabel {...labelProps}>{label}</StepLabel>
+                                                </Step>
+                                            );
+                                        })}
+                                    </Stepper>
                                     <ShowSelections {... this.state} />
                                     <SubmitButton text="Edit Details" onClick={() => setFieldValue("editSubmit", "edit")} />
                                     <br /><br />
@@ -267,7 +287,11 @@ class SignUp extends Component {
     }
 }
 
-export default SignUp;
+SignUp.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(SignUp);
 
 const SignUpDiv = Styled.div`
     grid-template-columns: 2fr;

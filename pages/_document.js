@@ -23,7 +23,7 @@ export default class MyDocument extends Document {
     return (
       <html>
         <Head>
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossOrigin="anonymous" />
+        <link href="/static/fontawesome/css/all.min.css" rel="stylesheet" />
         <script src="https://js.stripe.com/v3/"></script>
           <title>Fit2Work</title>
           {/* Step 5: Output the styles in the head  */}
