@@ -5,7 +5,6 @@ import * as Yup from "yup";
 import Link from "next/link";
 import Styled from "styled-components";
 import FullNav from "../components/FullNav";
-import Input from "../components/Input";
 import BundleOption from "../components/BundleOption";
 import BundleSubInnerWrap from "../components/BundleSubInnerWrap";
 import CheckoutForm from "../components/CheckoutForm";
@@ -16,11 +15,8 @@ import FormSubInnerWrap from "../components/FormSubInnerWrap";
 import ShowSelections from "../components/ShowSelections";
 import SubmitButton from "../components/SubmitButton";
 import PropTypes from "prop-types";
-import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
-import TextField from "@material-ui/core/TextField";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import Button from "@material-ui/core/Button"
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
@@ -29,8 +25,7 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
-import Typography from "@material-ui/core/Typography";
-import NativeSelect from '@material-ui/core/NativeSelect';
+import CustomTextField from "../components/CustomTextField";
 
 const CompanySchema = Yup.object().shape({
     company_name: Yup.string()
@@ -143,47 +138,6 @@ const NavLink = Styled.a`
     cursor: pointer;
 `;
 
-const renderTextField = ({
-    field,
-    form: { values, touched, errors, handleBlur, handleChange },
-    ...props
-}) => (
-        <TextField
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values[field.name]}
-            id={field.name}
-            error={touched[field.name] && Boolean(errors[field.name])}
-            label={props.label}
-            type="text"
-            name={field.name}
-            margin="normal"
-            variant="outlined"
-            required={props.required}
-            fullWidth={props.fullWidth}
-            className={props.classes.white}
-            helperText={touched[field.name] && Boolean(errors[field.name]) ? errors[field.name] : ""}
-            InputLabelProps={{
-                classes: {
-                    root: props.classes.cssLabel,
-                    focused: props.classes.cssFocused,
-                },
-            }}
-            InputProps={{
-                classes: {
-                    root: props.classes.cssOutlinedInput,
-                    focused: props.classes.cssFocused,
-                    notchedOutline: props.classes.notchedOutline,
-                },
-                startAdornment: (
-                    <InputAdornment position="start">
-                        <i className={props.icon}></i>
-                    </InputAdornment>
-                ),
-            }}
-        />
-    )
-
 function getSteps() {
     return ["Info", "Package", "Purchase"];
 }
@@ -244,6 +198,18 @@ class SignUp extends Component {
                     <Link href="/"><NavLink></NavLink></Link>
                 </FullNav>
                 <SignUpDiv verifyStep={this.state.verifyStep}>
+                    <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
+                    <Stepper activeStep={activeStep}>
+                        {steps.map((label, index) => {
+                            const props = {};
+                            const labelProps = {};
+                            return (
+                                <Step key={label} {...props}>
+                                    <StepLabel {...labelProps}>{label}</StepLabel>
+                                </Step>
+                            );
+                        })}
+                    </Stepper>
                     <Formik
                         initialValues={{
                             company_name: "",
@@ -262,28 +228,16 @@ class SignUp extends Component {
                         }}
                         render={({ errors, touched, values, handleChange, handleBlur }) => (
                             <React.Fragment>
-                                <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
                                 <Form>
-                                    <Stepper activeStep={activeStep}>
-                                        {steps.map((label, index) => {
-                                            const props = {};
-                                            const labelProps = {};
-                                            return (
-                                                <Step key={label} {...props}>
-                                                    <StepLabel {...labelProps}>{label}</StepLabel>
-                                                </Step>
-                                            );
-                                        })}
-                                    </Stepper>
                                     <FormSubInnerWrap>
-                                        <Field name="company_name" component={renderTextField} label="Company Name" icon="far fa-building" classes={classes} required={true} fullWidth={true} />
-                                        <Field name="email" component={renderTextField} label="Email" icon="far fa-envelope" classes={classes} required={true} fullWidth={true} />
-                                        <Field name="address" component={renderTextField} label="Address 1" icon="far fa-address-card" classes={classes} required={true} fullWidth={true} />
-                                        <Field name="address2" component={renderTextField} label="Address 2" icon="far fa-address-card" classes={classes} required={false} fullWidth={true} />
+                                        <Field name="company_name" component={CustomTextField} label="Company Name" icon="far fa-building" classes={classes} required={true} fullWidth={true} />
+                                        <Field name="email" component={CustomTextField} label="Email" icon="far fa-envelope" classes={classes} required={true} fullWidth={true} />
+                                        <Field name="address" component={CustomTextField} label="Address 1" icon="far fa-address-card" classes={classes} required={true} fullWidth={true} />
+                                        <Field name="address2" component={CustomTextField} label="Address 2" icon="far fa-address-card" classes={classes} required={false} fullWidth={true} />
 
                                         <div className={classes.tieredWrap}>
                                             <div className={classes.tiered} textAlign="left">
-                                                <Field name="city" component={renderTextField} label="City" icon="far fa-city" classes={classes} required={true} fullWidth={true} />
+                                                <Field name="city" component={CustomTextField} label="City" icon="far fa-city" classes={classes} required={true} fullWidth={true} />
                                             </div>
                                             <div className={classes.tiered} textAlign="center">
                                                 <FormControl required className={classes.formControl} margin="normal">
@@ -322,7 +276,7 @@ class SignUp extends Component {
                                                 </FormControl>
                                             </div>
                                             <div className={classes.tiered} textAlign="right">
-                                                <Field name="zip" component={renderTextField} label="Postal Code" icon="far fa-mailbox" classes={classes} required={true} fullWidth={true} align="right" />
+                                                <Field name="zip" component={CustomTextField} label="Postal Code" icon="far fa-mailbox" classes={classes} required={true} fullWidth={true} align="right" />
                                             </div>
                                         </div>
                                     </FormSubInnerWrap>
