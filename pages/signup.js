@@ -19,35 +19,6 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import CompanyInfo from "../components/CompanyInfo";
 
-// const CompanySchema = Yup.object().shape({
-//     company_name: Yup.string()
-//         .min(1, "Too Short!")
-//         .max(100, "Too Long!")
-//         .required("Required"),
-//     address: Yup.string()
-//         .min(2, "Too Short!")
-//         .max(100, "Too Long!")
-//         .required("Required"),
-//     address2: Yup.string()
-//         .min(2, "Too Short!")
-//         .max(100, "Too Long!"),
-//     city: Yup.string()
-//         .min(2, "Too Short!")
-//         .max(50, "Too Long!")
-//         .required("Required"),
-//     state: Yup.string()
-//         .min(4, "Too Short!")
-//         .max(20, "Too Long!")
-//         .required("Required"),
-//     zip: Yup.string()
-//         .min(5, "Too Short!")
-//         .max(15, "Too Long!")
-//         .required("Required"),
-//     email: Yup.string()
-//         .email("Invalid email")
-//         .required("Required"),
-// });
-
 const styles = theme => ({
     container: {
         display: "flex",
@@ -101,6 +72,9 @@ const styles = theme => ({
         [theme.breakpoints.down("sm")]: {
             width: "100%",
         },
+        [theme.breakpoints.up("md")]: {
+            width: "30%",
+        },
     },
     tieredWrap: {
         display: "flex",
@@ -139,7 +113,6 @@ class SignUp extends Component {
         email: "",
         plan: "",
         activeStep: 0,
-        // verifyStep: 0,
         skipped: new Set(),
     }
 

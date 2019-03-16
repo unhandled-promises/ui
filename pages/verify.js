@@ -1,65 +1,89 @@
 import React, { Component } from 'react';
 import Router from 'next/router'
 import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
 import Link from 'next/link';
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
 import Styled from 'styled-components';
 import FullNav from '../components/FullNav';
-import Input from '../components/Input';
 import Footer from '../components/Footer';
 import FormInfo from "../components/FormInfo";
 import FormSubHeader from "../components/FormSubHeader";
 import FormSubInnerWrap from "../components/FormSubInnerWrap";
 import Provider from "../components/Provider";
 import SubmitButton from "../components/SubmitButton";
-import Progress from "../components/Progress";
 import { CUSTOMERS_API, EMPLOYEES_API } from "../static/api-config";
+import Stepper from "@material-ui/core/Stepper";
+import Step from "@material-ui/core/Step";
+import StepLabel from "@material-ui/core/StepLabel";
+import EmployeeInfo from "../components/EmployeeInfo";
+import VerifyInfo from "../components/VerifyInfo";
 
-const EmployeeSchema = Yup.object().shape({
-    firstName: Yup.string()
-        .min(1, "Too Short!")
-        .max(50, "Too Long!")
-        .matches(/[A-Z0-9{0,8}]/, "Code doesn't match expected format!")
-        .required("Required"),
-    lastName: Yup.string()
-        .min(1, "Too Short!")
-        .max(50, "Too Long!")
-        .matches(/[A-Z0-9{0,8}]/, "Code doesn't match expected format!")
-        .required("Required"),
-    date: Yup.string()
-        .required("Required"),
-    phone: Yup.string()
-        .matches(/(^([\d]{3}\-){2})[\d]{4}$/, "Phone must be in the format 555-555-5555")
-        .required("Required"),
-    password: Yup.string()
-        .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, "Password must include a special character")
-        .required("Required"),
+const styles = theme => ({
+    container: {
+        display: "flex",
+        flexWrap: "wrap",
+    },
+    textField: {
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+    },
+    dense: {
+        marginTop: 16,
+    },
+    menu: {
+        width: 200,
+    },
+    cssLabel: {
+        color: "black",
+    },
+    cssOutlinedInput: {
+        "&$cssFocused $notchedOutline": {
+            borderColor: `${theme.palette.primary.main} !important`,
+        },
+        boxSizing: "border-box",
+    },
+
+    cssFocused: {},
+
+    notchedOutline: {
+        // borderWidth: "1px",
+        // borderColor: "black !important"
+    },
+
+    button: {
+        margin: theme.spacing.unit,
+    },
+    instructions: {
+        marginTop: theme.spacing.unit,
+        marginBottom: theme.spacing.unit,
+    },
+    formControl: {
+        backgroundColor: "white",
+    },
+    selectEmpty: {
+        marginTop: theme.spacing.unit * 2,
+    },
+    white: {
+        backgroundColor: "white",
+    },
+    tiered: {
+        // flex: "50%",
+        [theme.breakpoints.down("sm")]: {
+            width: "100%",
+        },
+        [theme.breakpoints.up("md")]: {
+            width: "45%",
+        },
+    },
+    tieredWrap: {
+        display: "flex",
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
 });
-
-const VerifySchema = Yup.object().shape({
-    email: Yup.string()
-        .email('Invalid email')
-        .required('Required'),
-    code: Yup.string()
-        .length(8, "Code must be 8 characters!")
-        .matches(/[A-Z0-9{0,8}]/, "Code doesn't match expected format!")
-        .required("Required"),
-});
-
-const Label = Styled.label`
-    display: flex;
-    flex-direction: column;
-    margin: 0.5em 0;
-    position: relative;
-	font: 13px Arial, Helvetica, sans-serif;
-	color: #888;
-	margin-bottom: 15px;
-`;
-
-const Text = Styled.p`
-    font-family: 'Raleway', sans-serif;
-    color: ${props => props.color || '#4d4d4d'}
-`;
 
 const NavLink = Styled.a`
 	margin:.5rem;
@@ -68,7 +92,18 @@ const NavLink = Styled.a`
     cursor: pointer;
 `;
 
-class SignUp extends Component {
+function getSteps() {
+    return ["Verify", "Info", "Provider"];
+}
+
+class Verify extends Component {
+    constructor(props) {
+        super(props)
+
+        this.handlerVerify = this.handlerVerify.bind(this);
+        this.handlerInfo = this.handlerInfo.bind(this);
+    }
+
     state = {
         code: "",
         firstName: "",
@@ -81,7 +116,8 @@ class SignUp extends Component {
         company: "",
         role: "",
         secret: "",
-        verifyStep: 0,
+        activeStep: 0,
+        skipped: new Set(),
     }
 
     componentDidMount = async () => {
@@ -98,7 +134,7 @@ class SignUp extends Component {
                     role: employeeData.role,
                     id: employeeData.id
                 })
-                this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }));
+                this.handleNext();
             }
         }
     }
@@ -115,6 +151,7 @@ class SignUp extends Component {
             }
         });
         const data = await response.json();
+        console.log(data);
         return data;
     }
 
@@ -154,174 +191,128 @@ class SignUp extends Component {
         return employeeData;
     }
 
+    handleNext = () => {
+        const { activeStep } = this.state;
+        let { skipped } = this.state;
+        if (this.isStepSkipped(activeStep)) {
+            skipped = new Set(skipped.values());
+            skipped.delete(activeStep);
+        }
+        this.setState({
+            activeStep: activeStep + 1,
+            skipped,
+        });
+    };
+
+    handleBack = () => {
+        this.setState(state => ({
+            activeStep: state.activeStep - 1,
+        }));
+    };
+
+    handleReset = () => {
+        this.setState({
+            activeStep: 0,
+        });
+    };
+
+    isStepSkipped(step) {
+        return this.state.skipped.has(step);
+    }
+
+    handler(value) {
+        this.handleNext();
+        this.setState(value);
+    }
+
+    async handlerVerify(value) {
+        const verifyResponse = await this.verifyEmployee(value.email, value.code);
+
+        if (verifyResponse.success) {
+            sessionStorage.setItem("jwt", verifyResponse.token)
+            const employeeData = await jwt_decode(verifyResponse.token);
+            const companyName = await this.findCompanyNameById(employeeData.company);
+            this.setState({
+                company: companyName,
+                role: employeeData.role,
+                id: employeeData.id
+            })
+            this.handleNext();
+        } else {
+            console.log(`Verification Failed`);
+        }
+    }
+
+    async handlerInfo(value) {
+        const employee = {
+            firstName: value.firstName,
+            lastName: value.lastName,
+            dob: value.date,
+            phone: value.phone,
+            id: this.state.id,
+            password: value.password,
+        }
+
+        console.log(employee);
+        await this.updateEmployeeInformation(employee)
+        this.handleNext();
+    }
+
     render() {
+        const { classes } = this.props;
+        const steps = getSteps();
+        const { activeStep } = this.state;
+
         return (
-            <SignUpDiv>
+            <React.Fragment>
                 <FullNav>
                     <Link href="/"><NavLink>Home</NavLink></Link>
                     <Link href="/"><NavLink></NavLink></Link>
                 </FullNav>
-                <ProgressDiv>
-                    <Progress step={this.state.verifyStep} />
-                </ProgressDiv>
-                <VerifyDiv verifyStep={this.state.verifyStep}>
-                    <Formik
-                        initialValues={{
-                            code: "",
-                            email: "",
-                        }}
-                        validationSchema={VerifySchema}
-                        onSubmit={async (values) => {
-                            const verifyResponse = await this.verifyEmployee(values.email, values.code);
-
-                            if (verifyResponse.success) {
-                                sessionStorage.setItem("jwt", verifyResponse.token)
-                                const employeeData = await jwt_decode(verifyResponse.token);
-                                const companyName = await this.findCompanyNameById(employeeData.company);
-                                this.setState({
-                                    company: companyName,
-                                    role: employeeData.role,
-                                    id: employeeData.id
-                                })
-                                this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }));
-                            } else {
-                                console.log(`Verification Failed`);
-                            }
-                        }}
-                        render={({ errors, touched, values, handleChange, handleBlur }) => (
-                            <React.Fragment>
-                                <FormInfo primary="Registration" secondary="Join your team today!" />
-                                <Form>
-                                    <FormSubHeader number="1" text="Verify Info" />
-                                    <FormSubInnerWrap>
-                                        <Label>
-                                            Email Address *
-                                {errors.email && touched.email && <Text color="red">{errors.email}</Text>}
-                                            <Input
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.email}
-                                                border={errors.email && "1px solid red"}
-                                                type="text"
-                                                name="email"
-                                                placeholder=""
-                                            />
-                                        </Label>
-                                        <Label>
-                                            Verify Code *
-                                {errors.code && touched.code && <Text color="red">{errors.code}</Text>}
-                                            <Input
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.code}
-                                                border={errors.code && "1px solid red"}
-                                                type="text"
-                                                name="code"
-                                                placeholder=""
-                                            />
-                                        </Label>
-                                    </FormSubInnerWrap>
-                                    <SubmitButton text="Verify Info" />
-                                </Form>
-                            </React.Fragment>
-                        )}
-                    />
+                <VerifyDiv activeStep={this.state.activeStep}>
+                    <FormInfo primary="Registration" secondary="Join your team today!" />
+                    <Stepper activeStep={activeStep}>
+                        {steps.map((label, index) => {
+                            const props = {};
+                            const labelProps = {};
+                            return (
+                                <Step key={label} {...props}>
+                                    <StepLabel {...labelProps}>{label}</StepLabel>
+                                </Step>
+                            );
+                        })}
+                    </Stepper>
+                    <VerifyInfo classes={classes} handler={this.handlerVerify} />
                 </VerifyDiv>
-                <InfoDiv verifyStep={this.state.verifyStep}>
-                    <Formik
-                        initialValues={{
-                            firstName: "",
-                            lastName: "",
-                            date: "",
-                            phone: "",
-                            password: "",
-                        }}
-                        validationSchema={EmployeeSchema}
-                        onSubmit={async (values) => {
-                            const employee = {
-                                firstName: values.firstName,
-                                lastName: values.lastName,
-                                dob: values.date,
-                                phone: values.phone,
-                                id: this.state.id,
-                                password: values.password,
-                            }
-                            await this.updateEmployeeInformation(employee)
-                            this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }));
-                        }}
-                        render={({ errors, touched, values, handleChange, handleBlur, setFieldValue }) => (
-                            <React.Fragment>
-                                <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
-                                <Form>
-                                    <FormSubHeader number="2" text="Personal Info" />
-                                    <FormSubInnerWrap>
-                                        <p>Company: {this.state.company}</p>
-                                        <p>Role: {this.state.role}</p>
-                                        <Label>
-                                            First Name *
-                        {errors.firstName && touched.firstName && <Text color="red">{errors.firstName}</Text>}
-                                            <Input
-                                                type="text"
-                                                value={values.firstName}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                name="firstName"
-                                                border={errors.firstName && "1px solid red"}
-                                            />
-                                        </Label>
-                                        <Label>
-                                            Last Name *
-                        {errors.lastName && touched.lastName && <Text color="red">{errors.lastName}</Text>}
-                                            <Input
-                                                type="text"
-                                                value={values.lastName}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                name="lastName"
-                                                border={errors.lastName && "1px solid red"}
-                                            />
-                                        </Label>
-                                        <Label>
-                                            Phone *
-                        {errors.phone && touched.phone && <Text color="red">{errors.phone}</Text>}
-                                            <Input
-                                                type="text"
-                                                value={values.phone}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                name="phone"
-                                                border={errors.phone && "1px solid red"}
-                                            />
-                                        </Label>
-                                        <Label>
-                                            Password *
-                        {errors.password && touched.password && <Text color="red">{errors.password}</Text>}
-                                            <Input
-                                                type="password"
-                                                placeholder="Password"
-                                                value={values.password}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                name="password"
-                                                border={errors.password && "1px solid red"}
-                                            />
-                                        </Label>
-                                        <Label>
-                                            Date *
-                                        <Input
-                                                type="date"
-                                                value={values.date}
-                                                onChange={handleChange}
-                                                name="date" />
-                                        </Label>
-                                        <SubmitButton text="Create Profile" />
-                                    </FormSubInnerWrap>
-                                </Form>
-                            </React.Fragment>
-                        )}
-                    />
+                <InfoDiv activeStep={this.state.activeStep}>
+                    <FormInfo primary="Registration" secondary="Join your team today!" />
+                    <Stepper activeStep={activeStep}>
+                        {steps.map((label, index) => {
+                            const props = {};
+                            const labelProps = {};
+                            return (
+                                <Step key={label} {...props}>
+                                    <StepLabel {...labelProps}>{label}</StepLabel>
+                                </Step>
+                            );
+                        })}
+                    </Stepper>
+                    <EmployeeInfo classes={classes} handler={this.handlerInfo} scope="new" />
+                    {/* <EmployeeInfo classes={classes} handler={this.handlerInfo} scope="update" employeeId="5c89a4dcf609b0001e6e31e1" jwt="lkjlaksdjflkajdsf" /> */}
                 </InfoDiv>
-                <DeviceDiv verifyStep={this.state.verifyStep}>
+                <DeviceDiv activeStep={this.state.activeStep}>
+                    <FormInfo primary="Registration" secondary="Join your team today!" />
+                    <Stepper activeStep={activeStep}>
+                        {steps.map((label, index) => {
+                            const props = {};
+                            const labelProps = {};
+                            return (
+                                <Step key={label} {...props}>
+                                    <StepLabel {...labelProps}>{label}</StepLabel>
+                                </Step>
+                            );
+                        })}
+                    </Stepper>
                     <Formik
                         initialValues={{
                             authProvider: true,
@@ -335,12 +326,10 @@ class SignUp extends Component {
                         }}
                         render={({ setFieldValue, submitForm }) => (
                             <React.Fragment>
-                                <FormInfo primary="Registration" secondary="Join your team today!" />
                                 <Form>
-                                    <FormSubHeader number="3" text="Device Info" />
                                     <FormSubInnerWrap>
                                         <h3>Approve Access by Provider</h3>
-                                        <Provider image="/static/images/fitbit-transparent-logo.png" alttext="Fitbit" available onClick={() => submitForm() } />
+                                        <Provider image="/static/images/fitbit-transparent-logo.png" alttext="Fitbit" available onClick={() => submitForm()} />
                                         <Provider image="/static/images/garmin-transparent-logo.png" alttext="Garmin" onClick={() => setFieldValue("authProvider", false)} />
                                         <Provider image="/static/images/apple-transparent-logo.png" alttext="Apple" onClick={() => setFieldValue("authProvider", false)} />
                                         <br /><br />
@@ -352,26 +341,16 @@ class SignUp extends Component {
                     />
                 </DeviceDiv>
                 <Footer />
-            </SignUpDiv>
+            </React.Fragment>
         )
     }
 }
 
-export default SignUp;
+Verify.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
 
-const SignUpDiv = Styled.div`
-    height:100vh;
-    display: grid;
-    grid-template-rows: auto auto 1fr auto;
-    align-items: stretch;
-`
-
-const ProgressDiv = Styled.div`
-    max-width: 800px;
-    display: grid;
-    grid-template-columns: 2fr;
-    margin:10px auto;
-`
+export default withStyles(styles)(Verify);
 
 const VerifyDiv = Styled.div`
     grid-template-columns: 2fr;
@@ -386,7 +365,7 @@ const VerifyDiv = Styled.div`
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
     -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
     -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
-	display:${({ verifyStep }) => (verifyStep === 0) ? "grid" : "none"}
+	display:${({ activeStep }) => (activeStep === 0) ? "grid" : "none"}
 `
 
 const InfoDiv = Styled.div`
@@ -402,7 +381,7 @@ const InfoDiv = Styled.div`
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
     -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
     -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
-	display:${({ verifyStep }) => (verifyStep === 1) ? "grid" : "none"}
+	display:${({ activeStep }) => (activeStep === 1) ? "grid" : "none"}
 `
 const DeviceDiv = Styled.div`
     grid-template-columns: 2fr;
@@ -417,6 +396,6 @@ const DeviceDiv = Styled.div`
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
     -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
     -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
-	display:${({ verifyStep }) => (verifyStep === 2) ? "grid" : "none"}
+	display:${({ activeStep }) => (activeStep === 2) ? "grid" : "none"}
 `
 
