@@ -16,7 +16,7 @@ export default ({
             id={field.name}
             error={touched[field.name] && Boolean(errors[field.name])}
             label={props.label}
-            type="text"
+            type={props.type || "text"}
             name={field.name}
             margin="normal"
             variant="outlined"
