@@ -6,14 +6,19 @@ import Modal from '../Modal';
  const Home = ({employees}) => {
 
   const getStatus = (bpm) => {
-    if(bpm > 160){
-      return "Danger"
-    } else if(bpm > 120 && bpm < 159){
-      return "Warning"
-    } else if(bpm > 41 && bpm < 80){
-      return "Normal"
-    }else if(bpm < 40){
-      return "Danger"
+    console.log(bpm);
+    if(bpm === "-"){
+      return "No Signal"
+    }else{
+      if(bpm > 160){
+        return "Danger"
+      } else if(bpm > 120 && bpm < 159){
+        return "Warning"
+      } else if(bpm > 41 && bpm < 80){
+        return "Normal"
+      }else if(bpm < 40){
+        return "Danger"
+      }
     }
   }
 
@@ -22,8 +27,9 @@ import Modal from '../Modal';
       console.log(`printing employee:`);
       console.log(employee);
       let restingHeartRate;
-      if(employee.hasOwnProperty('fitbit')){
-        if(employee.fitbit.hasOwnProperty('summary')){
+      let steps;
+      if(employee.hasOwnProperty("fitbit")){
+        if(employee.fitbit.summary.hasOwnProperty("restingHeartRate")){
           restingHeartRate = employee.fitbit.summary.restingHeartRate;
         }
         else{
@@ -32,6 +38,15 @@ import Modal from '../Modal';
       }else{
         restingHeartRate = "-"
       }
+
+      if(employee.hasOwnProperty("fitbit")){
+        if(employee.fitbit.summary.hasOwnProperty("steps")){
+          steps = employee.fitbit.summary.steps
+        }
+      }else{
+        steps = "-"
+      }
+
       return (
         <EmployeeCard key={index}>
           <Card 
@@ -41,12 +56,9 @@ import Modal from '../Modal';
             body={
             <div>
               <EmployeeAvatar src={employee.avatar}/>
-              <p><i class="fas fa-heartbeat"></i>{`-`}</p>
-              <p><i class="fas fa-shoe-prints"></i>{`-`}</p>
-              <p>{`Status: -`}</p>
-              {/* <p><i class="fas fa-heartbeat"></i>{` ${employee.heartRate.summary.restingHeartRate}`}</p>
-              <p><i class="fas fa-shoe-prints"></i>{` ${employee.heartRate.summary.steps}`}</p>
-              <p>{`Status: ${getStatus(Number(restingHeartRate))}`}</p> */}
+              <p><i class="fas fa-heartbeat"></i>{restingHeartRate}</p>
+              <p><i class="fas fa-shoe-prints"></i>{steps}</p>
+              <p>{`Status: ${getStatus(restingHeartRate)}`}</p>
             </div>
             }  />
         </EmployeeCard>
