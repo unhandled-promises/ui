@@ -12,6 +12,7 @@ import FormSubHeader from "../components/FormSubHeader";
 import FormSubInnerWrap from "../components/FormSubInnerWrap";
 import Provider from "../components/Provider";
 import SubmitButton from "../components/SubmitButton";
+import Progress from "../components/Progress";
 import { CUSTOMERS_API, EMPLOYEES_API } from "../static/api-config";
 
 const EmployeeSchema = Yup.object().shape({
@@ -155,11 +156,14 @@ class SignUp extends Component {
 
     render() {
         return (
-            <React.Fragment>
+            <SignUpDiv>
                 <FullNav>
                     <Link href="/"><NavLink>Home</NavLink></Link>
                     <Link href="/"><NavLink></NavLink></Link>
                 </FullNav>
+                <ProgressDiv>
+                    <Progress step={this.state.verifyStep} />
+                </ProgressDiv>
                 <VerifyDiv verifyStep={this.state.verifyStep}>
                     <Formik
                         initialValues={{
@@ -348,19 +352,33 @@ class SignUp extends Component {
                     />
                 </DeviceDiv>
                 <Footer />
-            </React.Fragment>
+            </SignUpDiv>
         )
     }
 }
 
 export default SignUp;
 
+const SignUpDiv = Styled.div`
+    height:100vh;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    align-items: stretch;
+`
+
+const ProgressDiv = Styled.div`
+    max-width: 800px;
+    display: grid;
+    grid-template-columns: 2fr;
+    margin:10px auto;
+`
+
 const VerifyDiv = Styled.div`
     grid-template-columns: 2fr;
     max-width: 800px;
     width:80%;
     padding:30px;
-    margin:40px auto;
+    margin:10px auto 40px auto;
     background: #FFF;
     border-radius: 10px;
     -webkit-border-radius:10px;

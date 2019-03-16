@@ -20,7 +20,6 @@ const Nav = Styled.div`
 	margin-bottom:0;
 	color: #ffffff;
 	opacity: .9;
-	overflow:auto;
   display: grid;
   grid-template-columns: ${({items})=>`1fr repeat(${items.length},auto)`};
   align-items:center;
