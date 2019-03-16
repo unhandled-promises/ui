@@ -354,24 +354,24 @@ class Customer extends Component{
     const customerData = await jwt_decode(jwt);
     await this.setState({customerData:customerData})
     const employees = await this.findEmployeesByCompany(this.state.customerData.company);
-    // await this.setState({employees:employees});
     await employees.forEach(async (employee,index) => {
       const employeeHeartData = await this.fetchEmployeeHeartRate(employee._id);
       console.log(employeeHeartData);
       const employeesFitbit = [...employees];
-      if(employeeHeartData.errorType === "invalid_grant"){
+      if(employeeHeartData.hasOwnProperty("summary")){
+        console.log('if');
         employeesFitbit[index].fitbit = employeeHeartData;
-      }else{
-        employeesFitbit[index].fitbit = {
-          summary:{
-            restingHeartRate: '-'
-          }
-        };
+        await this.setState({employees:employeesFitbit});
+        console.log(this.state.employees);
       }
-      
-      await this.setState({employees:employeesFitbit});
+      else{
+        console.log('else');
+        employeesFitbit[index].fitbit = {};
+        await this.setState({employees:employeesFitbit});
+        console.log(this.state.employees);
+      }
     });
-  }
+}
 
   render(){
     return(
