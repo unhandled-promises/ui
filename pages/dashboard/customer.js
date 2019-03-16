@@ -359,7 +359,16 @@ class Customer extends Component{
       const employeeHeartData = await this.fetchEmployeeHeartRate(employee._id);
       console.log(employeeHeartData);
       const employeesFitbit = [...employees];
-      employeesFitbit[index].heartRate = employeeHeartData;
+      if(employeeHeartData.errorType === "invalid_grant"){
+        employeesFitbit[index].fitbit = employeeHeartData;
+      }else{
+        employeesFitbit[index].fitbit = {
+          summary:{
+            restingHeartRate: '-'
+          }
+        };
+      }
+      
       await this.setState({employees:employeesFitbit});
     });
   }

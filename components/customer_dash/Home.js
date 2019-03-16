@@ -22,8 +22,8 @@ import Modal from '../Modal';
       console.log(`printing employee:`);
       console.log(employee);
       let restingHeartRate;
-      if(employee.heartRate.summary !== 'null'){
-        restingHeartRate = employee.heartRate.summary.restingHeartRate;
+      if(employee.fitbit.summary !== 'null'){
+        restingHeartRate = employee.fitbit.summary.restingHeartRate;
       }
       else{
         restingHeartRate = "-"
