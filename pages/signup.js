@@ -16,16 +16,12 @@ import ShowSelections from "../components/ShowSelections";
 import SubmitButton from "../components/SubmitButton";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button"
-import Select from "@material-ui/core/Select";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import CustomTextField from "../components/CustomTextField";
+import CustomSelectField from "../components/CustomSelectField";
 
 const CompanySchema = Yup.object().shape({
     company_name: Yup.string()
@@ -240,40 +236,7 @@ class SignUp extends Component {
                                                 <Field name="city" component={CustomTextField} label="City" icon="far fa-city" classes={classes} required={true} fullWidth={true} />
                                             </div>
                                             <div className={classes.tiered} textAlign="center">
-                                                <FormControl required className={classes.formControl} margin="normal">
-                                                    <InputLabel
-                                                        ref={ref => {
-                                                            this.InputLabelRef = ref;
-                                                        }}
-                                                        shrink
-                                                        htmlFor="state"
-                                                        variant="outlined"
-                                                    >
-                                                        State
-                                                    </InputLabel>
-                                                    <Select
-                                                        onChange={handleChange}
-                                                        value={values.state}
-                                                        input={
-                                                            <OutlinedInput
-                                                                labelWidth={0}
-                                                                name="state"
-                                                                id="state"
-                                                            />
-                                                        }
-                                                        style={{ width: 250 }}
-                                                        displayEmpty
-                                                    >
-                                                        <MenuItem value="">
-                                                            <em>None</em>
-                                                        </MenuItem>
-                                                        {allStates.map(states => (
-                                                            <MenuItem value={states} key={states}>
-                                                                {states}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </Select>
-                                                </FormControl>
+                                                <Field name="state" component={CustomSelectField} label="State" classes={classes} required={true} selection={allStates} />
                                             </div>
                                             <div className={classes.tiered} textAlign="right">
                                                 <Field name="zip" component={CustomTextField} label="Postal Code" icon="far fa-mailbox" classes={classes} required={true} fullWidth={true} align="right" />
