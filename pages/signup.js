@@ -49,7 +49,7 @@ const CompanySchema = Yup.object().shape({
         .max(50, "Too Long!")
         .required("Required"),
     state: Yup.string()
-        .min(2, "Too Short!")
+        .min(4, "Too Short!")
         .max(20, "Too Long!")
         .required("Required"),
     zip: Yup.string()
@@ -162,6 +162,7 @@ const renderTextField = ({
             required={props.required}
             fullWidth={props.fullWidth}
             className={props.classes.white}
+            helperText={touched[field.name] && Boolean(errors[field.name]) ? errors[field.name] : ""}
             InputLabelProps={{
                 classes: {
                     root: props.classes.cssLabel,
@@ -282,7 +283,7 @@ class SignUp extends Component {
 
                                         <div className={classes.tieredWrap}>
                                             <div className={classes.tiered} textAlign="left">
-                                                <Field name="city" component={renderTextField} label="City" icon="far fa-flag" classes={classes} required={true} fullWidth={true} />
+                                                <Field name="city" component={renderTextField} label="City" icon="far fa-city" classes={classes} required={true} fullWidth={true} />
                                             </div>
                                             <div className={classes.tiered} textAlign="center">
                                                 <FormControl required className={classes.formControl} margin="normal">
@@ -307,6 +308,7 @@ class SignUp extends Component {
                                                             />
                                                         }
                                                         style={{ width: 250 }}
+                                                        displayEmpty
                                                     >
                                                         <MenuItem value="">
                                                             <em>None</em>
@@ -320,7 +322,7 @@ class SignUp extends Component {
                                                 </FormControl>
                                             </div>
                                             <div className={classes.tiered} textAlign="right">
-                                                <Field name="zip" component={renderTextField} label="Postal Code" icon="far fa-flag" classes={classes} required={true} fullWidth={true} align="right" />
+                                                <Field name="zip" component={renderTextField} label="Postal Code" icon="far fa-mailbox" classes={classes} required={true} fullWidth={true} align="right" />
                                             </div>
                                         </div>
                                     </FormSubInnerWrap>
