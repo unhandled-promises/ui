@@ -14,7 +14,6 @@ import Provider from "../components/Provider";
 import SubmitButton from "../components/SubmitButton";
 import Progress from "../components/Progress";
 import { CUSTOMERS_API, EMPLOYEES_API } from "../static/api-config";
-import { EDEADLK } from 'constants';
 
 const EmployeeSchema = Yup.object().shape({
     firstName: Yup.string()
