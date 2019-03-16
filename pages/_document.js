@@ -37,6 +37,7 @@ class MyDocument extends Document {
                     <meta charSet="utf-8" />
                     <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no" />
                     <meta name="theme-color" content={pageContext ? pageContext.theme.palette.primary.main : null} />
+                    <link rel="icon" type="image/x-icon" href="../static/favicon.ico" />
                 </Head>
                 <style>{`body{ margin:0 }`}
                 </style>
