@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form } from "formik";
 import { Elements, StripeProvider } from "react-stripe-elements-universal";
-import * as Yup from "yup";
 import Link from "next/link";
 import Styled from "styled-components";
 import FullNav from "../components/FullNav";
@@ -11,46 +10,43 @@ import CheckoutForm from "../components/CheckoutForm";
 import Footer from "../components/Footer";
 import FormInfo from "../components/FormInfo";
 import FormSubHeader from "../components/FormSubHeader";
-import FormSubInnerWrap from "../components/FormSubInnerWrap";
 import ShowSelections from "../components/ShowSelections";
 import SubmitButton from "../components/SubmitButton";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button"
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
-import CustomTextField from "../components/CustomTextField";
-import CustomSelectField from "../components/CustomSelectField";
+import CompanyInfo from "../components/CompanyInfo";
 
-const CompanySchema = Yup.object().shape({
-    company_name: Yup.string()
-        .min(1, "Too Short!")
-        .max(100, "Too Long!")
-        .required("Required"),
-    address: Yup.string()
-        .min(2, "Too Short!")
-        .max(100, "Too Long!")
-        .required("Required"),
-    address2: Yup.string()
-        .min(2, "Too Short!")
-        .max(100, "Too Long!"),
-    city: Yup.string()
-        .min(2, "Too Short!")
-        .max(50, "Too Long!")
-        .required("Required"),
-    state: Yup.string()
-        .min(4, "Too Short!")
-        .max(20, "Too Long!")
-        .required("Required"),
-    zip: Yup.string()
-        .min(5, "Too Short!")
-        .max(15, "Too Long!")
-        .required("Required"),
-    email: Yup.string()
-        .email("Invalid email")
-        .required("Required"),
-});
+// const CompanySchema = Yup.object().shape({
+//     company_name: Yup.string()
+//         .min(1, "Too Short!")
+//         .max(100, "Too Long!")
+//         .required("Required"),
+//     address: Yup.string()
+//         .min(2, "Too Short!")
+//         .max(100, "Too Long!")
+//         .required("Required"),
+//     address2: Yup.string()
+//         .min(2, "Too Short!")
+//         .max(100, "Too Long!"),
+//     city: Yup.string()
+//         .min(2, "Too Short!")
+//         .max(50, "Too Long!")
+//         .required("Required"),
+//     state: Yup.string()
+//         .min(4, "Too Short!")
+//         .max(20, "Too Long!")
+//         .required("Required"),
+//     zip: Yup.string()
+//         .min(5, "Too Short!")
+//         .max(15, "Too Long!")
+//         .required("Required"),
+//     email: Yup.string()
+//         .email("Invalid email")
+//         .required("Required"),
+// });
 
 const styles = theme => ({
     container: {
@@ -115,18 +111,6 @@ const styles = theme => ({
     },
 });
 
-const allStates = ["Alabama", "Alaska", "Arizona", "Arkansas",
-    "California", "Colorado", "Connecticut", "Delaware",
-    "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana",
-    "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine",
-    "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi",
-    "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
-    "New Jersey", "New Mexico", "New York", "North Carolina",
-    "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania",
-    "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
-    "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia",
-    "Wisconsin", "Wyoming"];
-
 const NavLink = Styled.a`
 	margin:.5rem;
 	color: white;
@@ -139,6 +123,12 @@ function getSteps() {
 }
 
 class SignUp extends Component {
+    constructor(props) {
+        super(props)
+
+        this.handler = this.handler.bind(this)
+    }
+
     state = {
         company_name: "",
         address: "",
@@ -182,6 +172,12 @@ class SignUp extends Component {
         return this.state.skipped.has(step);
     }
 
+    handler(value) {
+        this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }))
+        this.handleNext();
+        this.setState(value)
+    }
+
     render() {
         const { classes } = this.props;
         const steps = getSteps();
@@ -206,50 +202,7 @@ class SignUp extends Component {
                             );
                         })}
                     </Stepper>
-                    <Formik
-                        initialValues={{
-                            company_name: "",
-                            address: "",
-                            address2: "",
-                            email: "",
-                            city: "",
-                            state: "",
-                            zip: "",
-                        }}
-                        validationSchema={CompanySchema}
-                        onSubmit={values => {
-                            this.setState((prevState) => ({ verifyStep: prevState.verifyStep + 1 }))
-                            this.setState(values);
-                            this.handleNext();
-                        }}
-                        render={({ errors, touched, values, handleChange, handleBlur }) => (
-                            <React.Fragment>
-                                <Form>
-                                    <FormSubInnerWrap>
-                                        <Field name="company_name" component={CustomTextField} label="Company Name" icon="far fa-building" classes={classes} required={true} fullWidth={true} />
-                                        <Field name="email" component={CustomTextField} label="Email" icon="far fa-envelope" classes={classes} required={true} fullWidth={true} />
-                                        <Field name="address" component={CustomTextField} label="Address 1" icon="far fa-address-card" classes={classes} required={true} fullWidth={true} />
-                                        <Field name="address2" component={CustomTextField} label="Address 2" icon="far fa-address-card" classes={classes} required={false} fullWidth={true} />
-
-                                        <div className={classes.tieredWrap}>
-                                            <div className={classes.tiered} textAlign="left">
-                                                <Field name="city" component={CustomTextField} label="City" icon="far fa-city" classes={classes} required={true} fullWidth={true} />
-                                            </div>
-                                            <div className={classes.tiered} textAlign="center">
-                                                <Field name="state" component={CustomSelectField} label="State" classes={classes} required={true} selection={allStates} />
-                                            </div>
-                                            <div className={classes.tiered} textAlign="right">
-                                                <Field name="zip" component={CustomTextField} label="Postal Code" icon="far fa-mailbox" classes={classes} required={true} fullWidth={true} align="right" />
-                                            </div>
-                                        </div>
-                                    </FormSubInnerWrap>
-                                    <Button variant="contained" color="primary" type="submit" className={classes.button}>
-                                        Select Package
-                                    </Button>
-                                </Form>
-                            </React.Fragment>
-                        )}
-                    />
+                    <CompanyInfo classes={classes} handler={this.handler} />
                 </SignUpDiv>
                 <BundleDiv verifyStep={this.state.verifyStep}>
                     <Formik
