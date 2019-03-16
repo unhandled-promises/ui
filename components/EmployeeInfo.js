@@ -10,12 +10,12 @@ const EmployeeSchema = Yup.object().shape({
     firstName: Yup.string()
         .min(1, "Too Short!")
         .max(50, "Too Long!")
-        .matches(/[A-Z0-9{0,8}]/, "Code doesn't match expected format!")
+        .matches(/[\w{0,8}]/, "Code doesn't match expected format!")
         .required("Required"),
     lastName: Yup.string()
         .min(1, "Too Short!")
         .max(50, "Too Long!")
-        .matches(/[A-Z0-9{0,8}]/, "Code doesn't match expected format!")
+        .matches(/[\w{0,8}]/, "Code doesn't match expected format!")
         .required("Required"),
     date: Yup.string()
         .required("Required"),

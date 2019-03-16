@@ -29,7 +29,7 @@ export default ({
                         id={field.name}
                     />
                 }
-                style={{ width: 255 }}
+                style={{ width: 225 }}
                 displayEmpty
             >
                 <MenuItem value="">
