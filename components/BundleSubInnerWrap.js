@@ -14,6 +14,6 @@ const FormSubInnerWrap = Styled.div`
     border-radius: 6px;
     margin-bottom: 15px;
     content: "";
-    display: table;
+    display: inline-block;
     clear: both;
 `

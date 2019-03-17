@@ -18,6 +18,7 @@ import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import CompanyInfo from "../components/CompanyInfo";
+import BundleInfo from "../components/BundleInfo";
 
 const styles = theme => ({
     container: {
@@ -178,38 +179,19 @@ class SignUp extends Component {
                     {/* <CompanyInfo classes={classes} handler={this.handler} scope="update" customerId="5c89a4dcf609b0001e6e31e1" jwt="lkjlaksdjflkajdsf" /> */}
                 </SignUpDiv>
                 <BundleDiv activeStep={this.state.activeStep}>
-                    <Formik
-                        initialValues={{
-                            plan: "",
-                        }}
-                        onSubmit={(values) => {
-                            this.setState(values);
-                            this.handleNext();
-                        }}
-                        render={({ errors, touched, values, handleChange, handleBlur, setFieldValue }) => (
-                            <React.Fragment>
-                                <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
-                                <Form>
-                                    <Stepper activeStep={activeStep}>
-                                        {steps.map((label, index) => {
-                                            const props = {};
-                                            const labelProps = {};
-                                            return (
-                                                <Step key={label} {...props}>
-                                                    <StepLabel {...labelProps}>{label}</StepLabel>
-                                                </Step>
-                                            );
-                                        })}
-                                    </Stepper>
-                                    <BundleSubInnerWrap>
-                                        <BundleOption colorChoice="#CD7F32" list={["Employees: 1-100", "Support: 8x5"]} price="$250" onClick={() => setFieldValue("plan", "bronze")} />
-                                        <BundleOption colorChoice="#C0C0C0" list={["Employees: 101-500", "Support: 24x5", "Personal Email Address"]} price="$500" onClick={() => setFieldValue("plan", "silver")} />
-                                        <BundleOption colorChoice="#FFD700" list={["Employees: 501-1000", "Support: 24x7", "Personal Email Address", "Personal Phone Number", "First Born"]} price="$1,000" onClick={() => setFieldValue("plan", "gold")} />
-                                    </BundleSubInnerWrap>
-                                </Form>
-                            </React.Fragment>
-                        )}
-                    />
+                    <FormInfo primary="Registration" secondary="Empower your company to live and work healthy!" />
+                    <Stepper activeStep={activeStep}>
+                        {steps.map((label, index) => {
+                            const props = {};
+                            const labelProps = {};
+                            return (
+                                <Step key={label} {...props}>
+                                    <StepLabel {...labelProps}>{label}</StepLabel>
+                                </Step>
+                            );
+                        })}
+                    </Stepper>
+                    <BundleInfo classes={classes} handler={this.handler} />
                 </BundleDiv>
                 <PaymentDiv activeStep={this.state.activeStep}>
                     <Formik
