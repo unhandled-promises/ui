@@ -27,6 +27,7 @@
     "next": "^8.0.3",
     "prop-types": "^15.7.2",
     "react": "^16.8.3",
+    "react-alice-carousel": "^1.13.1",
     "react-dom": "^16.8.3",
     "react-hot-loader": "^4.8.0",
     "react-jss": "^8.6.1",
@@ -41,7 +42,6 @@
   },
   "devDependencies": {
     "babel-plugin-styled-components": "^1.10.0",
-    "nodemon": "^1.18.10",
-    "react-alice-carousel": "^1.13.1"
+    "nodemon": "^1.18.10"
   }
 }
