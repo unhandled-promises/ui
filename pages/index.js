@@ -67,10 +67,11 @@ const Body = Styled.div`
 
 const Main = Styled.main`
   display:grid;
-  grid-template-rows: 400px 400px 500px 500px;
+  grid-template-rows: 300px 400px 500px 500px;
   grid-gap:500px;
   padding: 1rem;
   font-family: 'Montserrat', sans-serif;
+  margin-top:100px;
 
   h1,h2,h3,h4 {
     font-family: 'Roboto', sans-serif;
@@ -81,10 +82,9 @@ const JoinDiv = Styled.div`
   background: linear-gradient(to bottom right, #fed75e, #FFA600);
   max-width: 30vw;
   display: grid;
-  grid-template-rows: repeat (3, 1fr);
   border-radius: 25px;
   opacity: .9;
-  justify-self: left;
+  justify-self: center;
   text-align: center;
 
   a {
