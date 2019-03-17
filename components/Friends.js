@@ -31,14 +31,11 @@ export default ({ friends }) => {
 }
 
 const Card = Styled.div`
-  display: grid;
-  grid-template-rows: auto 1fr;
+  display: block
   border-radius: 25px;
   box-shadow: #696773 -10px 5px 10px 10px;
   max-height: 350px;
   margin: 70px 20px 20px 20px;
-  style="float: left; 
-  width: 70%";
   overflow: hidden
 `
 
