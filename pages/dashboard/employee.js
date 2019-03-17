@@ -273,7 +273,7 @@ class Employee extends Component {
 					<NavLink onClick={this.handleClick} name="Logout">Logout</NavLink>
 				</FullNav>
 				<Container>
-					<Title>Your Personal Fitbit Dashboard</Title>
+					<Title>Your Personal Health Dashboard</Title>
 					<Row>
 						<Col col="3">
 							<Friends friends={this.state.friends.friends} />
