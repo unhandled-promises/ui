@@ -335,7 +335,8 @@ const NavLink = Styled.a`
 `
 
 const Title = Styled.h2`
-	text-align: center
+	text-align: center;
+	color: grey;
 `
 
 const WelcomeDiv = Styled.div`
