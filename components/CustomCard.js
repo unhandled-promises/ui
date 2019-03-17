@@ -8,6 +8,11 @@ import CardContent from '@material-ui/core/CardContent';
 import Avatar from '@material-ui/core/Avatar';
 import { Formik } from "formik";
 import Button from "@material-ui/core/Button";
+import Grid from '@material-ui/core/Grid';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 
 const styles = theme => ({
     card: {
@@ -29,8 +34,12 @@ class CustomCard extends React.Component {
 
     render() {
         const { classes, src } = this.props;
+        const imagePath = `/static/images/${src}`;
 
-        const imagePath=`/static/images/${src}`;
+        const section = {
+            height: "100%",
+            paddingTop: 5,
+        };
 
         return (
             <Formik
@@ -45,9 +54,9 @@ class CustomCard extends React.Component {
                     <Card className={classes.card}>
                         <CardHeader
                             avatar={
-                                <Avatar aria-label="Package" className={this.props.colorChoice}>
+                                <Avatar aria-label="Package" className={this.props.classType}>
                                     {this.props.label[0]}
-                        </Avatar>
+                                </Avatar>
                             }
                             title={this.props.label}
                             subheader={this.props.size}
@@ -58,16 +67,29 @@ class CustomCard extends React.Component {
                             title={this.props.label}
                         />
                         <CardContent>
-                            <ul>
-                                {this.props.list.map(item => {
-                                    return <li key={item}>{item}</li>
-                                })}
-                            </ul>
+                            <Grid item xs={12} md={12}>
+                                <div className={section}>
+                                    <List dense={true}>
+                                        {this.props.list.map(item => {
+                                            return (
+                                                <ListItem key={item}>
+                                                    <ListItemIcon>
+                                                        <i className="far fa-check-square"></i>
+                                                    </ListItemIcon>
+                                                    <ListItemText
+                                                        secondary={item}
+                                                    />
+                                                </ListItem>
+                                            )
+                                        })}
+                                    </List>
+                                </div>
+                            </Grid>
                             <Button variant="contained" color="primary" type="submit">
                                 Select
                             </Button>
                         </CardContent>
-                    </Card>
+                    </ Card>
                 )}
             />
         );

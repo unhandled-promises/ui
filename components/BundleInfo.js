@@ -15,15 +15,15 @@ function BundleInfo({ ...props }) {
                 <React.Fragment>
                     <BundleSubInnerWrap>
                         <Form>
-                            <GridList cols={3} spacing={6}>
-                                <GridListTile key={0} rows={3}>
-                                    <CustomCard src="runners-small.jpeg" name="plan" label="Bronze Package" size="Small Company" colorChoice="#CD7F32" list={["Employees: 1-100", "Support: 8x5"]} price="$250" className={props.classes.button} />
+                            <GridList cols={3} spacing={5}>
+                                <GridListTile key={0} rows={4}>
+                                    <CustomCard src="runners-small.jpeg" name="plan" label="Bronze Package" size="Small Company" classType={props.classes.avatarBronze} list={["Employees: 1-100", "Support: 8x5"]} price="$250" className={props.classes.button} />
                                 </GridListTile>
-                                <GridListTile key={1} rows={3}>
-                                    <CustomCard src="runners-medium.jpeg" name="plan" label="Silver Package" size="Medium Company" colorChoice="#C0C0C0" list={["Employees: 101-500", "Support: 24x5", "Personal Email Address"]} price="$500" className={props.classes.button} />
+                                <GridListTile key={1} rows={4}>
+                                    <CustomCard src="runners-medium.jpeg" name="plan" label="Silver Package" size="Medium Company" classType={props.classes.avatarSilver} list={["Employees: 101-500", "Support: 24x5", "Personal Email Address"]} price="$500" className={props.classes.button} />
                                 </GridListTile>
-                                <GridListTile key={2} rows={3}>
-                                    <CustomCard src="runners-large.jpeg" name="plan" label="Gold Package" size="Large Company" colorChoice="#FFD700" list={["Employees: 501-1000", "Support: 24x7", "Personal Email Address", "Personal Phone Number", "First Born"]} price="$1,000" className={props.classes.button} />
+                                <GridListTile key={2} rows={4}>
+                                    <CustomCard src="runners-large.jpeg" name="plan" label="Gold Package" size="Large Company" classType={props.classes.avatarGold} list={["Employees: 501-1000", "Support: 24x7", "Personal Email Address", "Personal Phone Number", "First Born"]} price="$1,000" className={props.classes.button} />
                                 </GridListTile>
                             </GridList>
                         </Form>

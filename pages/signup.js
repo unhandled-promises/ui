@@ -84,6 +84,16 @@ const styles = theme => ({
         justifyContent: "space-between",
         alignItems: "center",
     },
+
+    avatarBronze: {
+        backgroundColor: "#CD7F32",
+    },
+    avatarSilver: {
+        backgroundColor: "#C0C0C0",
+    },
+    avatarGold: {
+        backgroundColor: "#FFD700",
+    },
 });
 
 const NavLink = Styled.a`
