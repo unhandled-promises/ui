@@ -3,7 +3,7 @@ import Styled from 'styled-components';
 import EmptyCard from './EmptyCard';
 
 export default ({ lifetimeStats }) => {
-  if (!lifetimeStats.lifetime) {
+  if (!lifetimeStats.lifetime || !lifetimeStats.best) {
     return <EmptyCard heading={"Lifetime Stats"} />
   }
   return (
