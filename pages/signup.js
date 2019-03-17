@@ -4,14 +4,10 @@ import { Elements, StripeProvider } from "react-stripe-elements-universal";
 import Link from "next/link";
 import Styled from "styled-components";
 import FullNav from "../components/FullNav";
-import BundleOption from "../components/BundleOption";
-import BundleSubInnerWrap from "../components/BundleSubInnerWrap";
 import CheckoutForm from "../components/CheckoutForm";
 import Footer from "../components/Footer";
 import FormInfo from "../components/FormInfo";
-import FormSubHeader from "../components/FormSubHeader";
 import ShowSelections from "../components/ShowSelections";
-import SubmitButton from "../components/SubmitButton";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Stepper from "@material-ui/core/Stepper";
@@ -19,6 +15,9 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import CompanyInfo from "../components/CompanyInfo";
 import BundleInfo from "../components/BundleInfo";
+import Button from "@material-ui/core/Button";
+import Divider from '@material-ui/core/Divider';
+import FormSubInnerWrap from "../components/FormSubInnerWrap";
 
 const styles = theme => ({
     container: {
@@ -230,15 +229,23 @@ class SignUp extends Component {
                                             );
                                         })}
                                     </Stepper>
-                                    <ShowSelections {... this.state} />
-                                    <SubmitButton text="Edit Details" onClick={() => setFieldValue("editSubmit", "edit")} />
-                                    <br /><br />
-                                    <FormSubHeader number="4" text="Enter Payment" />
-                                    <StripeProvider apiKey="pk_test_kDKkByslO1VnLL3wTpOxMil9">
-                                        <Elements>
-                                            <CheckoutForm {... this.state} />
-                                        </Elements>
-                                    </StripeProvider>
+                                    <FormSubInnerWrap>
+                                        <h3>Details</h3>
+                                        <Divider />
+                                        <ShowSelections {... this.state} />
+                                        <br />
+                                        <Button variant="contained" color="primary" type="submit" onClick={() => setFieldValue("editSubmit", "edit")}>
+                                            Edit Details
+                                        </Button>
+                                        <br /><br />
+                                        <h3>Payment Info</h3>
+                                        <Divider />
+                                        <StripeProvider apiKey="pk_test_kDKkByslO1VnLL3wTpOxMil9">
+                                            <Elements>
+                                                <CheckoutForm {... this.state} />
+                                            </Elements>
+                                        </StripeProvider>
+                                    </FormSubInnerWrap>
                                 </Form>
                             </React.Fragment>
                         )}

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { CardElement, injectStripe } from 'react-stripe-elements-universal';
-import SubmitButton from "../components/SubmitButton";
 import { CUSTOMERS_API, EMPLOYEES_API } from "../static/api-config";
 import Router from 'next/router'
+import Button from "@material-ui/core/Button";
 
 const createOptions = () => {
     return {
@@ -83,7 +83,9 @@ class CheckoutForm extends Component {
                 <p>Would you like to complete the purchase?</p>
                 <CardElement {...createOptions()} />
                 <br /><br />
-                <SubmitButton text="Complete Purchase" onClick={this.submit} />
+                <Button variant="contained" color="primary" type="submit" onClick={this.submit}>
+                    Complete Purchase
+                </Button>
             </div>
         );
     }
