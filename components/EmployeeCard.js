@@ -24,7 +24,7 @@ const Card = Styled.div`
   grid-template-rows: auto 1fr;
   border-radius: 25px;
   box-shadow: #696773 -10px 5px 10px 10px;
-  max-height: 300px;
+  max-height: 290px;
   margin: 70px 20px 20px 20px;
   style="float: left;
   width: 70%"; 
