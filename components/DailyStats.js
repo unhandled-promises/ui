@@ -28,7 +28,7 @@ const Card = Styled.div`
   min-height: 200px;
   margin: 50px 20px 20px 20px;
   style="float: left; 
-  width: 70%";
+  width: 50%";
   overflow: hidden
 `
 const CardHeading = Styled.div`

@@ -6,7 +6,7 @@ import "react-alice-carousel/lib/alice-carousel.css";
 import EmptyCard from './EmptyCard';
 
 export default ({ devices }) => {
-  if(devices.type === undefined) {
+  if(devices === undefined || devices.length == 0) {
     return <EmptyCard heading={"Devices"} />
   }
   return (
@@ -32,9 +32,9 @@ export default ({ devices }) => {
   )
 }
 
-const Card = Styled.div`
-  display: grid;
-  grid-template-rows: auto 1fr;
+const Card = Styled.div`  
+display: grid;
+grid-template-rows: auto 1fr;
   border-radius: 25px;
   box-shadow: #696773 -10px 5px 10px 10px;
   min-height: 200px;
