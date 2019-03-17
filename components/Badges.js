@@ -34,13 +34,10 @@ export default ({ badges }) => {
 
 const Card = Styled.div`
   display: grid;
-  grid-template-rows: auto 1fr;
   border-radius: 25px;
   box-shadow: #696773 -10px 5px 10px 10px;
   min-height: 200px;
   margin: 50px 20px 20px 20px;
-  style="float: left; 
-  width: 70%";
   overflow: hidden
 `
 

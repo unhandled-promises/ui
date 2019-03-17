@@ -15,6 +15,7 @@ import { Container, Row, Col } from 'styled-bootstrap-grid';
 import DailyStats from '../../components/DailyStats';
 import Devices from '../../components/Devices';
 import TimeSeriesBarChart from '../../components/TimeSeriesBarChart';
+import Health from '../../components/Health';
 
 class Employee extends Component {
 	state = {
@@ -292,7 +293,7 @@ class Employee extends Component {
 							<TimeSeriesBarChart data={this.state.steps['activities-steps']} title="Steps" yMax={15000} />
 						</Col>
 						<Col col="3">
-							<DailyStats todayStats={this.state.todayStats} />
+							<Health heading="Calories Burned" image="../static/images/calories-burned.jpeg" value={this.state.todayStats.summary.caloriesOut} description="calories"/>
 						</Col>
 					</Row>
 					<Row>
@@ -303,7 +304,7 @@ class Employee extends Component {
 							<TimeSeriesBarChart data={this.state.distance['activities-distance']} title="Distance (kilometers)" yMax={10} />
 						</Col>
 						<Col col="3">
-							<DailyStats todayStats={this.state.todayStats} />
+							<Health todayStats={this.state.todayStats} heading="Resting Heart Rate" image="../static/images/heart-rate.jpg" value={this.state.todayStats.summary.restingHeartRate} description="beats per minute" />
 						</Col>
 					</Row>
 				</Container>
