@@ -6,7 +6,7 @@ import "react-alice-carousel/lib/alice-carousel.css";
 import EmptyCard from './EmptyCard';
 
 export default ({ devices }) => {
-  if(devices === undefined || devices.length == 0) {
+  if(devices.errorType || !devices || !devices.type) {
     return <EmptyCard heading={"Devices"} />
   }
   return (
