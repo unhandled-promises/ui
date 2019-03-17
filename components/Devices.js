@@ -1,12 +1,12 @@
 import React from 'react'
-import Styled from 'styled-components';
 import * as moment from "moment";
 import AliceCarousel from 'react-alice-carousel';
 import "react-alice-carousel/lib/alice-carousel.css";
 import EmptyCard from './EmptyCard';
+import Styled from 'styled-components';
 
 export default ({ devices }) => {
-  if(devices.errorType || !devices || !devices.type) {
+  if(devices.errorType || !devices) {
     return <EmptyCard heading={"Devices"} />
   }
   return (
@@ -33,14 +33,11 @@ export default ({ devices }) => {
 }
 
 const Card = Styled.div`  
-display: grid;
-grid-template-rows: auto 1fr;
+  display: grid;
   border-radius: 25px;
   box-shadow: #696773 -10px 5px 10px 10px;
   min-height: 200px;
   margin: 50px 20px 20px 20px;
-  style="float: left; 
-  width: 70%";
   overflow: hidden
 `
 

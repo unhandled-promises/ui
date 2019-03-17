@@ -2,19 +2,18 @@ import React from 'react'
 import Styled from 'styled-components';
 import EmptyCard from './EmptyCard';
 
-export default ({ todayStats }) => {
-  if(!todayStats.summary || todayStats.summary === undefined) {
-    return <EmptyCard heading={"Today's Stats"} />
-  }
+export default ({ todayStats, heading, image, value, description }) => {
+  // if (!todayStats.summary || todayStats.summary === undefined) {
+  //   return <EmptyCard heading={"Today's Stats"} />
+  // }
   return (
     <Card>
       <CardHeading>
-        <h3>Today's Stats</h3>
+        <h3>{heading}</h3>
       </CardHeading>
       <CardBody>
-        <p>Heart Rate: {todayStats.summary.restingHeartRate} <IconDetails colorChoice={"red"} className="fas fa-heartbeat"></IconDetails></p>
-        <p>Steps: {todayStats.summary.steps} </p>
-        <p>Calories Burned: {todayStats.summary.caloriesOut} </p>
+        <img src={image} style={{ height: 150 }} alt="" />
+        <h4>{value} {description}</h4>
       </CardBody>
     </Card>
   )
@@ -37,9 +36,12 @@ const CardHeading = Styled.div`
   }
 `
 const CardBody = Styled.div`
-  margin: 5px;
-  align-self: center;
+  margin: auto;
+  text-align: center;
   overflow: hidden;
+  img{
+    padding-top: 20px
+  }
 `
 const IconBlock = Styled.i`
     color: #FFFFFF;
