@@ -22,8 +22,6 @@ export default () => {
           <h1>Fit2Work is the next level of employee wellness.</h1>
           <Link href="/signup"><Create type="dark">Create an Account</Create></Link>
           <h4>Already a member? <Link href="/login"><a>Login</a></Link></h4>
-          <h4>Need to verify? <Link href="/verify"><a>Verify</a></Link></h4>
-          <h4>Clicky <Link href="/dashboard/employee"><a>Clicky</a></Link></h4>
         </JoinDiv>
         <Testimonials>
           <h2>TESTIMONIALS</h2>
@@ -131,12 +129,15 @@ const Testimonials = Styled.div`
 `
 const TestCard1 = Styled(Card)`
   grid-area:card1;
+  background-color: #DCDCDC;
 `
 const TestCard2 = Styled(Card)`
   grid-area:card2;
+  background-color: #DCDCDC;
 `
 const TestCard3 = Styled(Card)`
   grid-area:card3;
+  background-color: #DCDCDC;
 `
 const How = Styled.div `
   background: linear-gradient(to bottom right, #fed75e, #FFA600);
