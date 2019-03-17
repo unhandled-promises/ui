@@ -42,8 +42,8 @@ export default () => {
         </How>
         <Contact>
           <h2>CONTACT US</h2>
-          <form>
           <p>Curious? Reach out and request a demo!</p>
+          <form>
           <ContactInput type="name" placeholder="Name"/>
           <ContactInput type="email" placeholder="Email"/>
           <ContactInput type="phone" placeholder="Phone Number"/>
@@ -173,6 +173,7 @@ const Contact = Styled.div `
   display: grid;
   grid-gap: .75rem;
   grid-template-areas: "title img"
+                      "header img"
                       "message img"
                       "message img";
 
@@ -180,10 +181,17 @@ const Contact = Styled.div `
     grid-area: title;
     margin:auto;
   }
+
+  p {
+    grid-area: header;
+    margin:auto;
+  }
   
   form {
     grid-area:message;
     margin: auto;
+    width: 70%;
+    margin-top:2px;
   }
   
   img {
@@ -198,6 +206,9 @@ const ContactInput = Styled(Input)`
 `
 
 const Send = Styled(Button)`
+width: 70%;
+  height: 100%;
+  justify-self:center;
 & : hover {
   background-color: #131B26;
 }
