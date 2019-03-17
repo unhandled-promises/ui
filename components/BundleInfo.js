@@ -1,7 +1,6 @@
 import React from 'react';
 import { Formik, Form } from "formik";
 import CustomCard from "../components/CustomCard";
-import GridList from '@material-ui/core/GridList';
 import Grid from '@material-ui/core/Grid';
 import BundleSubInnerWrap from "../components/BundleSubInnerWrap";
 
@@ -10,8 +9,6 @@ function BundleInfo({ ...props }) {
         <Formik
             initialValues={{ plan: "" }}
             onSubmit={values => {
-                console.log("hey");
-                console.log(values);
                 props.handler(values);
             }}
             render={({ errors, touched, values, handleChange, handleBlur, setValues }) => (

@@ -67,7 +67,10 @@ class CustomCard extends React.Component {
                                 image={imagePath}
                                 title={this.props.label}
                             />
-                            <CardContent className={classes.content}>
+                            <CardContent className={
+                                this.props.name === "provider" ? "" :
+                                (classes.content)
+                            }>
                                 <List dense={true}>
                                     {this.props.list.map(item => {
                                         return (
@@ -85,12 +88,15 @@ class CustomCard extends React.Component {
                             </CardContent>
                             <CardContent>
                                 <Divider light />
-                                <Typography variant="h6" gutterBottom>
+                                <Typography variant="h6" gutterBottom color={ this.props.statement === "Coming Soon" ? "error" : "default"}>
                                     {this.props.statement}
                                 </Typography>
-                                <Button variant="contained" color="primary" type="submit" onClick={() => this.props.onSubmit({plan: this.props.label})}>
-                                    Select
-                                </Button>
+
+                                { this.props.statement !== "Coming Soon" ?
+                                    <Button variant="contained" color="primary" type="submit" onClick={() => this.props.onSubmit({plan: this.props.label})}>
+                                        Select
+                                    </Button>
+                                : "" }
                             </CardContent>
                         </Card>
                     )}
