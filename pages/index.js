@@ -23,6 +23,7 @@ export default () => {
           <Link href="/signup"><Create type="dark">Create an Account</Create></Link>
           <h4>Already a member? <Link href="/login"><a>Login</a></Link></h4>
           <h4>Need to verify? <Link href="/verify"><a>Verify</a></Link></h4>
+          <h4>Clicky <Link href="/dashboard/employee"><a>Clicky</a></Link></h4>
         </JoinDiv>
         <Testimonials>
           <h2>TESTIMONIALS</h2>
