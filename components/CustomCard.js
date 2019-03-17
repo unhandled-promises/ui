@@ -8,15 +8,17 @@ import CardContent from '@material-ui/core/CardContent';
 import Avatar from '@material-ui/core/Avatar';
 import { Formik } from "formik";
 import Button from "@material-ui/core/Button";
-import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import Divider from '@material-ui/core/Divider';
+import Typography from '@material-ui/core/Typography';
 
 const styles = theme => ({
     card: {
         maxWidth: 250,
+        height: "100%",
     },
     media: {
         height: 0,
@@ -28,6 +30,9 @@ const styles = theme => ({
     avatar: {
         backgroundColor: "#cd7f32",
     },
+    content: {
+        height: "200px",
+    }
 });
 
 class CustomCard extends React.Component {
@@ -36,62 +41,61 @@ class CustomCard extends React.Component {
         const { classes, src } = this.props;
         const imagePath = `/static/images/${src}`;
 
-        const section = {
-            height: "100%",
-            paddingTop: 5,
-        };
-
         return (
-            <Formik
-                initialValues={{
-                    plan: "",
-                }}
-                onSubmit={(values) => {
-                    this.setState(values);
-                    this.handleNext();
-                }}
-                render={({ errors, touched, values, handleChange, handleBlur, setFieldValue }) => (
-                    <Card className={classes.card}>
-                        <CardHeader
-                            avatar={
-                                <Avatar aria-label="Package" className={this.props.classType}>
-                                    {this.props.label[0]}
-                                </Avatar>
-                            }
-                            title={this.props.label}
-                            subheader={this.props.size}
-                        />
-                        <CardMedia
-                            className={classes.media}
-                            image={imagePath}
-                            title={this.props.label}
-                        />
-                        <CardContent>
-                            <Grid item xs={12} md={12}>
-                                <div className={section}>
-                                    <List dense={true}>
-                                        {this.props.list.map(item => {
-                                            return (
-                                                <ListItem key={item}>
-                                                    <ListItemIcon>
-                                                        <i className="far fa-check-square"></i>
-                                                    </ListItemIcon>
-                                                    <ListItemText
-                                                        secondary={item}
-                                                    />
-                                                </ListItem>
-                                            )
-                                        })}
-                                    </List>
-                                </div>
-                            </Grid>
-                            <Button variant="contained" color="primary" type="submit">
-                                Select
-                            </Button>
-                        </CardContent>
-                    </ Card>
-                )}
-            />
+            <React.Fragment>
+                <Formik
+                    initialValues={{
+                        plan: "",
+                    }}
+                    onSubmit={(values) => {
+                        this.setState(values);
+                        this.handleNext();
+                    }}
+                    render={({ errors, touched, values, handleChange, handleBlur, setFieldValue }) => (
+                        <Card className={classes.card}>
+                            <CardHeader
+                                avatar={
+                                    <Avatar aria-label="Package" className={this.props.classType}>
+                                        {this.props.label[0]}
+                                    </Avatar>
+                                }
+                                title={this.props.label}
+                                subheader={this.props.size}
+                            />
+                            <CardMedia
+                                className={classes.media}
+                                image={imagePath}
+                                title={this.props.label}
+                            />
+                            <CardContent className={classes.content}>
+                                <List dense={true}>
+                                    {this.props.list.map(item => {
+                                        return (
+                                            <ListItem key={item}>
+                                                <ListItemIcon>
+                                                    <i className="far fa-check-square"></i>
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    secondary={item}
+                                                />
+                                            </ListItem>
+                                        )
+                                    })}
+                                </List>
+                            </CardContent>
+                            <CardContent>
+                                <Divider light />
+                                <Typography variant="h6" gutterBottom>
+                                    {this.props.statement}
+                                </Typography>
+                                <Button variant="contained" color="primary" type="submit" onClick={() => this.props.onSubmit({plan: this.props.label})}>
+                                    Select
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    )}
+                />
+            </React.Fragment>
         );
     }
 }
