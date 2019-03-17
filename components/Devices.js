@@ -1,17 +1,24 @@
 import React from 'react'
 import Styled from 'styled-components';
 import * as moment from "moment";
+import AliceCarousel from 'react-alice-carousel';
+import "react-alice-carousel/lib/alice-carousel.css";
+import EmptyCard from './EmptyCard';
 
 export default ({ devices }) => {
+  if(devices.type === undefined) {
+    return <EmptyCard heading={"Devices"} />
+  }
   return (
     <Card>
       <CardHeading>
         <h3>Devices</h3>
       </CardHeading>
       <CardBody>
+      <AliceCarousel items={devices} mouseDragEnabled autoPlay={true} autoPlayInterval={3000} dotsDisabled={true} buttonsDisabled={true}>
         {devices.map((device, i) => {
           return (
-            <Group>
+            <Group key={i}>
               <h4>{device.deviceVersion}</h4>
               <p>Battery: {device.battery}</p>
               <p>Last Sync Time: {moment(device.lastSyncTime).format('YYYY-MM-DD')}</p>
@@ -19,6 +26,7 @@ export default ({ devices }) => {
             </Group>
           )
         })}
+        </AliceCarousel>
       </CardBody>
     </Card>
   )
@@ -27,34 +35,35 @@ export default ({ devices }) => {
 const Card = Styled.div`
   display: grid;
   grid-template-rows: auto 1fr;
-  background: linear-gradient(to bottom right, #fed75e, #FFA600);
   border-radius: 25px;
-  box-shadow: #696773 -10px 5px 10px;
+  box-shadow: #696773 -10px 5px 10px 10px;
   min-height: 200px;
-  margin-bottom: 20px;
-  margin-top: 10px;
+  margin: 50px 20px 20px 20px;
+  style="float: left; 
+  width: 70%";
+  overflow: hidden
 `
 
 const CardHeading = Styled.div`
   margin: 0;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
   h3{
-    margin:.5rem;
+    margin: .5rem;
   }
 `
 
 const CardBody = Styled.div`
-  margin:0;
+  margin: 5px;
   align-self: center;
-  margin: 10px;
+  overflow: hidden;
 `
-
 const Group = Styled.div`
   position: relative;
   display: block;
   padding: 10px 15px;
-  margin-bottom: -1px;
   background-color: #fff;
-  border: 1px solid #ddd;
+  height: 90%
 }
 `
 

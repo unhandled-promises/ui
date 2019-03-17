@@ -14,6 +14,7 @@ import EmployeeCard from '../../components/EmployeeCard'
 import { Container, Row, Col } from 'styled-bootstrap-grid';
 import DailyStats from '../../components/DailyStats';
 import Devices from '../../components/Devices';
+import TimeSeriesBarChart from '../../components/TimeSeriesBarChart';
 
 class Employee extends Component {
 	state = {
@@ -47,12 +48,14 @@ class Employee extends Component {
 		badges: {
 			badges: []
 		},
-		devices: [[]],
+		devices: [],
 		friends: { friends: [] },
+		steps: { 'activities-steps': [] },
+		distance: { 'activities-distance': [] },
 		editModal: false,
 		jwt: '',
 		employeeData: {
-			
+
 			firstName: '',
 			lastName: '',
 			password: '',
@@ -100,6 +103,8 @@ class Employee extends Component {
 			this.fetchData("/activities/today/", "todayStats");
 			this.fetchData("/friends/", "friends");
 			this.fetchData("/devices/", "devices");
+			this.fetchData("/activities/steps/month/", "steps");
+			this.fetchData("/activities/distance/month/", "distance");
 			// setInterval(()=>{this.fetchEmployeeHeartRate(tokenData.id)},10000)
 		} else {
 			Router.push("/login/");
@@ -267,18 +272,38 @@ class Employee extends Component {
 					<NavLink onClick={this.handleClick} name="Logout">Logout</NavLink>
 				</FullNav>
 				<Container>
+					<Title>Your Personal Fitbit Dashboard</Title>
 					<Row>
 						<Col col="3">
-							<LifetimeStats lifetimeStats={this.state.lifetimeStats} />
-							<Devices devices={this.state.devices} />
+							<Friends friends={this.state.friends.friends} />
 						</Col>
 						<Col col="5">
 							<EmployeeCard employeeInfo={this.state.employeeData} />
+						</Col>
+						<Col col="3">
+							<LifetimeStats lifetimeStats={this.state.lifetimeStats} />
+						</Col>
+					</Row>
+					<Row>
+						<Col col="3">
+							<Devices devices={this.state.devices} />
+						</Col>
+						<Col col="5">
+							<TimeSeriesBarChart data={this.state.steps['activities-steps']} title="Steps" yMax={15000} />
+						</Col>
+						<Col col="3">
 							<DailyStats todayStats={this.state.todayStats} />
 						</Col>
-						<Col col="2">
-							<Friends friends={this.state.friends.friends} />
-							<Badges badges={this.state.badges} />
+					</Row>
+					<Row>
+						<Col col="3">
+							<Badges badges={this.state.badges.badges} />
+						</Col>
+						<Col col="5">
+							<TimeSeriesBarChart data={this.state.distance['activities-distance']} title="Distance (kilometers)" yMax={10} />
+						</Col>
+						<Col col="3">
+							<DailyStats todayStats={this.state.todayStats} />
 						</Col>
 					</Row>
 				</Container>
@@ -308,6 +333,11 @@ const NavLink = Styled.a`
 	text-decoration: none;
 	cursor: pointer;
 `
+
+const Title = Styled.h2`
+	text-align: center
+`
+
 const WelcomeDiv = Styled.div`
 	text-align:center;
 `

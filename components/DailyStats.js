@@ -1,9 +1,12 @@
 import React from 'react'
 import Styled from 'styled-components';
+import EmptyCard from './EmptyCard';
 
 export default ({ todayStats }) => {
+  if(!todayStats.summary || todayStats.summary === undefined) {
+    return <EmptyCard heading={"Today's Stats"} />
+  }
   return (
-
     <Card>
       <CardHeading>
         <h3>Today's Stats</h3>
@@ -20,40 +23,30 @@ export default ({ todayStats }) => {
 const Card = Styled.div`
   display: grid;
   grid-template-rows: auto 1fr;
-  background: linear-gradient(to bottom right, #fed75e, #FFA600);
   border-radius: 25px;
-  justify-items: center;
-  box-shadow: #696773 -10px 5px 10px;
+  box-shadow: #696773 -10px 5px 10px 10px;
   min-height: 200px;
-  margin-bottom: 20px;
-  margin-top: 10px;
+  margin: 50px 20px 20px 20px;
+  style="float: left; 
+  width: 70%";
+  overflow: hidden
 `
-
 const CardHeading = Styled.div`
   margin: 0;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
   h3{
-    margin:.5rem;
+    margin: .5rem;
   }
 `
-
 const CardBody = Styled.div`
-  margin:0;
+  margin: 5px;
   align-self: center;
-  margin: 10px;
-  background-color: #fff;
-  width: 95%;
-  h4{
-    padding: 0px 15px;
-  }
-  p{
-    padding: 0px 15px;
-  }
+  overflow: hidden;
 `
-
 const IconBlock = Styled.i`
     color: #FFFFFF;
 `
-
 const IconDetails = Styled.i`
     color: ${props => props.colorChoice};
 `

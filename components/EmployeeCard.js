@@ -4,19 +4,16 @@ import * as moment from "moment";
 
 export default ({ employeeInfo }) => {
   return (
-
     <Card>
       <CardHeading>
         <h3>{employeeInfo.first_name} {employeeInfo.last_name}</h3>
       </CardHeading>
       <CardBody>
-        <img
-          src={employeeInfo.avatar}
-          style={{ height: 50, left: 10, borderRadius: "50%" }}
-          alt=""
-        />
-        <p>Date of Birth: {moment(employeeInfo.dob).format('YYYY-MM-DD')}</p>
-        <p>Email: {employeeInfo.email}</p>
+        <Group>
+          <img src={employeeInfo.avatar} style={{ height: 150, borderRadius: "50%" }} alt="" />
+          <p>Date of Birth: {moment(employeeInfo.dob).format('YYYY-MM-DD')}</p>
+          <p>Email: {employeeInfo.email}</p>
+        </Group>
       </CardBody>
     </Card>
   )
@@ -25,32 +22,32 @@ export default ({ employeeInfo }) => {
 const Card = Styled.div`
   display: grid;
   grid-template-rows: auto 1fr;
-  background: linear-gradient(to bottom right, #fed75e, #FFA600);
   border-radius: 25px;
-  justify-items: center;
-  box-shadow: #696773 -10px 5px 10px;
-  min-height: 200px;
-  margin-bottom: 20px;
-  margin-top: 10px;
+  box-shadow: #696773 -10px 5px 10px 10px;
+  max-height: 300px;
+  margin: 70px 20px 20px 20px;
+  style="float: left;
+  width: 70%"; 
+  overflow: hidden
 `
-
 const CardHeading = Styled.div`
   margin: 0;
+  text-align: center;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
   h3{
-    margin:.5rem;
+    margin: .5rem;
   }
 `
-
 const CardBody = Styled.div`
-  margin:0;
-  align-self: center;
-  margin: 10px;
+  margin: 5px;
+  overflow: hidden;
+  text-align: center;
+`
+const Group = Styled.div`
+  position: relative;
+  display: block;
+  padding: 10px 15px;
   background-color: #fff;
-  width: 95%;
-  h4{
-    padding: 0px 15px;
-  }
-  p{
-    padding: 0px 15px;
-  }
+}
 `
