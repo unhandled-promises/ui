@@ -7,12 +7,14 @@ import Input from '../../components/Input';
 import Manage from '../../components/customer_dash/Manage';
 import Modal from '../../components/Modal';
 import Nav from '../../components/Nav';
+import History from '../../components/customer_dash/History';
 import { CUSTOMERS_API, EMPLOYEES_API } from "../../static/api-config";
 
 class Customer extends Component{
   state={
     showHome:true,
     showManage: false,
+    showHistory:false,
     addModal:false,
     navExpand:false,
     jwt:'',
@@ -150,6 +152,19 @@ class Customer extends Component{
     return heartRateData;
 	}
 
+  fetchEmployeeStepsHistory = async (id) => {
+    const { jwt } = this.state;
+    const stepsHistoryResponse = await fetch(`${EMPLOYEES_API}api/employee/${id}/activities/steps/month`,{
+      headers:{
+        "Authorization": jwt
+      }
+    });
+    console.log(stepsHistoryResponse);
+    const stepsHistoryData = await stepsHistoryResponse.json();
+    console.log(stepsHistoryData);
+    return stepsHistoryData;
+  }
+
   logUserOut = async () => {
     console.log(`Logging user out and removing jwt from session storage`);
     await sessionStorage.removeItem("jwt");
@@ -163,13 +178,22 @@ class Customer extends Component{
       case "Home":
         this.setState({
           showManage:false,
+          showHistory:false,
           showHome:true
         });
         break;
       case "Manage":
         this.setState({
           showHome:false,
+          showHistory:false,
           showManage:true
+        })
+        break;
+      case "History":
+        this.setState({
+          showHome:false,
+          showHistory:true,
+          showManage:false
         })
         break;
       case "Minimize":
@@ -363,14 +387,27 @@ class Customer extends Component{
         employeesFitbit[index].fitbit = employeeHeartData;
         await this.setState({employees:employeesFitbit});
         console.log(this.state.employees);
-      }
-      else{
+      } else{
         console.log('else');
         employeesFitbit[index].fitbit = {};
         await this.setState({employees:employeesFitbit});
         console.log(this.state.employees);
       }
     });
+
+    await employees.forEach(async (employee,index) => {
+      console.log('steps');
+      const employeeStepHistoryData = await this.fetchEmployeeStepsHistory(employee._id);
+      console.log(employeeStepHistoryData);
+      const employeesSteps = [...employees];
+      if(employeeStepHistoryData.hasOwnProperty("activities-steps")){
+        employeesSteps[index].history = employeeStepHistoryData;
+        await this.setState({employees:employeesSteps});
+      } else{
+        employeesSteps[index].history = {};
+        await this.setState({employees:employeesSteps});
+      }
+    })
 }
 
   render(){
@@ -401,12 +438,16 @@ class Customer extends Component{
             <Button size="small" type="transparent" onClick={this.handleNavClick} name="Add"><i class="fas fa-plus"></i></Button>:
             null}
             {(this.state.navExpand)?
+            <Button size="normal" type="orange" onClick={this.handleNavClick} name="History">Health History</Button>:
+            <Button size="small" type="transparent" onClick={this.handleNavClick} name="History"><i class="fas fa-chart-line"></i></Button>}
+            {(this.state.navExpand)?
             <Button size="normal" type="orange" onClick={this.handleNavClick} name="Logout">Logout</Button>:
             <Button size="small" type="transparent" onClick={this.handleNavClick} name="Logout"><i class="fas fa-sign-out-alt"></i></Button>}
           </ControlPanel>
           <MainView>
             {(this.state.showHome)?<Home employees={this.state.employees}/>: null}
             {(this.state.showManage)?<Manage employees={this.state.employees} onClick={this.handleClick} />: null}
+            {(this.state.showHistory)?<History employees={this.state.employees} />: null}
           </MainView>
         </DashBody>
         <Modal
@@ -529,9 +570,9 @@ const ControlPanel = Styled.div`
   grid-template-rows:${({toggle})=>{
     switch(toggle){
       case true:
-        return "auto repeat(3,1fr)"
+        return "auto repeat(5,1fr)"
       case false:
-        return "repeat(5,100px)"
+        return "repeat(6,100px)"
     }
   }};
   align-items:${({toggle})=>{

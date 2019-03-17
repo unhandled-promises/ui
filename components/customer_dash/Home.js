@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import Styled from 'styled-components'
+import React from 'react';
+import Styled from 'styled-components';
 import Card from '../Card'
 import Modal from '../Modal';
 
