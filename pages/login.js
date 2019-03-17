@@ -14,6 +14,7 @@ import CustomTextField from "../components/CustomTextField";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from '@material-ui/core/Typography';
+import SideBar from "../components/SideBar";
 
 const styles = theme => ({
     container: {
@@ -130,71 +131,73 @@ class Login extends Component {
         const { classes } = this.props;
         return (
             <React.Fragment>
-                <FullNav>
+                <SideBar>
+                    {/* <FullNav>
                     <Link href="/"><NavLink>Home</NavLink></Link>
                     <Link href="/"><NavLink></NavLink></Link>
-                </FullNav>
-                <LoginDiv>
-                    <Formik
-                        initialValues={{
-                            password: "",
-                            email: "",
-                        }}
-                        validationSchema={LoginSchema}
-                        onSubmit={async (values) => {
-                            try {
-                                const loginResponse = await fetch(`${EMPLOYEES_API}api/employee/login`, {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/json"
-                                    },
-                                    body: JSON.stringify({
-                                        "email": values.email,
-                                        "password": values.password
-                                    })
-                                });
+                </FullNav> */}
+                    <LoginDiv>
+                        <Formik
+                            initialValues={{
+                                password: "",
+                                email: "",
+                            }}
+                            validationSchema={LoginSchema}
+                            onSubmit={async (values) => {
+                                try {
+                                    const loginResponse = await fetch(`${EMPLOYEES_API}api/employee/login`, {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({
+                                            "email": values.email,
+                                            "password": values.password
+                                        })
+                                    });
 
-                                const loginData = await loginResponse.json();
+                                    const loginData = await loginResponse.json();
 
-                                if (loginData.success) {
-                                    this.setState({ authError: false })
-                                    const { token } = loginData;
-                                    sessionStorage.setItem("jwt", token);
-                                    const decodeToken = jwt_decode(token);
-                                    if (decodeToken.role === "manager" || decodeToken.role === "owner") {
-                                        Router.push("/dashboard/customer");
-                                    } else if (decodeToken.role === "employee") {
-                                        Router.push("/dashboard/employee");
-                                    }
-                                } else {
-                                    this.setState({ authError: true });
-                                }
-                            }
-                            catch (err) {
-                                console.log(err);
-                            }
-                        }}
-                        render={({ errors, touched, values, handleChange, handleBlur }) => (
-                            <React.Fragment>
-                                <FormInfo primary="Login" secondary="How are you trending today?" />
-                                <Form>
-                                    <FormSubInnerWrap>
-                                        {this.state.authError ?
-                                        <Typography variant="h6" gutterBottom color="error">
-                                            Invalid Login Credentials
-                                        </Typography> : ""
+                                    if (loginData.success) {
+                                        this.setState({ authError: false })
+                                        const { token } = loginData;
+                                        sessionStorage.setItem("jwt", token);
+                                        const decodeToken = jwt_decode(token);
+                                        if (decodeToken.role === "manager" || decodeToken.role === "owner") {
+                                            Router.push("/dashboard/customer");
+                                        } else if (decodeToken.role === "employee") {
+                                            Router.push("/dashboard/employee");
                                         }
-                                        <Field name="email" component={CustomTextField} label="Email" icon="far fa-envelope-square" classes={classes} required={true} fullWidth={true} />
-                                        <Field name="password" type="password" component={CustomTextField} label="Password" icon="far fa-unlock-alt" classes={classes} required={true} fullWidth={true} />
-                                    </FormSubInnerWrap>
-                                    <Button variant="contained" color="primary" type="submit" className={classes.button}>
-                                        Login
+                                    } else {
+                                        this.setState({ authError: true });
+                                    }
+                                }
+                                catch (err) {
+                                    console.log(err);
+                                }
+                            }}
+                            render={({ errors, touched, values, handleChange, handleBlur }) => (
+                                <React.Fragment>
+                                    <FormInfo primary="Login" secondary="How are you trending today?" />
+                                    <Form>
+                                        <FormSubInnerWrap>
+                                            {this.state.authError ?
+                                                <Typography variant="h6" gutterBottom color="error">
+                                                    Invalid Login Credentials
+                                        </Typography> : ""
+                                            }
+                                            <Field name="email" component={CustomTextField} label="Email" icon="far fa-envelope-square" classes={classes} required={true} fullWidth={true} />
+                                            <Field name="password" type="password" component={CustomTextField} label="Password" icon="far fa-unlock-alt" classes={classes} required={true} fullWidth={true} />
+                                        </FormSubInnerWrap>
+                                        <Button variant="contained" color="primary" type="submit" className={classes.button}>
+                                            Login
                                     </Button>
-                                </Form>
-                            </React.Fragment>
-                        )}
-                    />
-                </LoginDiv>
+                                    </Form>
+                                </React.Fragment>
+                            )}
+                        />
+                    </LoginDiv>
+                </SideBar>
                 <Footer />
             </React.Fragment>
         )
