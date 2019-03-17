@@ -35,9 +35,7 @@ import Card from '../Card';
     return(
       <ManageDiv>
         <h1>Manage Employees</h1>
-        <EmployeeListDiv>
           {renderEmployees(employees)}
-        </EmployeeListDiv>
       </ManageDiv>
     )
 }
@@ -45,9 +43,8 @@ import Card from '../Card';
 export default Manage;
 
 const ManageDiv= Styled.div`
-margin: 1rem;
 display: grid;
-grid-template-columns: repeat(3,1fr);
+grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
 justify-items: center;
 
 h1{
@@ -55,10 +52,6 @@ h1{
   justify-self: center;
 }
 `
-
-const EmployeeListDiv = Styled.div`
-
-`;
 
 const EmployeeCard = Styled.div`
   div>button{

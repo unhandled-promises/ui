@@ -52,10 +52,10 @@ import Modal from '../Modal';
           <Card 
             status={getStatus(restingHeartRate)}
             key={index}
+            avatar={employee.avatar}
             title={`${employee.first_name} ${employee.last_name}`}
             body={
             <div>
-              <EmployeeAvatar src={employee.avatar}/>
               <p><i class="fas fa-heartbeat"></i>{restingHeartRate}</p>
               <p><i class="fas fa-shoe-prints"></i>{steps}</p>
               <p>{`Status: ${getStatus(restingHeartRate)}`}</p>
@@ -77,10 +77,13 @@ import Modal from '../Modal';
 export default Home;
 
 const HomeDiv = Styled.div`
-  margin: 1rem;
+  background-color: #eee;
   display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+  grid-template-columns: repeat(auto-fill,minmax(300px,1fr));
+  grid-template-rows: auto 1fr;
   justify-items: center;
+  align-items: start;
+  min-height: 100%;
 
   h1{
     grid-column: 1/-1;
@@ -90,8 +93,5 @@ const HomeDiv = Styled.div`
 
 const EmployeeCard = Styled.div`
   min-width: 75%;
+  border: 1px solid black;
 `;
-
-const EmployeeAvatar = Styled.img`
-  border-radius: 50%;
-`

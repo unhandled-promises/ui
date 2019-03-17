@@ -575,4 +575,6 @@ const ControlPanel = Styled.div`
 
 const MainView = Styled.div`
   grid-area: Main;
+  overflow:scroll;
+  margin: 1rem;
 `
