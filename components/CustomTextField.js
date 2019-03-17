@@ -17,6 +17,7 @@ export default ({
             error={touched[field.name] && Boolean(errors[field.name])}
             label={props.label}
             type={props.type || "text"}
+            select={props.select || false}
             name={field.name}
             margin="normal"
             variant="outlined"
@@ -42,6 +43,15 @@ export default ({
                     </InputAdornment>
                 ),
             }}
-        />
+        >
+        
+        {props.select === true ? 
+            props.selection.map(option => (
+            <option key={option} value={option}>
+                {option}
+            </option>
+            )) : ""}
+    
+        </TextField>
     )
 };
