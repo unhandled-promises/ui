@@ -274,9 +274,6 @@ class Verify extends Component {
                     <Link href="/"><NavLink>Home</NavLink></Link>
                     <Link href="/"><NavLink></NavLink></Link>
                 </FullNav>
-                <ProgressDiv>
-                    <Progress step={this.state.activeStep} />
-                </ProgressDiv>
                 <VerifyDiv activeStep={this.state.activeStep}>
                     <FormInfo primary="Registration" secondary="Join your team today!" />
                     <Stepper activeStep={activeStep}>
@@ -334,13 +331,6 @@ Verify.propTypes = {
 };
 
 export default withStyles(styles)(Verify);
-
-const ProgressDiv = Styled.div`
-    max-width: 800px;
-    display: grid;
-    grid-template-columns: 2fr;
-    margin:10px auto;
-`
 
 const VerifyDiv = Styled.div`
     grid-template-columns: 2fr;
