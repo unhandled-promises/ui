@@ -3,6 +3,10 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis, Legend, Label   } from 'r
 
 export default ({data}) => {
 
+  const names = data.map(employee => {
+    return employee.first_name
+  });
+
   const generateColor = () => {
     const numbers = '0123456789ABCDEF';
     let color = '#';
@@ -19,6 +23,7 @@ export default ({data}) => {
           <Line 
             type="monotone" 
             dataKey="value" 
+            name={`${employee.first_name} ${employee.last_name}`}
             data={employee.history["activities-steps"]} 
             stroke={generateColor()}
             margin={{ top: 5, right: 30, left: 20, bottom: 20 }} />    
