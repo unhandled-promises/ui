@@ -53,11 +53,10 @@ const FloatingLabelDiv = Styled.div`
   }
 `
 const Label = Styled.label`
-  width: 100%;
   top: 0;
   bottom: 0;
   left: 0;
-  width: 100%;
+  width: auto;
   transition:
     background 0.2s,
     color 0.2s,
@@ -71,7 +70,7 @@ const Label = Styled.label`
 `
 
 const Input = Styled.input`
-    width:100%;
+    width:90%;
     position: relative;
     background-color: transparent;
     top:0;
