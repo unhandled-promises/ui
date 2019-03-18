@@ -4,10 +4,10 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 
 const TimeSeriesBarChart = ({data, title, yMax}) =>
   <div className="panel panel-default">
-    <Header>{title}</Header>
+    <Title>{title}</Title>
     <div className="panel-body">
-      <BarChart width={500} height={350} data={data}
-                margin={{top: 20, right: 20, left: 20, bottom: 20}}>
+      <BarChart width={475} height={300} data={data}
+                margin={{top: 20, right: 10, left: 0, bottom: 20}}>
         <XAxis dataKey="dateTime"/>
         <YAxis domain={[0, yMax]}/>
         <CartesianGrid strokeDasharray="3 3"/>
@@ -19,7 +19,7 @@ const TimeSeriesBarChart = ({data, title, yMax}) =>
 
 export default TimeSeriesBarChart
 
-const Header = Styled.div`
+const Title = Styled.div`
   margin-top: 50px;
   font-weight: bold;
 `
