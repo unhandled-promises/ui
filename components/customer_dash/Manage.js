@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Styled from 'styled-components';
 import Button from '../Button';
 import Card from '../Card';
@@ -11,6 +11,7 @@ import Card from '../Card';
         <EmployeeCard key={index}>
           <Card 
             key={index}
+            avatar={employee.avatar}
             title={`${employee.first_name} ${employee.last_name}`}
             body={
             <div>
@@ -35,9 +36,7 @@ import Card from '../Card';
     return(
       <ManageDiv>
         <h1>Manage Employees</h1>
-        <EmployeeListDiv>
           {renderEmployees(employees)}
-        </EmployeeListDiv>
       </ManageDiv>
     )
 }
@@ -45,10 +44,10 @@ import Card from '../Card';
 export default Manage;
 
 const ManageDiv= Styled.div`
-margin: 1rem;
 display: grid;
-grid-template-columns: repeat(3,1fr);
+grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
 justify-items: center;
+grid-gap: 10px;
 
 h1{
   grid-column: 1/-1;
@@ -56,11 +55,9 @@ h1{
 }
 `
 
-const EmployeeListDiv = Styled.div`
-
-`;
-
 const EmployeeCard = Styled.div`
+  background-color: #eee;
+  border-radius: 30px;
   div>button{
     text-align: center;
   }
