@@ -12,6 +12,7 @@ import FormSubHeader from "../components/FormSubHeader";
 import FormSubInnerWrap from "../components/FormSubInnerWrap";
 import Provider from "../components/Provider";
 import SubmitButton from "../components/SubmitButton";
+import Progress from '../components/Progress';
 import { CUSTOMERS_API, EMPLOYEES_API } from "../static/api-config";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
@@ -269,6 +270,9 @@ class Verify extends Component {
                     <Link href="/"><NavLink>Home</NavLink></Link>
                     <Link href="/"><NavLink></NavLink></Link>
                 </FullNav>
+                <ProgressDiv>
+                    <Progress step={this.state.activeStep} />
+                </ProgressDiv>
                 <VerifyDiv activeStep={this.state.activeStep}>
                     <FormInfo primary="Registration" secondary="Join your team today!" />
                     <Stepper activeStep={activeStep}>
@@ -351,6 +355,13 @@ Verify.propTypes = {
 };
 
 export default withStyles(styles)(Verify);
+
+const ProgressDiv = Styled.div`
+    max-width: 800px;
+    display: grid;
+    grid-template-columns: 2fr;
+    margin:10px auto;
+`
 
 const VerifyDiv = Styled.div`
     grid-template-columns: 2fr;
