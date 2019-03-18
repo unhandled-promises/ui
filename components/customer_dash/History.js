@@ -15,6 +15,7 @@ export default History;
 
 const HistroyDiv = Styled.div`
   display: grid;
+  justify-content: center;
 
   h1{
     justify-self: center;
