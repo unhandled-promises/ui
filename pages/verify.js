@@ -258,7 +258,6 @@ class Verify extends Component {
             password: value.password,
         }
 
-        console.log(employee);
         await this.updateEmployeeInformation(employee)
         this.handleNext();
     }
