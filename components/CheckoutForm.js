@@ -3,6 +3,7 @@ import { CardElement, injectStripe } from 'react-stripe-elements-universal';
 import { CUSTOMERS_API, EMPLOYEES_API } from "../static/api-config";
 import Router from 'next/router'
 import Button from "@material-ui/core/Button";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const createOptions = () => {
     return {
@@ -29,7 +30,12 @@ class CheckoutForm extends Component {
         this.submit = this.submit.bind(this);
     }
 
+    state = {
+        loading: false,
+    }
+
     async submit(ev) {
+        this.setState({loading: true});
 		const body = {
 			"name": this.props.company_name,
 			"address": this.props.address,
@@ -83,9 +89,15 @@ class CheckoutForm extends Component {
                 <p>Would you like to complete the purchase?</p>
                 <CardElement {...createOptions()} />
                 <br /><br />
+                {this.state.loading ? 
+                    <CircularProgress
+                    // className={classes.progress}
+                />
+                :
                 <Button variant="contained" color="primary" type="submit" onClick={this.submit}>
                     Complete Purchase
-                </Button>
+                </Button>                
+                }
             </div>
         );
     }
