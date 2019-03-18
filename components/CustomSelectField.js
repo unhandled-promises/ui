@@ -4,22 +4,29 @@ import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
+import FormHelperText from '@material-ui/core/FormHelperText'
+import NativeSelect from '@material-ui/core/NativeSelect';
 
 export default ({
     field,
-    form: { values, handleChange },
+    form: { values, touched, errors, handleChange },
     ...props
 }) => {
     return (
-        <FormControl required className={props.classes.formControl} margin="normal">
+        <FormControl
+            required
+            className={props.classes.formControl}
+            margin="normal"
+            error={touched[field.name] && Boolean(errors[field.name])}
+        >
             <InputLabel
                 shrink
                 htmlFor={field.name}
                 variant="outlined"
             >
                 {props.label}
-        </InputLabel>
-            <Select
+            </InputLabel>
+            <NativeSelect
                 onChange={handleChange}
                 value={values[field.name]}
                 input={
@@ -30,17 +37,15 @@ export default ({
                     />
                 }
                 style={{ width: 225 }}
-                displayEmpty
             >
-                <MenuItem value="">
-                    <em>None</em>
-                </MenuItem>
+                <option value="" />
                 {props.selection.map(selector => (
-                    <MenuItem value={selector} key={selector}>
+                    <option value={selector} key={selector}>
                         {selector}
-                    </MenuItem>
+                    </option>
                 ))}
-            </Select>
+            </NativeSelect>
+            {touched[field.name] && Boolean(errors[field.name]) ? <FormHelperText>{errors[field.name]}</FormHelperText> : ""}
         </FormControl>
     )
 };
