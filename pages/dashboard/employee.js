@@ -168,7 +168,7 @@ class Employee extends Component {
 
 		return (
 			<React.Fragment>
-				<SideBar onClickIcon={this.performSidebarAction}>
+				<SideBar onClickIcon={this.performSidebarAction} role={this.state.employeeData.role}>
 					<LoginDiv>
 						<Container>
 							<Title>Your Personal Health Dashboard</Title>

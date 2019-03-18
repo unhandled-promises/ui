@@ -102,7 +102,7 @@ class MiniDrawer extends React.Component {
         this.setState({ open: false });
     };
 
-   handleClicked = async (event) => {
+    handleClicked = async (event) => {
         const element = event.target;
         const { onClickIcon } = this.props;
 
@@ -169,14 +169,16 @@ class MiniDrawer extends React.Component {
                         </IconButton>
                     </div>
                     <Divider />
-                    <List>
-                        {['View Company Dashboard', 'Edit Company Profile'].map((text, index) => (
-                            <ListItem button key={text} onClick={this.handleClicked}>
-                                <ListItemIcon>{index % 2 === 0 ? <i className="fa fa-users fa-fw fa-2x" title="View Company Dashboard"></i> : <i className="far fa-edit fa-fw fa-2x"  title="Edit Company Profile"></i>}</ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItem>
-                        ))}
-                    </List>
+                    {this.props.role === "owner" || this.props.role === "manager" ?
+                        <List>
+                            {['View Company Dashboard', 'Edit Company Profile'].map((text, index) => (
+                                <ListItem button key={text} onClick={this.handleClicked}>
+                                    <ListItemIcon>{index % 2 === 0 ? <i className="fa fa-users fa-fw fa-2x" title="View Company Dashboard"></i> : <i className="far fa-edit fa-fw fa-2x" title="Edit Company Profile"></i>}</ListItemIcon>
+                                    <ListItemText primary={text} />
+                                </ListItem>
+                            ))}
+                        </List>
+                        : ""}
                     <Divider />
                     <List >
                         {["View User Dashboard", "Edit User Profile"].map((text, index) => (
