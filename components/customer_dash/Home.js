@@ -29,10 +29,14 @@ import Modal from '../Modal';
       let restingHeartRate;
       let steps;
       if(employee.hasOwnProperty("fitbit")){
-        if(employee.fitbit.summary.hasOwnProperty("restingHeartRate")){
-          restingHeartRate = employee.fitbit.summary.restingHeartRate;
-        }
-        else{
+        if(employee.fitbit.hasOwnProperty("summary")){
+          if(employee.fitbit.summary.hasOwnProperty("restingHeartRate")){
+            restingHeartRate = employee.fitbit.summary.restingHeartRate;
+          }
+          else{
+            restingHeartRate = "-"
+          }
+        }else{
           restingHeartRate = "-"
         }
       }else{
