@@ -149,18 +149,18 @@ class MiniDrawer extends React.Component {
                     </div>
                     <Divider />
                     <List>
-                        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+                        {['Manage User Profile', 'Manage Employees'].map((text, index) => (
                             <ListItem button key={text}>
-                                <ListItemIcon>{index % 2 === 0 ? <i className="far fa-inbox fa-fw fa-2x"></i> : <i className="far fa-envelope-square fa-fw fa-2x"></i>}</ListItemIcon>
+                                <ListItemIcon>{index % 2 === 0 ? <i className="fas fa-user fa-fw fa-2x"></i> : <i className="fa fa-users fa-fw fa-2x"></i>}</ListItemIcon>
                                 <ListItemText primary={text} />
                             </ListItem>
                         ))}
                     </List>
                     <Divider />
                     <List>
-                        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+                        {['Home', 'Logout'].map((text, index) => (
                             <ListItem button key={text}>
-                                <ListItemIcon>{index % 2 === 0 ? <i className="far fa-inbox fa-fw fa-2x"></i> : <i className="far fa-envelope-square fa-fw fa-2x"></i>}</ListItemIcon>
+                                <ListItemIcon>{index % 2 === 0 ? <i className="fas fa-home fa-fw fa-2x"></i> : <i className="fas fa-sign-out fa-fw fa-2x"></i>}</ListItemIcon>
                                 <ListItemText primary={text} />
                             </ListItem>
                         ))}
