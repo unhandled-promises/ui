@@ -34,21 +34,18 @@ import Modal from '../Modal';
             restingHeartRate = employee.fitbit.summary.restingHeartRate;
           }
           else{
-            restingHeartRate = "-"
+            restingHeartRate = "-";
+          }
+          if(employee.fitbit.summary.hasOwnProperty("steps")){
+            steps = employee.fitbit.summary.steps;
+          }else{
+            steps = "-";
           }
         }else{
-          restingHeartRate = "-"
+          restingHeartRate = "-";
         }
       }else{
-        restingHeartRate = "-"
-      }
-
-      if(employee.hasOwnProperty("fitbit")){
-        if(employee.fitbit.summary.hasOwnProperty("steps")){
-          steps = employee.fitbit.summary.steps
-        }
-      }else{
-        steps = "-"
+        restingHeartRate = "-";
       }
 
       return (
@@ -81,7 +78,6 @@ import Modal from '../Modal';
 export default Home;
 
 const HomeDiv = Styled.div`
-  background-color: #eee;
   display: grid;
   grid-template-columns: repeat(auto-fill,minmax(300px,1fr));
   grid-template-rows: auto 1fr;
@@ -97,5 +93,6 @@ const HomeDiv = Styled.div`
 
 const EmployeeCard = Styled.div`
   min-width: 75%;
-  border: 1px solid black;
+  background-color: #eee;
+  border-radius: 30px;
 `;

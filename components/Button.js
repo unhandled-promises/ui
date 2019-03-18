@@ -38,7 +38,7 @@ const Button = Styled.button`
   padding: ${({size})=>{
     switch(size){
       case "normal":
-        return "1.5rem";
+        return ".75rem";
       case "small":
         return "1rem";
     }
@@ -66,7 +66,7 @@ const Button = Styled.button`
   margin: ${({size})=>{
     switch(size){
       case "normal":
-        return "1rem";
+        return ".5rem";
       case "small":
       return "0";
     }

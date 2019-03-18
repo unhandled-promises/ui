@@ -601,9 +601,9 @@ const ControlPanel = Styled.div`
     grid-template-columns:${({add})=>{
       switch(add){
         case true:
-          return 'repeat(4,1fr)'
+          return 'repeat(5,1fr)'
         case false:
-          return 'repeat(3,1fr)' 
+          return 'repeat(4,1fr)' 
       }
     }};
     grid-template-rows:1fr;
