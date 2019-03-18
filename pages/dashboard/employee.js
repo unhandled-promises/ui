@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Styled from 'styled-components';
-import Footer from '../../components/Footer';
+import Footer from '../../components/Footer';;
+import Modal from '../../components/Modal';
 import { EMPLOYEES_API } from "../../static/api-config";
 import Router from 'next/router';
 import Badges from '../../components/Badges'
@@ -14,7 +15,7 @@ import Health from '../../components/Health';
 import SideBar from "../../components/SideBar";
 import EmployeeInfo from "../../components/EmployeeInfo";
 import { withStyles } from "@material-ui/core/styles";
-import Modal from '../../components/Modal';
+import * as moment from "moment";
 
 class Employee extends Component {
 	state = {
@@ -55,14 +56,7 @@ class Employee extends Component {
 		jwt: '',
 		displayEmployeeInfo: false,
 		displayCompanyInfo: false,
-		employeeData: {
-			firstName: '',
-			lastName: '',
-			password: '',
-			phone: '',
-			dob: '',
-			email: ''
-		},
+		employeeData: {},
 		dateInput: {
 			value: ''
 		},
@@ -104,35 +98,15 @@ class Employee extends Component {
 		};
 	}
 
-	async handlerInfo(value) {
-		const employee = {
-			firstName: value.firstName,
-			lastName: value.lastName,
-			dob: value.date,
-			phone: value.phone,
-			id: this.state.id,
-			password: value.password,
-		}
+	performEmployeeUpdate = async (employee) => {
 
-		console.log(employee);
-		await this.updateEmployeeInformation(employee)
-		this.handleNext();
-	}
-
-	updateEmployeeInformation = async (employee) => {
-		const first = employee.firstName;
-		const last = employee.lastName;
-		const dob = employee.dob;
-		const phone = employee.phone;
-		const password = employee.password;
-		const employeeResponse = await fetch(`${EMPLOYEES_API}api/employee/${employee.id}`, {
+		await fetch(`${EMPLOYEES_API}api/employee/${employee.id}`, {
 			method: "PUT",
 			body: JSON.stringify({
-				"first_name": first,
-				"last_name": last,
-				"dob": dob,
-				"phone": phone,
-				"password": password
+				"first_name": employee.firstName,
+				"last_name": employee.lastName,
+				"dob": employee.date,
+				"phone": employee.phone,
 			}),
 			headers: {
 				"Authorization": sessionStorage.getItem("jwt"),
@@ -140,11 +114,31 @@ class Employee extends Component {
 			},
 		})
 
-		const employeeData = employeeResponse.json();
-		return employeeData;
+		this.fetchData("/", "employeeData");
+		await this.setState({ displayEmployeeInfo: false });
 	}
 
-	performAction = async (navType) => {
+	performCompanyUpdate = async (employee) => {
+
+		await fetch(`${EMPLOYEES_API}api/employee/${employee.id}`, {
+			method: "PUT",
+			body: JSON.stringify({
+				"first_name": employee.firstName,
+				"last_name": employee.lastName,
+				"dob": employee.date,
+				"phone": employee.phone,
+			}),
+			headers: {
+				"Authorization": sessionStorage.getItem("jwt"),
+				"Content-Type": "application/json"
+			},
+		})
+
+		this.fetchData("/", "employeeData");
+		await this.setState({ displayEmployeeInfo: false });
+	}
+
+	performSidebarAction = async (navType) => {
 		if ("editEmployee" === navType) {
 			await this.setState({ displayEmployeeInfo: true });
 		} else if ("editCompany" === navType) {
@@ -152,9 +146,16 @@ class Employee extends Component {
 		}
 	}
 
+	performModalAction = async (event) => {
+		const { name, id } = event.target;
+
+		if ("editEmployee" === name) {
+			await this.setState({ displayEmployeeInfo: false });
+		}
+	}
+
 	render() {
 		const { classes } = this.props;
-
 		let caloriesOut = "N/A";
 		let restingHeartRate = "N/A";
 
@@ -165,10 +166,9 @@ class Employee extends Component {
 			restingHeartRate = this.state.todayStats.summary.restingHeartRate;
 		};
 
-		console.log("displayEmployeeInfo: ", this.state.displayEmployeeInfo);
 		return (
 			<React.Fragment>
-				<SideBar onClickIcon={this.performAction}>
+				<SideBar onClickIcon={this.performSidebarAction}>
 					<LoginDiv>
 						<Container>
 							<Title>Your Personal Health Dashboard</Title>
@@ -206,15 +206,18 @@ class Employee extends Component {
 								</Col>
 							</Row>
 						</Container>
-						<InfoDiv shouldDisplay={this.state.displayEmployeeInfo}>
-							<Modal name="editModal"
-								buttonNames={[]}
-								show={this.state.displayEmployeeInfo}
-								handleClick={this.handleClick}
-								handleClose={this.handleClick}>
-								<EmployeeInfo classes={classes} handler={this.handlerInfo} scope="update" employeeId={this.state.employeeData.id} jwt={this.state.jwt} />
-							</Modal>
-						</InfoDiv>
+						{this.state.employeeData._id !== undefined ?
+							<EmployeeInfoDiv shouldDisplay={this.state.displayEmployeeInfo}>
+								<Modal name="editEmployee"
+									buttonNames={[]}
+									show={this.state.displayEmployeeInfo}
+									handleClick={this.performModalAction}
+									handleClose={this.performModalAction}
+								>
+									<EmployeeInfo classes={classes} handler={this.performEmployeeUpdate} scope="update" employeeId={this.state.employeeData._id} jwt={this.state.jwt} />
+								</Modal>
+							</EmployeeInfoDiv>
+							: ""}
 					</LoginDiv>
 				</SideBar>
 				<Footer />
@@ -224,6 +227,38 @@ class Employee extends Component {
 }
 
 export default withStyles(styles)(Employee);
+
+const EmployeeInfoDiv = Styled.div`
+    grid-template-columns: 2fr;
+    max-width: 800px;
+    width:80%;
+    padding:30px;
+    margin:40px auto;
+    background: #FFF;
+    border-radius: 10px;
+    -webkit-border-radius:10px;
+    -moz-border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+	display:${({ shouldDisplay }) => (shouldDisplay === true) ? "grid" : "none"}
+`
+
+const CompanyInfoDiv = Styled.div`
+    grid-template-columns: 2fr;
+    max-width: 800px;
+    width:80%;
+    padding:30px;
+    margin:40px auto;
+    background: #FFF;
+    border-radius: 10px;
+    -webkit-border-radius:10px;
+    -moz-border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+	display:${({ shouldDisplay }) => (shouldDisplay === true) ? "grid" : "none"}
+`
 
 const LoginDiv = Styled.div`
     grid-template-columns: 2fr;
@@ -242,31 +277,16 @@ const LoginDiv = Styled.div`
 	text-align: center
 `
 const styles = theme => ({
-	tieredWrap: {
-		display: "flex",
-		flexDirection: "row",
-		flexWrap: "wrap",
-		justifyContent: "space-between",
-		alignItems: "center",
-	},
+	// tieredWrap: {
+	// 	display: "flex",
+	// 	flexDirection: "row",
+	// 	flexWrap: "wrap",
+	// 	justifyContent: "space-between",
+	// 	alignItems: "center",
+	// },
 })
 
 const Title = Styled.h2`
 	text-align: center;
 	color: grey;
-`
-const InfoDiv = Styled.div`
-    grid-template-columns: 2fr;
-    max-width: 800px;
-    width:80%;
-    padding:30px;
-    margin:40px auto;
-    background: #FFF;
-    border-radius: 10px;
-    -webkit-border-radius:10px;
-    -moz-border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
-    -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
-    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
-	display:${({ shouldDisplay }) => (shouldDisplay === true) ? "grid" : "none"}
 `
