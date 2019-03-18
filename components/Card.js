@@ -31,7 +31,6 @@ const Card = Styled.div`
     }
   }};
   justify-items: center;
-  box-shadow: #696773 -10px 5px 10px;
   min-height: 200px;
   padding: 1rem;
 
