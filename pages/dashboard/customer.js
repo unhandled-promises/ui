@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Router from 'next/router';
+import Link from 'next/link';
 import Styled from 'styled-components';
 import Button from '../../components/Button';
 import Home from '../../components/customer_dash/Home';
@@ -174,6 +175,7 @@ class Customer extends Component{
   // Click events for the side control panel
   handleNavClick = (event) => {
     const { name,id } = event.target;
+    console.log(name);
     switch(name){
       case "Home":
         this.setState({
@@ -195,6 +197,10 @@ class Customer extends Component{
           showHistory:true,
           showManage:false
         })
+        break;
+      case "Employee":
+        console.log(`clicked employee`);
+        window.location = "/dashboard/employee";
         break;
       case "Minimize":
         this.setState({navExpand:false});
@@ -441,8 +447,11 @@ class Customer extends Component{
             <Button size="normal" type="orange" onClick={this.handleNavClick} name="History">Health History</Button>:
             <Button size="small" type="transparent" onClick={this.handleNavClick} name="History"><i class="fas fa-chart-line"></i></Button>}
             {(this.state.navExpand)?
+            <Button size="normal" type="orange" onClick={this.handleNavClick} name="Employee">Employee Dashboard</Button>:
+            <Button size="small" type="transparent" onClick={this.handleNavClick} name="Employee"><i class="fas fa-user"></i></Button>}
+            {(this.state.navExpand)?
             <Button size="normal" type="orange" onClick={this.handleNavClick} name="Logout">Logout</Button>:
-            <Button size="small" type="transparent" onClick={this.handleNavClick} name="Logout"><i class="fas fa-sign-out-alt"></i></Button>}
+            <Button size="small" type="transparent" onClick={this.handleNavClick} name="Logout"><Link src="/dashboard/employee"><i class="fas fa-sign-out-alt"></i></Link></Button>}
           </ControlPanel>
           <MainView>
             {(this.state.showHome)?<Home employees={this.state.employees}/>: null}
@@ -584,9 +593,9 @@ const ControlPanel = Styled.div`
   grid-template-rows:${({toggle})=>{
     switch(toggle){
       case true:
-        return "auto repeat(5,1fr)"
+        return "auto repeat(6,1fr)"
       case false:
-        return "repeat(6,100px)"
+        return "repeat(7,100px)"
     }
   }};
   align-items:${({toggle})=>{
@@ -615,9 +624,9 @@ const ControlPanel = Styled.div`
     grid-template-columns:${({add})=>{
       switch(add){
         case true:
-          return 'repeat(5,1fr)'
+          return 'repeat(6,1fr)'
         case false:
-          return 'repeat(4,1fr)' 
+          return 'repeat(5,1fr)' 
       }
     }};
     grid-template-rows:1fr;
