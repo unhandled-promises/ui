@@ -184,7 +184,7 @@ class Login extends Component {
                                             {this.state.authError ?
                                                 <Typography variant="h6" gutterBottom color="error">
                                                     Invalid Login Credentials
-                                        </Typography> : ""
+                                                </Typography> : ""
                                             }
                                             <Field name="email" component={CustomTextField} label="Email" icon="far fa-envelope-square" classes={classes} required={true} fullWidth={true} />
                                             <Field name="password" type="password" component={CustomTextField} label="Password" icon="far fa-unlock-alt" classes={classes} required={true} fullWidth={true} />
