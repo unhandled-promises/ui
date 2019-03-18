@@ -70,7 +70,7 @@ export default () => {
 
 const Body = Styled.div`
   display: grid;
-  grid-template-rows: 100px 100vh 90vh 90vh 80vh 1fr;
+  grid-template-rows: 100px 80vh 90vh 90vh 80vh 1fr;
   font-family: 'Montserrat', sans-serif;
   background: url("/static/images/endurance-exercise-female.jpg") no-repeat fixed center;
 `
