@@ -7,18 +7,24 @@ import CustomSelectField from "../components/CustomSelectField";
 import * as Yup from "yup";
 import { CUSTOMERS_API } from "../static/api-config";
 
-async function validateDB(search) {
-    const {name, value} = search;
-    const response = await fetch(`${CUSTOMERS_API}api/customers/search?${name}=${value}`, 
-    {
-        method: "GET",
-    })
+let scope;
 
-    const exists = await response.json();
-    if (!exists) {
-        return true;
+async function validateDB(search) {
+    if (scope === "new") {
+        const {name, value} = search;
+        const response = await fetch(`${CUSTOMERS_API}api/customers/search?${name}=${value}`, 
+        {
+            method: "GET",
+        })
+
+        const exists = await response.json();
+        if (!exists) {
+            return true;
+        } else {
+            return false;
+        }
     } else {
-        return false;
+        return true;
     }
 }
 
@@ -75,6 +81,7 @@ const allStates = ["Alabama", "Alaska", "Arizona", "Arkansas",
 
 function CompanyInfo ({ ...props }) {
     const [company, setCompany] = useState({address: "", address2: "", city: "", company_name: "", email: "", state: "", zip: ""});
+    scope = props.scope;
 
     useEffect(() => {
         if (props.scope === "update") {
@@ -112,8 +119,8 @@ function CompanyInfo ({ ...props }) {
                 <React.Fragment>
                     <Form>
                         <FormSubInnerWrap>
-                            <Field name="company_name" component={CustomTextField} label="Company Name" icon="far fa-building" classes={props.classes} required={true} fullWidth={true} />
-                            <Field name="email" component={CustomTextField} label="Email" icon="far fa-envelope" classes={props.classes} required={true} fullWidth={true} />
+                            <Field name="company_name" component={CustomTextField} label="Company Name" icon="far fa-building" classes={props.classes} required={true} fullWidth={true} disabled={props.scope === "update" ? true : false} />
+                            <Field name="email" component={CustomTextField} label="Email" icon="far fa-envelope" classes={props.classes} required={true} fullWidth={true} disabled={props.scope === "update" ? true : false} />
                             <Field name="address" component={CustomTextField} label="Address 1" icon="far fa-address-card" classes={props.classes} required={true} fullWidth={true} />
                             <Field name="address2" component={CustomTextField} label="Address 2" icon="far fa-address-card" classes={props.classes} required={false} fullWidth={true} />
 
