@@ -463,7 +463,8 @@ class Customer extends Component{
            value={this.state.emailInput.value}
            name="emailInput"
            onChange={this.handleInputChange}
-           onBlur={this.handleBlur}/>
+           onBlur={this.handleBlur}
+           isValid={this.state.emailInput.isValid}/>
         </Modal>
         {/* Detils modal to update and remove the selected employee */}
         <Modal
@@ -479,28 +480,33 @@ class Customer extends Component{
            value={this.state.firstNameInput.value}
            name="firstNameInput"
            onChange={this.handleInputChange}
-           onBlur={this.handleBlur}/>
+           onBlur={this.handleBlur}
+           isValid={this.state.firstNameInput.isValid}/>
           <Input
            type="text" 
            placeholder="Enter Lirst Name" 
            value={this.state.lastNameInput.value}
            name="lastNameInput"
            onChange={this.handleInputChange}
-           onBlur={this.handleBlur}/>
+           onBlur={this.handleBlur}
+           isValid={this.state.lastNameInput.isValid}/>
           <Input
            type="text" 
            placeholder="Enter Email" 
            value={this.state.emailInput.value}
            name="emailInput"
            onChange={this.handleInputChange}
-           onBlur={this.handleBlur}/>
+           onBlur={this.handleBlur}
+           isValid={this.state.emailInput.isValid}/>
           <Input
            type="text" 
            placeholder="Enter Phone Number" 
            value={this.state.phoneInput.value}
            name="phoneInput"
            onChange={this.handleInputChange}
-           onBlur={this.handleBlur}/>
+           onBlur={this.handleBlur}
+           isValid={this.state.phoneInput.isValid}
+           error={this.state.phoneInput.error}/>
           <Input
            type="date" 
            value={this.state.dateInput.value}
@@ -540,10 +546,11 @@ const DashBody = Styled.div`
  display: grid;
  height:100vh;
  width:100vw;
+ transition: 500ms;
  grid-template-columns:${({toggle})=>{
    switch(toggle){
      case true:
-      return "1fr 80vw"
+      return "400px 1fr"
      case false:
       return "120px 1fr" 
    }
