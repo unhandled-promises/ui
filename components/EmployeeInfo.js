@@ -6,6 +6,7 @@ import CustomCheckbox from "../components/CustomCheckbox";
 import CustomTextField from "../components/CustomTextField";
 import * as Yup from "yup";
 import { EMPLOYEES_API } from "../static/api-config";
+import * as moment from "moment";
 
 const EmployeeSchema = Yup.object().shape({
     firstName: Yup.string()
@@ -50,9 +51,11 @@ function EmployeeInfo({ ...props }) {
                         }
                     });
                     const empMap = await employeeResponse.json();
+                    console.log("empMap: ", empMap);
                     empMap.firstName = empMap.first_name;
                     empMap.lastName = empMap.last_name;
-                    empMap.date = empMap.dob;
+                    empMap.date = moment(empMap.dob).format('YYYY-MM-DD');
+                    empMap.id = empMap._id;
 
                     setEmployee(empMap);
                 } catch (error) {

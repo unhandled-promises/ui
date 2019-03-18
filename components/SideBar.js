@@ -12,8 +12,9 @@ import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import Router from 'next/router';
 
-const drawerWidth = 240;
+const drawerWidth = 300;
 
 const styles = theme => ({
     root: {
@@ -101,6 +102,26 @@ class MiniDrawer extends React.Component {
         this.setState({ open: false });
     };
 
+   handleClicked = async (event) => {
+        const element = event.target;
+        const { onClickIcon } = this.props;
+
+        if (element.classList.contains("fa-user")) {
+            Router.push("/dashboard/employee");
+        } else if (element.classList.contains("fa-user-edit")) {
+            onClickIcon("editEmployee");
+        } else if (element.classList.contains("fa-users")) {
+            Router.push("/dashboard/customer");
+        } else if (element.classList.contains("fa-edit")) {
+            onClickIcon("editCompany");
+        } else if (element.classList.contains("fa-home")) {
+            Router.push("/");
+        } else if (element.classList.contains("fa-sign-out")) {
+            await sessionStorage.removeItem("jwt");
+            Router.push("/login");
+        }
+    }
+
     render() {
         const { classes, theme } = this.props;
 
@@ -149,9 +170,18 @@ class MiniDrawer extends React.Component {
                     </div>
                     <Divider />
                     <List>
-                        {['Manage User Profile', 'Manage Employees'].map((text, index) => (
-                            <ListItem button key={text}>
-                                <ListItemIcon>{index % 2 === 0 ? <i className="fas fa-user fa-fw fa-2x"></i> : <i className="fa fa-users fa-fw fa-2x"></i>}</ListItemIcon>
+                        {['View Company Dashboard', 'Edit Company Profile'].map((text, index) => (
+                            <ListItem button key={text} onClick={this.handleClicked}>
+                                <ListItemIcon>{index % 2 === 0 ? <i className="fa fa-users fa-fw fa-2x" title="View Company Dashboard"></i> : <i className="far fa-edit fa-fw fa-2x"  title="Edit Company Profile"></i>}</ListItemIcon>
+                                <ListItemText primary={text} />
+                            </ListItem>
+                        ))}
+                    </List>
+                    <Divider />
+                    <List >
+                        {["View User Dashboard", "Edit User Profile"].map((text, index) => (
+                            <ListItem button key={text} onClick={this.handleClicked}>
+                                <ListItemIcon>{index % 2 === 0 ? <i className="fas fa-user fa-fw fa-2x" title="View User Dashboard"></i> : <i className="fas fa-user-edit fa-fw fa-2x" title="Edit User Profile"></i>}</ListItemIcon>
                                 <ListItemText primary={text} />
                             </ListItem>
                         ))}
@@ -159,8 +189,8 @@ class MiniDrawer extends React.Component {
                     <Divider />
                     <List>
                         {['Home', 'Logout'].map((text, index) => (
-                            <ListItem button key={text}>
-                                <ListItemIcon>{index % 2 === 0 ? <i className="fas fa-home fa-fw fa-2x"></i> : <i className="fas fa-sign-out fa-fw fa-2x"></i>}</ListItemIcon>
+                            <ListItem button key={text} onClick={this.handleClicked}>
+                                <ListItemIcon>{index % 2 === 0 ? <i className="fas fa-home fa-fw fa-2x" title="Home"></i> : <i className="fas fa-sign-out fa-fw fa-2x" title="Logout"></i>}</ListItemIcon>
                                 <ListItemText primary={text} />
                             </ListItem>
                         ))}
