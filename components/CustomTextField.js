@@ -19,6 +19,7 @@ export default ({
             type={props.type || "text"}
             select={props.select || false}
             name={field.name}
+            disabled={props.disabled || false}
             margin="normal"
             variant="outlined"
             required={props.required}

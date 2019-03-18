@@ -92,17 +92,17 @@ function EmployeeInfo({ ...props }) {
                             </div>
 
                             {props.scope === "new" ?
-                            <div className={props.classes.tieredWrap}>
-                                <div className={props.classes.tiered}>
-                                    <Field type="password" name="password" component={CustomTextField} label="Password" icon="far fa-unlock-alt" classes={props.classes} required={true} fullWidth={true} />
+                                <div className={props.classes.tieredWrap}>
+                                    <div className={props.classes.tiered}>
+                                        <Field type="password" value="true" name="password" component={CustomTextField} label="Password" icon="far fa-unlock-alt" classes={props.classes} required={true} fullWidth={true} />
+                                    </div>
+                                    <div className={props.classes.tiered}>
+                                        <Field type="password" value="true" name="password2" component={CustomTextField} label="Validate Password" icon="far fa-unlock-alt" classes={props.classes} required={true} fullWidth={true} />
+                                    </div>
                                 </div>
-                                <div className={props.classes.tiered}>
-                                    <Field type="password" name="password2" component={CustomTextField} label="Validate Password" icon="far fa-unlock-alt" classes={props.classes} required={true} fullWidth={true} />
-                                </div>
-                            </div>
-                            : ""}
-                            <Field name="terms" component={CustomCheckbox} label="I agree to the Terms & Conditions" required={true} fullWidth={true} route="terms" />
-                            <Field name="privacy" component={CustomCheckbox} label="I agree to the Privacy Policy" required={true} fullWidth={true} route="privacy" />
+                                : ""}
+                            <Field name="terms" component={CustomCheckbox} label="I agree to the Terms & Conditions" required={true} fullWidth={true} route="terms" checked={props.scope === "new" ? false : true} />
+                            <Field name="privacy" component={CustomCheckbox} label="I agree to the Privacy Policy" required={true} fullWidth={true} route="privacy" checked={props.scope === "new" ? false : true} />
                         </FormSubInnerWrap>
                         <Button variant="contained" color="primary" type="submit" className={props.classes.button}>
                             {props.scope === "new" ? "Select Provider" : "Update Employee Info"}
