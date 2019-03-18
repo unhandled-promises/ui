@@ -460,7 +460,6 @@ class Customer extends Component{
           <Input
            type="text" 
            label="Email"
-           placeholder="Enter Email" 
            value={this.state.emailInput.value}
            name="emailInput"
            onChange={this.handleInputChange}
