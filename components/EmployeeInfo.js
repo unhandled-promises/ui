@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field } from "formik";
 import FormSubInnerWrap from "../components/FormSubInnerWrap";
 import Button from "@material-ui/core/Button"
+import CustomCheckbox from "../components/CustomCheckbox";
 import CustomTextField from "../components/CustomTextField";
 import * as Yup from "yup";
 import { EMPLOYEES_API } from "../static/api-config";
@@ -29,6 +30,12 @@ const EmployeeSchema = Yup.object().shape({
         .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, "Password must include a special character")
         .oneOf([Yup.ref('password'), "Both Passwords must match"])
         .required("Required"),
+    privacy: Yup.boolean()
+        .oneOf([true], "Must Accept Privacy Policy")
+        .required("Must Accept Privacy Policy"),
+    terms: Yup.boolean()
+        .oneOf([true], "Must Accept Terms & Conditions")
+        .required("Must Accept Terms & Conditions"),
 });
 
 function EmployeeInfo({ ...props }) {
@@ -91,6 +98,8 @@ function EmployeeInfo({ ...props }) {
                                     <Field type="password" name="password2" component={CustomTextField} label="Validate Password" icon="far fa-unlock-alt" classes={props.classes} required={true} fullWidth={true} />
                                 </div>
                             </div>
+                            <Field name="terms" component={CustomCheckbox} label="I agree to the Terms & Conditions" required={true} fullWidth={true} route="terms" />
+                            <Field name="privacy" component={CustomCheckbox} label="I agree to the Privacy Policy" required={true} fullWidth={true} route="privacy" />
                         </FormSubInnerWrap>
                         <Button variant="contained" color="primary" type="submit" className={props.classes.button}>
                             {props.scope === "new" ? "Select Provider" : "Update Employee Info"}
