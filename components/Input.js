@@ -12,7 +12,8 @@ export default  ({placeholder,value,name,onChange,onBlur,type,isValid,error, cla
           name={name}
           onChange={onChange}
           onBlur={onBlur}
-          className={className} />
+          className={className}
+          required />
           <Label>{label}</Label>
       </FloatingLabelDiv>
       {(isValid)?
@@ -34,10 +35,6 @@ const FloatingLabelDiv = Styled.div`
   border-width: 1px;
   color: rgba(#2c3e50,.75);
   margin: .5rem;
-
-  &:valid {
-    background: white;
-  }
 
   &:focus {
     border-color: blue;
@@ -102,6 +99,10 @@ const Input = Styled.input`
       padding: 1px 6px;
       z-index: 2;
       text-transform: uppercase;
+    }
+
+    &:valid {
+      background: white;
     }
 `;
 
