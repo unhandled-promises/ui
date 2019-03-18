@@ -13,7 +13,8 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import EmployeeInfo from "../components/EmployeeInfo";
 import VerifyInfo from "../components/VerifyInfo";
-import ProviderInfo from "../components/ProviderInfo"
+import ProviderInfo from "../components/ProviderInfo";
+import Typography from '@material-ui/core/Typography';
 
 const styles = theme => ({
     container: {
@@ -123,6 +124,7 @@ class Verify extends Component {
         secret: "",
         activeStep: 0,
         skipped: new Set(),
+        authError: false,
     }
 
     componentDidMount = async () => {
@@ -156,7 +158,6 @@ class Verify extends Component {
             }
         });
         const data = await response.json();
-        console.log(data);
         return data;
     }
 
@@ -234,6 +235,7 @@ class Verify extends Component {
         const verifyResponse = await this.verifyEmployee(value.email, value.code);
 
         if (verifyResponse.success) {
+            this.setState({ authError: false })
             sessionStorage.setItem("jwt", verifyResponse.token)
             const employeeData = await jwt_decode(verifyResponse.token);
             const companyName = await this.findCompanyNameById(employeeData.company);
@@ -244,7 +246,7 @@ class Verify extends Component {
             })
             this.handleNext();
         } else {
-            console.log(`Verification Failed`);
+            this.setState({ authError: true });
         }
     }
 
@@ -258,7 +260,6 @@ class Verify extends Component {
             password: value.password,
         }
 
-        console.log(employee);
         await this.updateEmployeeInformation(employee)
         this.handleNext();
     }
@@ -287,6 +288,11 @@ class Verify extends Component {
                             );
                         })}
                     </Stepper>
+                    {this.state.authError ?
+                        <Typography variant="h6" gutterBottom color="error">
+                            Invalid Credentials
+                        </Typography> : ""
+                    }
                     <VerifyInfo classes={classes} handler={this.handlerVerify} />
                 </VerifyDiv>
                 <InfoDiv activeStep={this.state.activeStep}>

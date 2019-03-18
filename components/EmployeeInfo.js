@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field } from "formik";
 import FormSubInnerWrap from "../components/FormSubInnerWrap";
 import Button from "@material-ui/core/Button"
+import CustomCheckbox from "../components/CustomCheckbox";
 import CustomTextField from "../components/CustomTextField";
 import * as Yup from "yup";
 import { EMPLOYEES_API } from "../static/api-config";
@@ -23,12 +24,16 @@ const EmployeeSchema = Yup.object().shape({
         .matches(/[0-9{10}]/, "Phone must be in the format 5555555555")
         .required("Required"),
     password: Yup.string()
-        .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, "Password must include a special character")
-        .required("Required"),
+        .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, "Password must include a special character"),
     password2: Yup.string()
         .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, "Password must include a special character")
-        .oneOf([Yup.ref('password'), "Both Passwords must match"])
-        .required("Required"),
+        .oneOf([Yup.ref('password'), "Both Passwords must match"]),
+    privacy: Yup.boolean()
+        .oneOf([true], "Must Accept Privacy Policy")
+        .required("Must Accept Privacy Policy"),
+    terms: Yup.boolean()
+        .oneOf([true], "Must Accept Terms & Conditions")
+        .required("Must Accept Terms & Conditions"),
 });
 
 function EmployeeInfo({ ...props }) {
@@ -45,11 +50,11 @@ function EmployeeInfo({ ...props }) {
                         }
                     });
                     const empMap = await employeeResponse.json();
-                    empMap[0].firstName = empMap[0].first_name;
-                    empMap[0].lastName = empMap[0].last_name;
-                    empMap[0].date = empMap[0].dob;
+                    empMap.firstName = empMap.first_name;
+                    empMap.lastName = empMap.last_name;
+                    empMap.date = empMap.dob;
 
-                    setEmployee(empMap[0]);
+                    setEmployee(empMap);
                 } catch (error) {
                     console.log(error);
                 }
@@ -83,6 +88,7 @@ function EmployeeInfo({ ...props }) {
                                 </div>
                             </div>
 
+                            {props.scope === "new" ?
                             <div className={props.classes.tieredWrap}>
                                 <div className={props.classes.tiered}>
                                     <Field type="password" name="password" component={CustomTextField} label="Password" icon="far fa-unlock-alt" classes={props.classes} required={true} fullWidth={true} />
@@ -91,6 +97,9 @@ function EmployeeInfo({ ...props }) {
                                     <Field type="password" name="password2" component={CustomTextField} label="Validate Password" icon="far fa-unlock-alt" classes={props.classes} required={true} fullWidth={true} />
                                 </div>
                             </div>
+                            : ""}
+                            <Field name="terms" component={CustomCheckbox} label="I agree to the Terms & Conditions" required={true} fullWidth={true} route="terms" />
+                            <Field name="privacy" component={CustomCheckbox} label="I agree to the Privacy Policy" required={true} fullWidth={true} route="privacy" />
                         </FormSubInnerWrap>
                         <Button variant="contained" color="primary" type="submit" className={props.classes.button}>
                             {props.scope === "new" ? "Select Provider" : "Update Employee Info"}
