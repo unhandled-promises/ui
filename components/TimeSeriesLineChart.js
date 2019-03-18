@@ -1,5 +1,5 @@
 import React from 'react';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Legend   } from 'recharts';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Legend, Label   } from 'recharts';
 
 export default ({data}) => {
 
@@ -16,12 +16,21 @@ export default ({data}) => {
       <Legend />
       {data.map(employee=>{
         return (
-          <Line type="monotone" dataKey="value" data={employee.history["activities-steps"]} stroke={generateColor()} />    
+          <Line 
+            type="monotone" 
+            dataKey="value" 
+            data={employee.history["activities-steps"]} 
+            stroke={generateColor()}
+            margin={{ top: 5, right: 30, left: 20, bottom: 20 }} />    
         )
       })}
-      <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-      <XAxis tickCount="30" dataKey="dateTime" />
-      <YAxis />
+      <CartesianGrid  stroke="#ccc" strokeDasharray="3 3" />
+      <XAxis allowDuplicatedCategory={false} dataKey="dateTime">
+        <Label offset={0} position="insideBottom">Date</Label>
+      </XAxis>
+      <YAxis>
+        <Label offset={0} angle={-90} position="insideLeft">Steps</Label>
+      </YAxis>
     </LineChart>
   )
 }
