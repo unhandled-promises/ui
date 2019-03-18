@@ -7,10 +7,30 @@ import CustomSelectField from "../components/CustomSelectField";
 import * as Yup from "yup";
 import { CUSTOMERS_API } from "../static/api-config";
 
+async function validateDB(search) {
+    const {name, value} = search;
+    const response = await fetch(`${CUSTOMERS_API}api/customers/search?${name}=${value}`, 
+    {
+        method: "GET",
+    })
+
+    const exists = await response.json();
+    if (!exists) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 const CompanySchema = Yup.object().shape({
     company_name: Yup.string()
         .min(1, "Too Short!")
         .max(100, "Too Long!")
+        .test(
+            "Company Name",
+            "Company exists in system",
+            value => value && validateDB({name: "name", value: value})
+        )
         .required("Required"),
     address: Yup.string()
         .min(2, "Too Short!")
@@ -33,6 +53,11 @@ const CompanySchema = Yup.object().shape({
         .required("Required"),
     email: Yup.string()
         .email("Invalid email")
+        .test(
+            "Email",
+            "Email exists in system",
+            value => value && validateDB({name: "email", value: value})
+        )
         .required("Required"),
 });
 

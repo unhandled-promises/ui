@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Router from 'next/router'
-import { Formik, Form } from 'formik';
 import Link from 'next/link';
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
@@ -8,16 +7,13 @@ import Styled from 'styled-components';
 import FullNav from '../components/FullNav';
 import Footer from '../components/Footer';
 import FormInfo from "../components/FormInfo";
-import FormSubHeader from "../components/FormSubHeader";
-import FormSubInnerWrap from "../components/FormSubInnerWrap";
-import Provider from "../components/Provider";
-import SubmitButton from "../components/SubmitButton";
 import { CUSTOMERS_API, EMPLOYEES_API } from "../static/api-config";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import EmployeeInfo from "../components/EmployeeInfo";
 import VerifyInfo from "../components/VerifyInfo";
+import ProviderInfo from "../components/ProviderInfo"
 
 const styles = theme => ({
     container: {
@@ -82,6 +78,15 @@ const styles = theme => ({
         flexWrap: "wrap",
         justifyContent: "space-between",
         alignItems: "center",
+    },
+    avatarFitbit: {
+        backgroundColor: "#1F6276",
+    },
+    avatarGarmin: {
+        backgroundColor: "#000000",
+    },
+    avatarApple: {
+        backgroundColor: "#313131",
     },
 });
 
@@ -313,32 +318,7 @@ class Verify extends Component {
                             );
                         })}
                     </Stepper>
-                    <Formik
-                        initialValues={{
-                            authProvider: true,
-                        }}
-                        onSubmit={async (values) => {
-                            if (values.authProvider) {
-                                window.location.href = `${EMPLOYEES_API}auth/fitbit?employeeId=${this.state.id}`
-                            } else {
-                                Router.push("/dashboard/employee");
-                            }
-                        }}
-                        render={({ setFieldValue, submitForm }) => (
-                            <React.Fragment>
-                                <Form>
-                                    <FormSubInnerWrap>
-                                        <h3>Approve Access by Provider</h3>
-                                        <Provider image="/static/images/fitbit-transparent-logo.png" alttext="Fitbit" available onClick={() => submitForm()} />
-                                        <Provider image="/static/images/garmin-transparent-logo.png" alttext="Garmin" onClick={() => setFieldValue("authProvider", false)} />
-                                        <Provider image="/static/images/apple-transparent-logo.png" alttext="Apple" onClick={() => setFieldValue("authProvider", false)} />
-                                        <br /><br />
-                                        <SubmitButton text="Do not authorize at this time" onClick={() => setFieldValue("authProvider", false)} />
-                                    </FormSubInnerWrap>
-                                </Form>
-                            </React.Fragment>
-                        )}
-                    />
+                    <ProviderInfo classes={classes} id={this.state.id} />
                 </DeviceDiv>
                 <Footer />
             </React.Fragment>

@@ -1,20 +1,21 @@
 import React from 'react'
 import Styled from 'styled-components';
-import * as moment from "moment";
 import EmptyCard from './EmptyCard';
 
-export default ({ employeeInfo }) => {
+export default ({ heading, image, value, description }) => {
+  if (!value) {
+    return (
+      <EmptyCard heading={heading} />
+    )
+  }
   return (
     <Card>
       <CardHeading>
-        <h3>{employeeInfo.first_name} {employeeInfo.last_name}</h3>
+        <h3>{heading}</h3>
       </CardHeading>
       <CardBody>
-        <Group>
-          <img src={employeeInfo.avatar} style={{ height: 125, borderRadius: "50%" }} alt="" />
-          <p>Date of Birth: {moment(employeeInfo.dob).format('YYYY-MM-DD')}</p>
-          <p>Email: {employeeInfo.email}</p>
-        </Group>
+        <img src={image} style={{ height: 150 }} alt="" />
+        <h4>{value} {description}</h4>
       </CardBody>
     </Card>
   )
@@ -35,13 +36,6 @@ const CardHeading = Styled.div`
   }
 `
 const CardBody = Styled.div`
-  margin: 5px;
-  align-self: center;
+  text-align: center;
   overflow: hidden;
-`
-const Group = Styled.div`
-  position: relative;
-  padding: 10px 15px;
-  background-color: #fff;
-}
 `

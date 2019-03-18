@@ -34,25 +34,18 @@ export default ({ badges }) => {
 
 const Card = Styled.div`
   display: grid;
-  grid-template-rows: auto 1fr;
   border-radius: 25px;
   box-shadow: #696773 -10px 5px 10px 10px;
-  min-height: 200px;
-  margin: 50px 20px 20px 20px;
-  style="float: left; 
-  width: 70%";
+  margin: 70px 20px 20px 20px;
   overflow: hidden
 `
-
 const CardHeading = Styled.div`
-  margin: 0;
   background-color: #f5f5f5;
   border-bottom: 1px solid #ddd;
   h3{
     margin: .5rem;
   }
 `
-
 const CardBody = Styled.div`
   margin: 5px;
   align-self: center;
@@ -63,6 +56,6 @@ const Group = Styled.div`
   display: block;
   padding: 10px 15px;
   background-color: #fff;
-  height: 90%
+  // height: 90%
 }
 `
