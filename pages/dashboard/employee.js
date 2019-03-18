@@ -16,6 +16,7 @@ import DailyStats from '../../components/DailyStats';
 import Devices from '../../components/Devices';
 import TimeSeriesBarChart from '../../components/TimeSeriesBarChart';
 import Health from '../../components/Health';
+import SideBar from "../../components/SideBar";
 
 class Employee extends Component {
 	state = {
@@ -266,60 +267,73 @@ class Employee extends Component {
 	}
 
 	render() {
+		let caloriesOut = "N/A";
+		let restingHeartRate = "N/A";
+
+		if (this.state.todayStats && this.state.todayStats.summary) {
+			caloriesOut = this.state.todayStats.summary.caloriesOut;
+		};
+		if (this.state.todayStats && this.state.todayStats.summary && this.state.todayStats.summary.restingHeartRate) {
+			restingHeartRate = this.state.todayStats.summary.restingHeartRate;
+		};
 		return (
 			<React.Fragment>
-				<FullNav>
-					<Link href="/dashboard/employee"><NavLink>Home</NavLink></Link>
-					<NavLink onClick={this.handleClick} name="Logout">Logout</NavLink>
-				</FullNav>
-				<Container>
-					<Title>Your Personal Health Dashboard</Title>
-					<Row>
-						<Col col="3">
-							<Friends friends={this.state.friends.friends} />
-						</Col>
-						<Col col="5">
-							<EmployeeCard employeeInfo={this.state.employeeData} />
-						</Col>
-						<Col col="3">
-							<LifetimeStats lifetimeStats={this.state.lifetimeStats} />
-						</Col>
-					</Row>
-					<Row>
-						<Col col="3">
-							<Devices devices={this.state.devices} />
-						</Col>
-						<Col col="5">
-							<TimeSeriesBarChart data={this.state.steps['activities-steps']} title="Steps" yMax={15000} />
-						</Col>
-						<Col col="3">
-							<Health heading="Calories Burned" image="../static/images/calories-burned.jpeg" value={this.state.todayStats.summary.caloriesOut} description="calories"/>
-						</Col>
-					</Row>
-					<Row>
-						<Col col="3">
-							<Badges badges={this.state.badges.badges} />
-						</Col>
-						<Col col="5">
-							<TimeSeriesBarChart data={this.state.distance['activities-distance']} title="Distance (kilometers)" yMax={10} />
-						</Col>
-						<Col col="3">
-							<Health todayStats={this.state.todayStats} heading="Resting Heart Rate" image="../static/images/heart-rate.jpg" value={this.state.todayStats.summary.restingHeartRate} description="beats per minute" />
-						</Col>
-					</Row>
-				</Container>
-				<Modal name="editModal"
-					buttonNames={["Update"]}
-					show={this.state.editModal}
-					handleClick={this.handleClick}
-					handleClose={this.handleClick}>
-					<h3>Edit Your Information</h3>
-					<Input type="text" name="firstNameInput" placeholder="First Name" value={this.state.firstNameInput.value} onChange={this.handleInputChange} onBlur={this.handleBlur} />
-					<Input type="text" name="lastNameInput" placeholder="Last Name" value={this.state.lastNameInput.value} onChange={this.handleInputChange} onBlur={this.handleBlur} />
-					<Input type="password" name="passwordInput" placeholder="Password" value={this.state.passwordInput.value} onChange={this.handleInputChange} onBlur={this.handleBlur} />
-					<Input type="text" name="phoneInput" placeholder="Phone Number" value={this.state.phoneInput.value} onChange={this.handleInputChange} onBlur={this.handleBlur} />
-					<Input type="date" name="dateInput" placeholder="Date of Birth" value={this.state.dateInput.value} onChange={this.handleInputChange} />
-				</Modal>
+				<SideBar>
+					{/* <FullNav>
+						<Link href="/dashboard/employee"><NavLink>Home</NavLink></Link>
+						<NavLink onClick={this.handleClick} name="Logout">Logout</NavLink>
+					</FullNav> */}
+					<LoginDiv>
+						<Container>
+							<Title>Your Personal Health Dashboard</Title>
+							<Row>
+								<Col col="3">
+									<Friends friends={this.state.friends.friends} />
+								</Col>
+								<Col col="5">
+									<EmployeeCard employeeInfo={this.state.employeeData} />
+								</Col>
+								<Col col="3">
+									<LifetimeStats lifetimeStats={this.state.lifetimeStats} />
+								</Col>
+							</Row>
+							<Row>
+								<Col col="3">
+									<Devices devices={this.state.devices} />
+								</Col>
+								<Col col="5">
+									<TimeSeriesBarChart data={this.state.steps['activities-steps']} title="Steps" yMax={15000} />
+								</Col>
+								<Col col="3">
+									<Health heading="Calories Burned" image="../static/images/calories-burned.jpeg" value={caloriesOut} description="calories" />
+								</Col>
+							</Row>
+							<Row>
+								<Col col="3">
+									<Badges badges={this.state.badges.badges} />
+								</Col>
+								<Col col="5">
+									<TimeSeriesBarChart data={this.state.distance['activities-distance']} title="Distance (kilometers)" yMax={10} />
+								</Col>
+								<Col col="3">
+									<Health todayStats={this.state.todayStats} heading="Resting Heart Rate" image="../static/images/heart-rate.jpg" value={restingHeartRate} description="beats per minute" />
+								</Col>
+							</Row>
+						</Container>
+						<Modal name="editModal"
+							buttonNames={["Update"]}
+							show={this.state.editModal}
+							handleClick={this.handleClick}
+							handleClose={this.handleClick}>
+							<h3>Edit Your Information</h3>
+							<Input type="text" name="firstNameInput" placeholder="First Name" value={this.state.firstNameInput.value} onChange={this.handleInputChange} onBlur={this.handleBlur} />
+							<Input type="text" name="lastNameInput" placeholder="Last Name" value={this.state.lastNameInput.value} onChange={this.handleInputChange} onBlur={this.handleBlur} />
+							<Input type="password" name="passwordInput" placeholder="Password" value={this.state.passwordInput.value} onChange={this.handleInputChange} onBlur={this.handleBlur} />
+							<Input type="text" name="phoneInput" placeholder="Phone Number" value={this.state.phoneInput.value} onChange={this.handleInputChange} onBlur={this.handleBlur} />
+							<Input type="date" name="dateInput" placeholder="Date of Birth" value={this.state.dateInput.value} onChange={this.handleInputChange} />
+						</Modal>
+					</LoginDiv>
+				</SideBar>
 				<Footer />
 			</React.Fragment >
 		)
@@ -327,6 +341,23 @@ class Employee extends Component {
 }
 
 export default Employee;
+
+const LoginDiv = Styled.div`
+    grid-template-columns: 2fr;
+    max-width: 1200px;
+    width:80%;
+    padding:30px;
+    margin:40px auto;
+    background: #FFF;
+    border-radius: 10px;
+    -webkit-border-radius:10px;
+    -moz-border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.13);
+	display: grid;
+	text-align: center
+`
 
 const NavLink = Styled.a`
 	margin:.5rem;
