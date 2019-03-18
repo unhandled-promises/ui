@@ -257,28 +257,28 @@ class Customer extends Component{
       case "Edit":
       // When opening the details modal, activeEmployee state must be transfered to firstNameInput state so handInputChange can work properly
       // with the prepopulated information
-        const { id: employeeIndex } = event.target;
-        await this.setState({activeEmployee:this.state.employees[employeeIndex]});
-        const { first_name:first, last_name:last, email, phone, dob } = this.state.activeEmployee;
-        const prevFirstNameState = {...this.state.firstNameInput};
-        const prevLastNameState = {...this.state.lastNameInput};
-        const prevPhoneState = {...this.state.phoneInput};
-        const prevDobState = {...this.state.dateInput};
-        const prevEmailState = {...this.state.emailInput};
+        // const { id: employeeIndex } = event.target;
+        // await this.setState({activeEmployee:this.state.employees[employeeIndex]});
+        // const { first_name:first, last_name:last, email, phone, dob } = this.state.activeEmployee;
+        // const prevFirstNameState = {...this.state.firstNameInput};
+        // const prevLastNameState = {...this.state.lastNameInput};
+        // const prevPhoneState = {...this.state.phoneInput};
+        // const prevDobState = {...this.state.dateInput};
+        // const prevEmailState = {...this.state.emailInput};
         
-        prevFirstNameState.value = first;
-        prevLastNameState.value = last;
-        prevEmailState.value = email;
-        prevDobState.value = dob;
-        prevPhoneState.value = phone;
+        // prevFirstNameState.value = first;
+        // prevLastNameState.value = last;
+        // prevEmailState.value = email;
+        // prevDobState.value = dob;
+        // prevPhoneState.value = phone;
 
-        this.setState({
-          firstNameInput:prevFirstNameState,
-          lastNameInput:prevLastNameState,
-          emailInput:prevEmailState,
-          dateInput:prevDobState,
-          phoneInput:prevPhoneState
-        });
+        // this.setState({
+        //   firstNameInput:prevFirstNameState,
+        //   lastNameInput:prevLastNameState,
+        //   emailInput:prevEmailState,
+        //   dateInput:prevDobState,
+        //   phoneInput:prevPhoneState
+        // });
         this.setState({detailsModal:true});
         break;
 
@@ -459,12 +459,13 @@ class Customer extends Component{
           <h3>Add an Employee</h3>
           <Input
            type="text" 
-           placeholder="Enter Email" 
+           label="Email"
            value={this.state.emailInput.value}
            name="emailInput"
            onChange={this.handleInputChange}
            onBlur={this.handleBlur}
-           isValid={this.state.emailInput.isValid}/>
+           isValid={this.state.emailInput.isValid}
+           error={this.state.emailInput.error}/>
         </Modal>
         {/* Detils modal to update and remove the selected employee */}
         <Modal
@@ -474,45 +475,51 @@ class Customer extends Component{
           handleClose={this.handleClick}
           handleClick={this.handleClick}>
           <h3>Edit Employee Information</h3>
-          <Input
-           type="text" 
-           placeholder="Enter First Name" 
-           value={this.state.firstNameInput.value}
-           name="firstNameInput"
-           onChange={this.handleInputChange}
-           onBlur={this.handleBlur}
-           isValid={this.state.firstNameInput.isValid}/>
-          <Input
-           type="text" 
-           placeholder="Enter Lirst Name" 
-           value={this.state.lastNameInput.value}
-           name="lastNameInput"
-           onChange={this.handleInputChange}
-           onBlur={this.handleBlur}
-           isValid={this.state.lastNameInput.isValid}/>
-          <Input
-           type="text" 
-           placeholder="Enter Email" 
-           value={this.state.emailInput.value}
-           name="emailInput"
-           onChange={this.handleInputChange}
-           onBlur={this.handleBlur}
-           isValid={this.state.emailInput.isValid}/>
-          <Input
-           type="text" 
-           placeholder="Enter Phone Number" 
-           value={this.state.phoneInput.value}
-           name="phoneInput"
-           onChange={this.handleInputChange}
-           onBlur={this.handleBlur}
-           isValid={this.state.phoneInput.isValid}
-           error={this.state.phoneInput.error}/>
-          <Input
-           type="date" 
-           value={this.state.dateInput.value}
-           name="dateInput"
-           onChange={this.handleInputChange}
-           onBlur={this.handleBlur}/>
+          <FieldSet>
+            <Input
+            type="text" 
+            label="First Name"
+            value={this.state.firstNameInput.value}
+            name="firstNameInput"
+            onChange={this.handleInputChange}
+            onBlur={this.handleBlur}
+            isValid={this.state.firstNameInput.isValid}
+            error={this.state.firstNameInput.error}/>
+            <Input
+            type="text" 
+            label="Lirst Name" 
+            value={this.state.lastNameInput.value}
+            name="lastNameInput"
+            onChange={this.handleInputChange}
+            onBlur={this.handleBlur}
+            isValid={this.state.lastNameInput.isValid}
+            error={this.state.lastNameInput.error}/>
+            <Input
+            type="text" 
+            label="Email" 
+            value={this.state.emailInput.value}
+            name="emailInput"
+            onChange={this.handleInputChange}
+            onBlur={this.handleBlur}
+            isValid={this.state.emailInput.isValid}
+            error={this.state.emailInput.error}/>
+            <Input
+            type="text" 
+            label="Phone Number" 
+            value={this.state.phoneInput.value}
+            name="phoneInput"
+            onChange={this.handleInputChange}
+            onBlur={this.handleBlur}
+            isValid={this.state.phoneInput.isValid}
+            error={this.state.phoneInput.error}/>
+            <Input
+            type="date" 
+            value={this.state.dateInput.value}
+            name="dateInput"
+            onChange={this.handleInputChange}
+            onBlur={this.handleBlur}/>
+
+          </FieldSet>
         </Modal>
       </React.Fragment>
     )
@@ -625,4 +632,10 @@ const MainView = Styled.div`
   grid-area: Main;
   overflow:scroll;
   margin: 1rem;
+`
+
+const FieldSet = Styled.fieldset`
+  >input{
+    width: 95%;
+  }
 `
