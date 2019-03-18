@@ -9,12 +9,12 @@ export default ({
     form: { values, touched, errors, handleBlur, handleChange, handleSubmit },
     ...props
 }) => {
-    console.log(props);
+
     return (
         <React.Fragment>
             <div>
                 <Checkbox
-                    checked={props.checked}
+                    checked={values[field.name] || ""}
                     onChange={handleChange}
                     value={field.name}
                     name={field.name}

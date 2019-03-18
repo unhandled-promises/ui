@@ -101,8 +101,8 @@ function EmployeeInfo({ ...props }) {
                                     </div>
                                 </div>
                                 : ""}
-                            <Field name="terms" component={CustomCheckbox} label="I agree to the Terms & Conditions" required={true} fullWidth={true} route="terms" checked={props.scope === "new" ? false : true} />
-                            <Field name="privacy" component={CustomCheckbox} label="I agree to the Privacy Policy" required={true} fullWidth={true} route="privacy" checked={props.scope === "new" ? false : true} />
+                            <Field name="terms" component={CustomCheckbox} label="I agree to the Terms & Conditions" required={true} fullWidth={true} route="terms" status={props.scope === "new" ? false : true} />
+                            <Field name="privacy" component={CustomCheckbox} label="I agree to the Privacy Policy" required={true} fullWidth={true} route="privacy" status={props.scope === "new" ? false : true} />
                         </FormSubInnerWrap>
                         <Button variant="contained" color="primary" type="submit" className={props.classes.button}>
                             {props.scope === "new" ? "Select Provider" : "Update Employee Info"}
