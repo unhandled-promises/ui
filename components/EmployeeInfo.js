@@ -52,11 +52,11 @@ function EmployeeInfo({ ...props }) {
                         }
                     });
                     const empMap = await employeeResponse.json();
-                    empMap[0].firstName = empMap[0].first_name;
-                    empMap[0].lastName = empMap[0].last_name;
-                    empMap[0].date = empMap[0].dob;
+                    empMap.firstName = empMap.first_name;
+                    empMap.lastName = empMap.last_name;
+                    empMap.date = empMap.dob;
 
-                    setEmployee(empMap[0]);
+                    setEmployee(empMap);
                 } catch (error) {
                     console.log(error);
                 }
@@ -90,6 +90,7 @@ function EmployeeInfo({ ...props }) {
                                 </div>
                             </div>
 
+                            {props.scope === "new" ?
                             <div className={props.classes.tieredWrap}>
                                 <div className={props.classes.tiered}>
                                     <Field type="password" name="password" component={CustomTextField} label="Password" icon="far fa-unlock-alt" classes={props.classes} required={true} fullWidth={true} />
@@ -98,6 +99,7 @@ function EmployeeInfo({ ...props }) {
                                     <Field type="password" name="password2" component={CustomTextField} label="Validate Password" icon="far fa-unlock-alt" classes={props.classes} required={true} fullWidth={true} />
                                 </div>
                             </div>
+                            : ""}
                             <Field name="terms" component={CustomCheckbox} label="I agree to the Terms & Conditions" required={true} fullWidth={true} route="terms" />
                             <Field name="privacy" component={CustomCheckbox} label="I agree to the Privacy Policy" required={true} fullWidth={true} route="privacy" />
                         </FormSubInnerWrap>
