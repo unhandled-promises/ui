@@ -111,7 +111,7 @@ class MiniDrawer extends React.Component {
         } else if (element.classList.contains("fa-user-edit")) {
             onClickIcon("editEmployee");
         } else if (element.classList.contains("fa-users")) {
-            onClickIcon("/dashboard/customer");
+            Router.push("/dashboard/customer");
         } else if (element.classList.contains("fa-edit")) {
             onClickIcon("editCompany");
         } else if (element.classList.contains("fa-home")) {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Styled from 'styled-components';
 import Footer from '../../components/Footer';;
 import Modal from '../../components/Modal';
-import { EMPLOYEES_API } from "../../static/api-config";
+import { EMPLOYEES_API, CUSTOMERS_API } from "../../static/api-config";
 import Router from 'next/router';
 import Badges from '../../components/Badges'
 import Friends from '../../components/Friends'
@@ -15,7 +15,7 @@ import Health from '../../components/Health';
 import SideBar from "../../components/SideBar";
 import EmployeeInfo from "../../components/EmployeeInfo";
 import { withStyles } from "@material-ui/core/styles";
-import * as moment from "moment";
+import CompanyInfo from "../../components/CompanyInfo";
 
 class Employee extends Component {
 	state = {
@@ -99,7 +99,6 @@ class Employee extends Component {
 	}
 
 	performEmployeeUpdate = async (employee) => {
-
 		await fetch(`${EMPLOYEES_API}api/employee/${employee.id}`, {
 			method: "PUT",
 			body: JSON.stringify({
@@ -118,24 +117,24 @@ class Employee extends Component {
 		await this.setState({ displayEmployeeInfo: false });
 	}
 
-	performCompanyUpdate = async (employee) => {
-
-		await fetch(`${EMPLOYEES_API}api/employee/${employee.id}`, {
+	performCompanyUpdate = async (company) => {
+		console.log("companyName: ", company.company_name);
+		await fetch(`${CUSTOMERS_API}api/customers/${company._id}`, {
 			method: "PUT",
 			body: JSON.stringify({
-				"first_name": employee.firstName,
-				"last_name": employee.lastName,
-				"dob": employee.date,
-				"phone": employee.phone,
+				"name": company.company_name,
+				"address": company.address,
+				"email": company.email,
+				"city": company.city,
+				"postal": company.postal,
+				"state": company.state
 			}),
 			headers: {
 				"Authorization": sessionStorage.getItem("jwt"),
 				"Content-Type": "application/json"
 			},
 		})
-
-		this.fetchData("/", "employeeData");
-		await this.setState({ displayEmployeeInfo: false });
+		await this.setState({ displayCompanyInfo: false });
 	}
 
 	performSidebarAction = async (navType) => {
@@ -148,9 +147,10 @@ class Employee extends Component {
 
 	performModalAction = async (event) => {
 		const { name, id } = event.target;
-
 		if ("editEmployee" === name) {
 			await this.setState({ displayEmployeeInfo: false });
+		} else if ("editCompany" === name) {
+			await this.setState({ displayCompanyInfo: false });
 		}
 	}
 
@@ -217,6 +217,18 @@ class Employee extends Component {
 									<EmployeeInfo classes={classes} handler={this.performEmployeeUpdate} scope="update" employeeId={this.state.employeeData._id} jwt={this.state.jwt} />
 								</Modal>
 							</EmployeeInfoDiv>
+							: ""}
+						{this.state.employeeData.company !== undefined ?
+							<CompanyInfoDiv shouldDisplay={this.state.displayCompanyInfo}>
+								<Modal name="editCompany"
+									buttonNames={[]}
+									show={this.state.displayCompanyInfo}
+									handleClick={this.performModalAction}
+									handleClose={this.performModalAction}
+								>
+									<CompanyInfo classes={classes} handler={this.performCompanyUpdate} scope="update" customerId={this.state.employeeData.company} jwt={this.state.jwt} />
+								  </Modal>
+							</CompanyInfoDiv>
 							: ""}
 					</LoginDiv>
 				</SideBar>
